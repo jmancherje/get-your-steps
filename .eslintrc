@@ -1,0 +1,84 @@
+{
+    parser: 'babel-eslint',
+    env: {
+        es6: true,
+        browser: true
+    },
+    extends: 'airbnb',
+    plugins: [
+        'react',
+        'react-native'
+    ],
+    root: true,
+    rules: {
+        camelcase: 0,
+        'comma-dangle': 0,
+        'eol-last': 0,
+        'func-style': 0,
+        'import/imports-first': 0,
+        // TODO Enable when we implement https://lernajs.io
+        'import/no-unresolved': 0,
+        // TODO Enable if/when https://github.com/benmosher/eslint-plugin-import/issues/458 is fixed
+        'import/no-extraneous-dependencies': 0,
+        // TODO Enable import/order after implementing Lerna
+        // 'import/order': [1, {
+        //     groups: [
+        //         'builtin', 'external', ['parent', 'sibling']
+        //     ],
+        //     'newlines-between': 'always'
+        // }],
+        'import/no-namespace': 0,
+        'max-len': 0,
+        'new-cap': 0,
+        'no-alert': 0,
+        'no-underscore-dangle': 0,
+        'no-confusing-arrow': 0,
+        'no-param-reassign': 0,
+        'no-unneeded-ternary': [2, { defaultAssignment: false } ],
+        'operator-linebreak': [2, 'after'],
+        'padded-blocks': 0,
+        'react/jsx-no-bind': [2, {
+            ignoreRefs: false,
+            allowArrowFunctions: false,
+            allowBind: false
+        }],
+        strict: 0,
+        indent: ["error", 2],
+        quotes: [2, 'single', 'avoid-escape'],
+        'quote-props': [2, 'as-needed'],
+        'linebreak-style': [2, 'unix'],
+        semi: [2, 'always'],
+        'jsx-quotes': [2, 'prefer-double'],
+        'react/jsx-curly-spacing': [2, 'always'],
+        'react/jsx-indent': [2, 2],
+        'react/jsx-indent-props': [2, 2],
+        'react/jsx-sort-props': [0],
+        'react/jsx-no-undef': [2],
+        'react/no-unknown-property': [2],
+        'react/jsx-filename-extension': 0,
+        'filenames/match-exported': 0,
+        'jsx-a11y/href-no-hash': 0,
+        'react/require-extension': 0,
+        'react/self-closing-comp': 0,
+        'react/prefer-stateless-function': 0,
+        'react/sort-comp': [2, {
+            order: [
+                'type-annotations',
+                'static-methods',
+                'lifecycle',
+                'everything-else',
+                '/^render.+$/',
+                'render'
+            ],
+        }],
+        'max-params': [2, 4],
+        'no-use-before-define': 0,
+        'no-multi-spaces': [2, { 'exceptions': { 'Property': true, 'VariableDeclarator': true, 'ImportDeclaration': true } }],
+        'no-unused-vars': [2, { 'vars': 'all', 'args': 'none' }],
+        'no-unused-expressions': 0,
+        'no-undef': 2,
+        'no-extra-bind': 2,
+        'no-plusplus': 0,
+        'arrow-parens': 0
+    }
+}

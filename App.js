@@ -1,4 +1,3 @@
-import Expo from 'expo';
 import React from 'react';
 import {
   Container,
@@ -10,14 +9,22 @@ import {
   Text,
   Footer,
   FooterTab,
-  List,
-  ListItem,
 } from 'native-base';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'remote-redux-devtools';
 
-import Steps from './src/components/Steps';
+import Reducer from './src/reducers';
+import StepsContainer from './src/containers/StepsContainer';
 import LocationData from './src/components/LocationData';
 
-export default class App extends React.Component {
+// Store configuration
+const store = createStore(Reducer, composeWithDevTools(
+  applyMiddleware(thunk),
+));
+
+class AppWrapper extends React.Component {
   render() {
     return (
       <Container>
@@ -28,7 +35,7 @@ export default class App extends React.Component {
         </Header>
         <Content>
           <LocationData />
-          <Steps />
+          <StepsContainer />
         </Content>
         <Footer>
           <Footer>
@@ -40,6 +47,17 @@ export default class App extends React.Component {
           </Footer>
         </Footer>
       </Container>
+    );
+  }
+}
+
+// eslint-disable-next-line react/no-multi-comp
+export default class App extends React.Component {
+  render() {
+    return (
+      <Provider store={ store }>
+        <AppWrapper />
+      </Provider>
     );
   }
 }

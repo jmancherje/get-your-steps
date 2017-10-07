@@ -1,12 +1,14 @@
 import { Pedometer } from 'expo';
 import React from 'react';
+import { List } from 'immutable';
+import PropTypes from 'prop-types';
 import {
   Slider,
   StyleSheet,
 } from 'react-native';
 import {
   Text,
-  List,
+  List as NbList,
   ListItem,
   Left,
   Body,
@@ -18,20 +20,24 @@ import HourBackBtn from './HourBackBtn';
 const hourOptions = [1, 6, 24];
 
 export default class Steps extends React.Component {
-  state = {
-    isPedometerAvailable: 'checking',
-    pastStepCount: 0,
-    hoursBack: 1,
-    stepsSinceHour: 0,
-    currentStepCount: 0,
-    realtimeStepData: [],
+  static propTypes = {
+    hoursBack: PropTypes.number.isRequired,
+    stepsSinceHour: PropTypes.number.isRequired,
+    realtimeSteps: PropTypes.instanceOf(List).isRequired,
+    setIsPedometerAvailable: PropTypes.func.isRequired,
+    setRealtimeStepData: PropTypes.func.isRequired,
+    setHoursBack: PropTypes.func.isRequired,
+    setStepsSinceHour: PropTypes.func.isRequired,
+  };
+  static defaultProps = {
+    realtimeSteps: List(),
   };
 
   componentDidMount() {
     this._subscribe();
     this.getLastHoursSteps();
 
-    const DAY_COUNT = 100;
+    const DAY_COUNT = 7;
     const start = new Date();
     start.setMinutes(0);
     start.setSeconds(0);
@@ -45,10 +51,10 @@ export default class Steps extends React.Component {
         nextEnd.setHours(k + 1);
         Pedometer.getStepCountAsync(nextStart, nextEnd).then(
           (result) => {
-            console.log(`${i} Days ago. ${k}:00 - ${k + 1}:00: ${result.steps} Steps`);
+            // console.log(`${i} Days ago. ${k}:00 - ${k + 1}:00: ${result.steps} Steps`);
           },
           (error) => {
-            console.log('error', error);
+            // console.log('error', error);
           }
         );
       }
@@ -62,48 +68,32 @@ export default class Steps extends React.Component {
   _subscribe = () => {
     this._subscription = Pedometer.watchStepCount((result) => {
       const {
+        realtimeSteps,
+        setRealtimeStepData,
+      } = this.props;
+      const {
         totalSteps: lastTotalSteps,
         time: lastTimeStamp,
-      } = this.state.realtimeStepData[this.state.realtimeStepData.length - 1] || {};
+      } = realtimeSteps.get(realtimeSteps.size - 1, Map()).toJS();
 
       const currentDate = new Date();
       const currentTime = currentDate.getTime();
-      const nextStepData = {
+      const nextStepData = Map({
         stepIncrement: result.steps - lastTotalSteps,
         time: currentTime,
         timeIncrement: typeof lastTimeStamp === 'number' ? currentTime - lastTimeStamp : 0,
         totalSteps: result.steps,
-      };
-      this.setState({
-        currentStepCount: result.steps,
-        realtimeStepData: this.state.realtimeStepData.concat(nextStepData),
       });
+      setRealtimeStepData(realtimeSteps.push(nextStepData));
     });
 
+    // TODO put this in App.js
     Pedometer.isAvailableAsync().then(
       (result) => {
-        this.setState({
-          isPedometerAvailable: String(result)
-        });
+        this.props.setIsPedometerAvailable(true);
       },
       (error) => {
-        this.setState({
-          isPedometerAvailable: `Could not get isPedometerAvailable: ${error}`
-        });
-      }
-    );
-
-    const end = new Date();
-    const start = new Date();
-    start.setDate(end.getDate() - 1);
-    Pedometer.getStepCountAsync(start, end).then(
-      (result) => {
-        this.setState({ pastStepCount: result.steps });
-      },
-      (error) => {
-        this.setState({
-          pastStepCount: `Could not get stepCount: ${error}`
-        });
+        this.props.setIsPedometerAvailable(false);
       }
     );
   };
@@ -113,33 +103,28 @@ export default class Steps extends React.Component {
     this._subscription = null;
   };
 
-  getLastHoursSteps = (hoursBack = this.state.hoursBack) => {
+  getLastHoursSteps = () => {
+    const { hoursBack, setStepsSinceHour } = this.props;
     if (hoursBack < 1) return;
     const end = new Date();
     const start = new Date();
     start.setHours(end.getHours() - hoursBack);
     Pedometer.getStepCountAsync(start, end).then(
       (result) => {
-        this.setState({
-          stepsSinceHour: result.steps,
-        });
+        setStepsSinceHour(result.steps);
       },
       (error) => {
-        this.setState({
-          stepsSinceHour: 0,
-        });
+        setStepsSinceHour(0);
       }
     );
   };
 
   handleValueChange = (hoursBack) => {
-    this.setState({
-      hoursBack,
-    });
+    this.props.setHoursBack(hoursBack);
   };
 
   handleSlidingComplete = (hoursBack) => {
-    this.getLastHoursSteps(hoursBack);
+    this.getLastHoursSteps(this.props.hoursBack);
   };
 
   handlePressButton = (hoursBack) => {
@@ -148,18 +133,18 @@ export default class Steps extends React.Component {
   };
 
   getMovingAverageSteps = () => {
-    const { realtimeStepData } = this.state;
-    if (realtimeStepData.length < 3) return {};
-    const endStepData = realtimeStepData[realtimeStepData.length - 1];
-    const startStepData = realtimeStepData[realtimeStepData.length - 3];
+    const { realtimeSteps } = this.props;
+    if (realtimeSteps.size < 3) return {};
+    const endStepData = realtimeSteps.get(realtimeSteps.length - 1);
+    const startStepData = realtimeSteps.get(realtimeSteps.length - 3);
     const {
       time: startTime,
       totalSteps: startSteps,
-    } = startStepData;
+    } = startStepData.toJS();
     const {
       time: endTime,
       totalSteps: endSteps,
-    } = endStepData;
+    } = endStepData.toJS();
     const stepIncrement = endSteps - startSteps;
     const timeIncrement = endTime - startTime;
     const stepsPerSecond = (stepIncrement / timeIncrement) * 1000;
@@ -172,15 +157,15 @@ export default class Steps extends React.Component {
 
   render() {
     const currentTime = new Date();
-    currentTime.setHours(currentTime.getHours() - this.state.hoursBack);
-    const customValueString = `${this.state.stepsSinceHour} Steps since ${moment(currentTime).format('LT')}`;
+    currentTime.setHours(currentTime.getHours() - this.props.hoursBack);
+    const customValueString = `${this.props.stepsSinceHour} Steps since ${moment(currentTime).format('LT')}`;
     const {
       stepsPerSecond = 0,
       stepsPerMinute = 0,
     } = this.getMovingAverageSteps();
 
     return (
-      <List>
+      <NbList>
         <ListItem
           itemDivider
           style={ styles.listDivider }
@@ -229,7 +214,7 @@ export default class Steps extends React.Component {
               key={ hour }
               hours={ hour }
               handlePress={ this.handlePressButton }
-              active={ hour === this.state.hoursBack }
+              active={ hour === this.props.hoursBack }
             />
           )) }
         </ListItem>
@@ -244,11 +229,11 @@ export default class Steps extends React.Component {
             step={ 1 }
             minimumValue={ 0 }
             maximumValue={ 24 }
-            value={ this.state.hoursBack }
+            value={ this.props.hoursBack }
             style={ styles.slider }
           />
         </ListItem>
-      </List>
+      </NbList>
     );
   }
 }
