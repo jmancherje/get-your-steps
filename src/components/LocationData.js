@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Map } from 'immutable';
+import PropTypes from 'prop-types';
 import {
   View,
   Platform,
@@ -12,8 +14,8 @@ import {
   ListItem,
   Spinner,
 } from 'native-base';
-import { isEmpty } from 'lodash';
 
+// eslint-disable-next-line no-unused-vars
 type LocationObjectType = {
   coords: {
     latitude: number,
@@ -26,10 +28,6 @@ type LocationObjectType = {
   },
   timestamp: number,
 };
-type State = {
-  location: LocationObjectType,
-  errorMessage: string,
-};
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
@@ -40,17 +38,19 @@ const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
 
 export default class LocationData extends Component {
-  state: State;
-  state = {
-    location: {},
-    errorMessage: null,
+  static propTypes = {
+    locationData: PropTypes.instanceOf(Map).isRequired,
+    locationErrorMessage: PropTypes.string.isRequired,
+    setLocationData: PropTypes.func.isRequired,
+    setLocationErrorMessage: PropTypes.func.isRequired,
+  };
+  static defaultProps = {
+    locationData: Map(),
   };
 
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
+      this.props.setLocationErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
     } else {
       this._getLocationAsync();
     }
@@ -70,7 +70,7 @@ export default class LocationData extends Component {
       timeInterval: 1, // 1ms minimum time interval before updating 😳
       distanceInterval: 1,
     }, (location) => {
-      this.setState({ location });
+      this.props.setLocationData(location);
     });
   };
 
@@ -82,13 +82,11 @@ export default class LocationData extends Component {
   _getLocationAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
+      this.props.setLocationErrorMessage('Permission to access location was denied');
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    this.props.setLocationData(location);
   };
 
   // From user moving the map, not the user moving
@@ -101,21 +99,24 @@ export default class LocationData extends Component {
 
   render() {
     let text = 'Waiting..';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (!isEmpty(this.state.location) && !isEmpty(this.state.location.coords)) {
-      const coords = this.state.location.coords;
-      text = `${coords.speed.toFixed(2)} m/s  lat: ${coords.latitude.toFixed(4)}  long: ${coords.longitude.toFixed(4)}`;
+    const { locationData, locationErrorMessage } = this.props;
+    const coords = locationData.get('coords', Map());
+    const latitude = coords.get('latitude', 0);
+    const longitude = coords.get('longitude', 0);
+    const speed = coords.get('speed', 0);
+    if (locationErrorMessage) {
+      text = locationErrorMessage;
+    } else if (!coords.isEmpty()) {
+      text = `${speed.toFixed(2)} m/s  lat: ${latitude.toFixed(4)}  long: ${longitude.toFixed(4)}`;
     }
 
-    const { location } = this.state;
-    if (isEmpty(location)) {
+    if (locationData.isEmpty()) {
       return <Spinner />;
     }
 
     const mapRegion = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      latitude,
+      longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     };
@@ -132,8 +133,8 @@ export default class LocationData extends Component {
         >
           <MapView.Marker
             coordinate={ {
-              latitude: this.state.location.coords.latitude,
-              longitude: this.state.location.coords.longitude,
+              latitude,
+              longitude,
             } }
             title="🖕😎🖕"
           >

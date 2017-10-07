@@ -15,5 +15,13 @@ export default Object.freeze({
     currentStepCount: {
       UPDATE: 'steps/currentStepCount/UPDATE',
     },
-  }
+  },
+  location: {
+    locationData: {
+      UPDATE: 'location/locationData/UPDATE',
+    },
+    errorMessage: {
+      UPDATE: 'location/errorMessage/UPDATE',
+    }
+  },
 });

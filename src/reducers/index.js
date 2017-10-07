@@ -1,16 +1,16 @@
-import { List, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 import { combineReducers } from 'redux-immutable';
 
 import actionTypes from '../actions/actionTypes';
 
-const initialState = fromJS({
+const initialStepsState = fromJS({
   hoursBack: 1,
   stepsSinceHour: 0,
   currentStepCount: 0,
   realtimeSteps: List(),
 });
 
-const steps = (state = initialState, { type, payload }) => {
+const steps = (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.steps.hoursBack.UPDATE:
     return state.set('hoursBack', payload);
@@ -25,6 +25,23 @@ const steps = (state = initialState, { type, payload }) => {
   }
 };
 
+const initialLocationState = Map({
+  locationData: Map(),
+  errorMessage: '',
+});
+
+const location = (state = initialLocationState, { type, payload }) => {
+  switch (type) {
+  case actionTypes.location.locationData.UPDATE:
+    return state.set('locationData', fromJS(payload));
+  case actionTypes.location.errorMessage.UPDATE:
+    return state.set('errorMessage', payload);
+  default:
+    return state;
+  }
+};
+
 export default combineReducers({
   steps,
+  location,
 });
