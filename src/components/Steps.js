@@ -38,7 +38,7 @@ export default class Steps extends React.Component {
   componentDidMount() {
     this._subscribe();
     this.getLastHoursSteps();
-    this.initializeUserStepData();
+    // this.initializeUserStepData();
   }
 
   componentWillUnmount() {
@@ -106,7 +106,7 @@ export default class Steps extends React.Component {
       setRealtimeStepData(realtimeSteps.push(nextStepData));
     });
 
-    // TODO put this in App.js
+    // TODO put this in App.js and use prop to prevent using Pedometer when not available
     Pedometer.isAvailableAsync().then(
       (result) => {
         this.props.setIsPedometerAvailable(true);

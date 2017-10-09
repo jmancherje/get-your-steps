@@ -4,17 +4,11 @@ import moment from 'moment';
 
 import actionTypes from '../actions/actionTypes';
 
-/*
-  const historicData = Map({
-
-  });
-*/
-
 const updateHistoricData = (state, { startDate, endDate, steps }) => {
   const formattedPayload = Map({ startDate, endDate, steps });
-  return state.setIn(
-    ['historicData', moment(startDate).format('L'), String(startDate.getHours())],
-    formattedPayload
+  return state.updateIn(
+    ['historicData', moment(startDate).format('L')], List(),
+    (list) => list.set(startDate.getHours(), formattedPayload)
   );
 };
 
