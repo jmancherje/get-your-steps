@@ -104,6 +104,7 @@ export default class Steps extends React.Component {
         totalSteps: result.steps,
       });
       setRealtimeStepData(realtimeSteps.push(nextStepData));
+      this.getLastHoursSteps();
     });
 
     // TODO put this in App.js and use prop to prevent using Pedometer when not available
@@ -122,8 +123,8 @@ export default class Steps extends React.Component {
     this._subscription = null;
   };
 
-  getLastHoursSteps = () => {
-    const { hoursBack, setStepsSinceHour } = this.props;
+  getLastHoursSteps = (hoursBack = this.props.hoursBack) => {
+    const { setStepsSinceHour } = this.props;
     if (hoursBack < 1) return;
     const end = new Date();
     const start = new Date();
@@ -148,7 +149,7 @@ export default class Steps extends React.Component {
 
   handlePressButton = (hoursBack) => {
     this.handleValueChange(hoursBack);
-    this.handleSlidingComplete(hoursBack);
+    this.getLastHoursSteps(hoursBack);
   };
 
   getMovingAverageSteps = () => {
