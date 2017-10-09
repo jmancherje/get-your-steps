@@ -4,6 +4,7 @@ import {
   setHoursBack,
   setStepsSinceHour,
   setRealtimeStepData,
+  setHistoricStepData,
   setIsPedometerAvailable,
 } from '../actions/steps';
 
@@ -27,5 +28,6 @@ export default connect(mapStateToProps, {
   setHoursBack,
   setStepsSinceHour,
   setRealtimeStepData,
+  setHistoricStepData,
   setIsPedometerAvailable,
 })(Steps);

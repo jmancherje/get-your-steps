@@ -1,13 +1,29 @@
 import { List, Map, fromJS } from 'immutable';
 import { combineReducers } from 'redux-immutable';
+import moment from 'moment';
 
 import actionTypes from '../actions/actionTypes';
+
+/*
+  const historicData = Map({
+
+  });
+*/
+
+const updateHistoricData = (state, { startDate, endDate, steps }) => {
+  const formattedPayload = Map({ startDate, endDate, steps });
+  return state.setIn(
+    ['historicData', moment(startDate).format('L'), String(startDate.getHours())],
+    formattedPayload
+  );
+};
 
 const initialStepsState = fromJS({
   hoursBack: 1,
   stepsSinceHour: 0,
   currentStepCount: 0,
   realtimeSteps: List(),
+  historicData: Map(),
 });
 
 const steps = (state = initialStepsState, { type, payload }) => {
@@ -20,6 +36,8 @@ const steps = (state = initialStepsState, { type, payload }) => {
     return state.set('realtimeSteps', List.isList(payload) ? payload : List(payload));
   case actionTypes.steps.isPedometerAvailable.UPDATE:
     return state.set('isPedometerAvailable', payload);
+  case actionTypes.steps.historicData.SET:
+    return updateHistoricData(state, payload);
   default:
     return state;
   }

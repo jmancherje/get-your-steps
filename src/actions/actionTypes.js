@@ -15,6 +15,9 @@ export default Object.freeze({
     currentStepCount: {
       UPDATE: 'steps/currentStepCount/UPDATE',
     },
+    historicData: {
+      SET: 'steps/historicData/SET',
+    }
   },
   location: {
     locationData: {

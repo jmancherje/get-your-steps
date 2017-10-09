@@ -19,3 +19,8 @@ export const setIsPedometerAvailable = (isPedometerAvailable) => ({
   type: actionTypes.steps.isPedometerAvailable.UPDATE,
   payload: isPedometerAvailable,
 });
+
+export const setHistoricStepData = (historicData) => ({
+  type: actionTypes.steps.historicData.SET,
+  payload: historicData,
+});

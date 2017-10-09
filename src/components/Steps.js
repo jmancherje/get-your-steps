@@ -12,6 +12,7 @@ import {
   ListItem,
   Left,
   Body,
+  Button,
 } from 'native-base';
 import moment from 'moment';
 
@@ -28,6 +29,7 @@ export default class Steps extends React.Component {
     setRealtimeStepData: PropTypes.func.isRequired,
     setHoursBack: PropTypes.func.isRequired,
     setStepsSinceHour: PropTypes.func.isRequired,
+    setHistoricStepData: PropTypes.func.isRequired,
   };
   static defaultProps = {
     realtimeSteps: List(),
@@ -36,34 +38,51 @@ export default class Steps extends React.Component {
   componentDidMount() {
     this._subscribe();
     this.getLastHoursSteps();
-
-    const DAY_COUNT = 7;
-    const start = new Date();
-    start.setMinutes(0);
-    start.setSeconds(0);
-
-    for (let i = DAY_COUNT; i >= 0; i--) {
-      const nextStart = new Date(start.getTime());
-      nextStart.setDate(start.getDate() - i);
-      const nextEnd = new Date(nextStart.getTime());
-      for (let k = 0; k <= 23; k++) {
-        nextStart.setHours(k);
-        nextEnd.setHours(k + 1);
-        Pedometer.getStepCountAsync(nextStart, nextEnd).then(
-          (result) => {
-            // console.log(`${i} Days ago. ${k}:00 - ${k + 1}:00: ${result.steps} Steps`);
-          },
-          (error) => {
-            // console.log('error', error);
-          }
-        );
-      }
-    }
+    this.initializeUserStepData();
   }
 
   componentWillUnmount() {
     this._unsubscribe();
   }
+
+  initializeUserStepData = () => {
+    // TODO: figure out how many days back to measure
+    //    or to measure back dynamically depending on the present data
+    const DAY_COUNT = 10;
+
+    // i = days back
+    for (let i = DAY_COUNT; i >= 0; i--) {
+      // k = start hour
+      for (let k = 0; k <= 23; k++) {
+        const startDate = new Date();
+        startDate.setMinutes(0);
+        startDate.setSeconds(0);
+        const endDate = new Date();
+        endDate.setMinutes(0);
+        endDate.setSeconds(0);
+        // Subtract the number of days
+        startDate.setDate(startDate.getDate() - i);
+        endDate.setDate(endDate.getDate() - i);
+        // Set start hour and end hour 1 hour apart
+        startDate.setHours(k);
+        endDate.setHours(k + 1);
+        Pedometer.getStepCountAsync(startDate, endDate).then(
+          // eslint-disable-next-line no-loop-func
+          (result) => {
+            this.props.setHistoricStepData({
+              steps: result.steps,
+              endDate,
+              startDate,
+            });
+          },
+          (error) => {
+            // TODO: handle error here
+            console.log('error', error);
+          }
+        );
+      }
+    }
+  };
 
   _subscribe = () => {
     this._subscription = Pedometer.watchStepCount((result) => {
@@ -201,13 +220,7 @@ export default class Steps extends React.Component {
         </ListItem>
         <ListItem
           itemDivider
-          style={ {
-            flex: 1,
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            backgroundColor: 'white',
-          } }
+          style={ styles.buttonListItem }
         >
           { hourOptions.map(hour => (
             <HourBackBtn
@@ -218,11 +231,7 @@ export default class Steps extends React.Component {
             />
           )) }
         </ListItem>
-        <ListItem
-          style={ {
-            height: 40,
-          } }
-        >
+        <ListItem style={ styles.sliderList }>
           <Slider
             onSlidingComplete={ this.handleSlidingComplete }
             onValueChange={ this.handleValueChange }
@@ -232,6 +241,11 @@ export default class Steps extends React.Component {
             value={ this.props.hoursBack }
             style={ styles.slider }
           />
+        </ListItem>
+        <ListItem>
+          <Button onPress={ this.initializeUserStepData }>
+            <Text>Gather all Past Data</Text>
+          </Button>
         </ListItem>
       </NbList>
     );
@@ -248,5 +262,15 @@ const styles = StyleSheet.create({
   },
   listDivider: {
     height: 30,
+  },
+  sliderList: {
+    height: 40,
+  },
+  buttonListItem: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: 'white',
   },
 });
