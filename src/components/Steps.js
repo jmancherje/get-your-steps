@@ -18,7 +18,7 @@ import moment from 'moment';
 
 import HourBackBtn from './HourBackBtn';
 
-const hourOptions = [1, 6, 24];
+const hourOptions = [1, 12, 24];
 
 export default class Steps extends React.Component {
   static propTypes = {
@@ -48,7 +48,7 @@ export default class Steps extends React.Component {
   initializeUserStepData = () => {
     // TODO: figure out how many days back to measure
     //    or to measure back dynamically depending on the present data
-    const DAY_COUNT = 10;
+    const DAY_COUNT = 3;
 
     // i = days back
     for (let i = DAY_COUNT; i >= 0; i--) {
@@ -69,6 +69,7 @@ export default class Steps extends React.Component {
         Pedometer.getStepCountAsync(startDate, endDate).then(
           // eslint-disable-next-line no-loop-func
           (result) => {
+            console.log('steps for ', moment(startDate).format('LT'), result.steps);
             this.props.setHistoricStepData({
               steps: result.steps,
               endDate,

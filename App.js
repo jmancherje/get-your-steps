@@ -18,6 +18,7 @@ import { composeWithDevTools } from 'remote-redux-devtools';
 import Reducer from './src/reducers';
 import StepsContainer from './src/containers/StepsContainer';
 import LocationContainer from './src/containers/LocationContainer';
+import LocationSearch from './src/components/LocationSearch';
 
 // Store configuration
 const store = createStore(Reducer, composeWithDevTools(
@@ -34,8 +35,9 @@ class AppWrapper extends React.Component {
           </Body>
         </Header>
         <Content>
-          <LocationContainer />
-          <StepsContainer />
+          {/* <LocationContainer /> */}
+          {/* <StepsContainer /> */}
+          <LocationSearch />
         </Content>
         <Footer>
           <Footer>
