@@ -6,14 +6,14 @@ import {
 } from '../actions/location';
 
 import {
-  getLocationData,
+  getRealtimeLocationData,
   getLocationErrorMessage,
 } from '../selectors/location';
 
 import LocationData from '../components/LocationData';
 
 const mapStateToProps = (state) => ({
-  locationData: getLocationData(state),
+  realtimeLocationData: getRealtimeLocationData(state),
   locationErrorMessage: getLocationErrorMessage(state),
 });
 
