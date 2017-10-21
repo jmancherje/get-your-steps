@@ -179,12 +179,12 @@ export default class Steps extends React.Component {
         <ListItem>
           <Left>
             <Text>
-              { stepsPerSecond } Steps/sec
+              { stepsPerSecond.toFixed(2) } Steps/sec
             </Text>
           </Left>
           <Body>
             <Text>
-              { stepsPerSecond * 60 } Steps/min
+              { (stepsPerSecond * 60).toFixed(2) } Steps/min
             </Text>
           </Body>
         </ListItem>

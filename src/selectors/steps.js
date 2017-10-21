@@ -18,9 +18,9 @@ export const getLastStepsPerSecond = createSelector(
   stepData => stepData.getIn([stepData.size - 1, 'stepsPerSecond'], 0)
 );
 
-export const getTotalStepsFromPedometer = createSelector(
+export const getLastTotalSteps = createSelector(
   [getRealtimeStepData],
-  stepData => stepData.get('totalSteps', 0)
+  stepData => stepData.getIn([stepData.size - 1, 'totalSteps'], 0)
 );
 
 export const getHoursBack = createSelector(

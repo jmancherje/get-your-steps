@@ -17,8 +17,11 @@ const handleRealtimeStepsUpdate = (state, payload) => {
   const realtimeSteps = state.get('realtimeSteps', List());
   let stepsPerSecond = 0;
   const endStepData = payloadMap;
-  const startStepData = realtimeSteps.get(realtimeSteps.length - SAMPLE_SIZE - 1);
-  if (realtimeSteps.size >= SAMPLE_SIZE && Map.isMap(startStepData) && Map.isMap(endStepData)) {
+  const startStepData = realtimeSteps.get(realtimeSteps.size - (SAMPLE_SIZE - 1));
+  console.log('sampleSize', SAMPLE_SIZE, 'realtimeSteps.size', realtimeSteps.size);
+  // realtimeSteps = [{}, {}, {}, {}, {}, {}];
+  console.log(startStepData);
+  if (realtimeSteps.size >= SAMPLE_SIZE && startStepData && endStepData) {
     const {
       time: startTime,
       totalSteps: startSteps,
@@ -32,7 +35,6 @@ const handleRealtimeStepsUpdate = (state, payload) => {
     stepsPerSecond = (stepIncrement / timeIncrement) * 1000;
   }
   const updatedPayload = payloadMap.set('stepsPerSecond', stepsPerSecond);
-  console.log('updated payload', updatedPayload.toJS());
   return state.set('realtimeSteps', realtimeSteps.push(updatedPayload));
 };
 
