@@ -12,3 +12,8 @@ export const getLocationErrorMessage = createSelector(
   [getLocation],
   location => location.get('errorMessage', ''),
 );
+
+export const getLatestLocationData = createSelector(
+  [getRealtimeLocationData],
+  locationData => locationData.get(-1, Map()),
+);

@@ -18,9 +18,6 @@ const handleRealtimeStepsUpdate = (state, payload) => {
   let stepsPerSecond = 0;
   const endStepData = payloadMap;
   const startStepData = realtimeSteps.get(realtimeSteps.size - (SAMPLE_SIZE - 1));
-  console.log('sampleSize', SAMPLE_SIZE, 'realtimeSteps.size', realtimeSteps.size);
-  // realtimeSteps = [{}, {}, {}, {}, {}, {}];
-  console.log(startStepData);
   if (realtimeSteps.size >= SAMPLE_SIZE && startStepData && endStepData) {
     const {
       time: startTime,

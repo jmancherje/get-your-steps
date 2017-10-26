@@ -15,6 +15,10 @@ import {
   Spinner,
 } from 'native-base';
 
+import {
+  metersToFeet,
+} from '../helpers/conversions';
+
 // eslint-disable-next-line no-unused-vars
 type LocationObjectType = {
   coords: {
@@ -144,7 +148,7 @@ export default class LocationData extends Component {
             <Text>{text}</Text>
           </ListItem>
           <ListItem>
-            <Text>Average Speed: { locationData.get('averageSpeed', 0).toFixed(2) } m/s</Text>
+            <Text>Average Speed: { metersToFeet(locationData.get('averageSpeed', 0)).toFixed(2) } ft/s</Text>
           </ListItem>
         </NbList>
       </View>
