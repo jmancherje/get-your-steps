@@ -13,6 +13,16 @@ export const getRealtimeStepData = createSelector(
   steps => steps.get('realtimeSteps', List())
 );
 
+export const getLastStepsPerSecond = createSelector(
+  [getRealtimeStepData],
+  stepData => stepData.getIn([stepData.size - 1, 'stepsPerSecond'], 0)
+);
+
+export const getLastTotalSteps = createSelector(
+  [getRealtimeStepData],
+  stepData => stepData.getIn([stepData.size - 1, 'totalSteps'], 0)
+);
+
 export const getHoursBack = createSelector(
   [getSteps],
   steps => steps.get('hoursBack')

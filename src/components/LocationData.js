@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Map } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -10,10 +10,14 @@ import {
 import { Constants, Location, Permissions, MapView } from 'expo';
 import {
   Text,
-  List,
+  List as NbList,
   ListItem,
   Spinner,
 } from 'native-base';
+
+import {
+  metersToFeet,
+} from '../helpers/conversions';
 
 // eslint-disable-next-line no-unused-vars
 type LocationObjectType = {
@@ -33,19 +37,15 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
 const mapHeight = Math.round(deviceHeight / 3.8);
 const aspectRatio = mapWidth / mapHeight;
-// const LATITUDE_DELTA = 0.0015262294930451503;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
 
 export default class LocationData extends Component {
   static propTypes = {
-    locationData: PropTypes.instanceOf(Map).isRequired,
+    realtimeLocationData: PropTypes.instanceOf(List).isRequired,
     locationErrorMessage: PropTypes.string.isRequired,
     setLocationData: PropTypes.func.isRequired,
     setLocationErrorMessage: PropTypes.func.isRequired,
-  };
-  static defaultProps = {
-    locationData: Map(),
   };
 
   componentWillMount() {
@@ -70,7 +70,7 @@ export default class LocationData extends Component {
       timeInterval: 1, // 1ms minimum time interval before updating 😳
       distanceInterval: 1,
     }, (location) => {
-      this.props.setLocationData(location);
+      this.props.setLocationData(fromJS(location));
     });
   };
 
@@ -86,20 +86,13 @@ export default class LocationData extends Component {
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    this.props.setLocationData(location);
+    this.props.setLocationData(fromJS(location));
   };
-
-  // From user moving the map, not the user moving
-  setMapRegionState = (region) => {
-    // console.log('region', region);
-    // this.setState({
-    //   mapRegion: region,
-    // });
-  }
 
   render() {
     let text = 'Waiting..';
-    const { locationData, locationErrorMessage } = this.props;
+    const { realtimeLocationData, locationErrorMessage } = this.props;
+    const locationData = realtimeLocationData.last() || Map();
     const coords = locationData.get('coords', Map());
     const latitude = coords.get('latitude', 0);
     const longitude = coords.get('longitude', 0);
@@ -129,7 +122,6 @@ export default class LocationData extends Component {
           style={ { width: mapWidth, height: mapHeight } }
           initialRegion={ mapRegion }
           region={ mapRegion }
-          onRegionChange={ this.setMapRegionState }
         >
           <MapView.Marker
             coordinate={ {
@@ -143,7 +135,7 @@ export default class LocationData extends Component {
             />
           </MapView.Marker>
         </MapView>
-        <List>
+        <NbList>
           <ListItem
             itemDivider
             style={ styles.listDivider }
@@ -155,7 +147,10 @@ export default class LocationData extends Component {
           <ListItem>
             <Text>{text}</Text>
           </ListItem>
-        </List>
+          <ListItem>
+            <Text>Average Speed: { metersToFeet(locationData.get('averageSpeed', 0)).toFixed(2) } ft/s</Text>
+          </ListItem>
+        </NbList>
       </View>
     );
   }
