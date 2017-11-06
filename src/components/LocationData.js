@@ -116,10 +116,10 @@ export default class LocationData extends Component {
 
     return (
       <View
-        style={ { width: deviceWidth } }
+        style={ styles.device }
       >
         <MapView
-          style={ { width: mapWidth, height: mapHeight } }
+          style={ styles.mapDimensions }
           initialRegion={ mapRegion }
           region={ mapRegion }
         >
@@ -157,6 +157,13 @@ export default class LocationData extends Component {
 }
 
 const styles = StyleSheet.create({
+  device: {
+    width: deviceWidth,
+  },
+  mapDimensions: {
+    width: mapWidth,
+    height: mapHeight,
+  },
   mapMarker: {
     backgroundColor: 'blue',
     height: 10,
