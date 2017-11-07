@@ -10,6 +10,7 @@ import {
   Footer,
   FooterTab,
 } from 'native-base';
+import { TabNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
@@ -51,12 +52,28 @@ class AppWrapper extends React.Component {
   }
 }
 
+const Tabs = TabNavigator({
+  Steps: {
+    screen: AppWrapper,
+  },
+  Notifications: {
+    screen: AppWrapper,
+  },
+}, {
+  tabBarPosition: 'bottom',
+  animationEnabled: true,
+  tabBarOptions: {
+    activeTintColor: '#e91e63',
+  },
+});
+
+
 // eslint-disable-next-line react/no-multi-comp
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={ store }>
-        <AppWrapper />
+        <Tabs />
       </Provider>
     );
   }
