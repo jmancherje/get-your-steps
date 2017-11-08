@@ -4,9 +4,6 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
 
-// const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
-// const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
-
 export default class LocationSearch extends React.Component {
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
     console.log(data, details); // eslint-disable-line
@@ -57,8 +54,8 @@ export default class LocationSearch extends React.Component {
         filterReverseGeocodingByTypes={ ['locality', 'administrative_area_level_3'] } // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
         // predefinedPlaces={ [homePlace, workPlace] }
         debounce={ 200 } // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-        renderLefttButton={ this.renderLefttButton }
-        renderRightButton={ this.renderRightButton }
+        // renderLefttButton={ this.renderLefttButton }
+        // renderRightButton={ this.renderRightButton }
       />
     );
   }
