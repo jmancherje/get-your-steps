@@ -1,5 +1,5 @@
-import { Pedometer } from 'expo';
 import React from 'react';
+import { Pedometer } from 'expo';
 import { List, Map } from 'immutable';
 import PropTypes from 'prop-types';
 import {
@@ -18,7 +18,7 @@ import moment from 'moment';
 
 import HourBackBtn from './HourBackBtn';
 
-const hourOptions = [1, 6, 24];
+const hourOptions = [1, 12, 24];
 
 export default class Steps extends React.Component {
   static propTypes = {
@@ -79,7 +79,7 @@ export default class Steps extends React.Component {
           },
           (error) => {
             // TODO: handle error here
-            console.log('error', error);
+            console.log('error', error); // eslint-disable-line
           }
         );
       }

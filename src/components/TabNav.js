@@ -1,5 +1,29 @@
+import React from 'react';
+import {
+  Container,
+  Header,
+  Body,
+  Title,
+  Content,
+} from 'native-base';
 import { TabNavigator } from 'react-navigation';
+
 import Root from './Root';
+import LocationSearch from './LocationSearch';
+import Directions from './Directions';
+
+const LocationSearchView = () => (
+  <Container>
+    <Header>
+      <Body>
+        <Title>Steps</Title>
+      </Body>
+    </Header>
+    <Content>
+      <Directions />
+    </Content>
+  </Container>
+);
 
 const Tabs = TabNavigator({
   Steps: {
@@ -9,7 +33,7 @@ const Tabs = TabNavigator({
     },
   },
   Location: {
-    screen: Root,
+    screen: LocationSearchView,
     navigationOptions: {
       tabBarLabel: 'Location',
     },
