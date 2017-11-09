@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
   setLocationData,
   setLocationErrorMessage,
+  setCurrentLocation,
 } from '../actions/location';
 
 import {
@@ -22,4 +23,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setLocationData,
   setLocationErrorMessage,
+  setCurrentLocation,
 })(LocationData);

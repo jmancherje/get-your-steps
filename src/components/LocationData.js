@@ -46,6 +46,7 @@ export default class LocationData extends Component {
     locationErrorMessage: PropTypes.string.isRequired,
     setLocationData: PropTypes.func.isRequired,
     setLocationErrorMessage: PropTypes.func.isRequired,
+    setCurrentLocation: PropTypes.func.isRequired,
   };
 
   componentWillMount() {
@@ -86,7 +87,7 @@ export default class LocationData extends Component {
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    this.props.setLocationData(fromJS(location));
+    this.props.setCurrentLocation(fromJS(location));
   };
 
   render() {

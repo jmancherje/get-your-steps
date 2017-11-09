@@ -9,8 +9,7 @@ import {
 import { TabNavigator } from 'react-navigation';
 
 import Root from './Root';
-import LocationSearch from './LocationSearch';
-import Directions from './Directions';
+import DirectionsContainer from '../containers/DirectionsContainer';
 
 const LocationSearchView = () => (
   <Container>
@@ -20,7 +19,7 @@ const LocationSearchView = () => (
       </Body>
     </Header>
     <Content>
-      <Directions />
+      <DirectionsContainer />
     </Content>
   </Container>
 );
