@@ -1,16 +1,28 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
 
 export default class LocationSearch extends React.Component {
+  static propTypes = {
+    handleSelectLocation: PropTypes.func.isRequired,
+  }
+
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
-    console.log(data, details); // eslint-disable-line
+    this.props.handleSelectLocation({
+      data,
+      details,
+    });
   };
+
   renderDescription = row => row.description;
+
   renderLefttButton = () => <Text>Custom text after the input</Text>;
+
   renderRightButton = () => <Text>Where are you going</Text>;
+
   render() {
     return (
       <GooglePlacesAutocomplete
@@ -40,8 +52,8 @@ export default class LocationSearch extends React.Component {
             color: '#1faadb'
           }
         } }
-        currentLocation // Will add a 'Current location' button at the top of the predefined places list
-        currentLocationLabel="Current location"
+        // currentLocation // Will add a 'Current location' button at the top of the predefined places list
+        // currentLocationLabel="Current location"
         nearbyPlacesAPI="GooglePlacesSearch" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
         GoogleReverseGeocodingQuery={ {
           // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
