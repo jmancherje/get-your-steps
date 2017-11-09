@@ -11,6 +11,20 @@ const sanitizePayload = (payload) => {
   return payloadMap;
 };
 
+const updateCurrentLocation = (state, payload = Map()) => {
+  const payloadMap = Map.isMap(payload) ? payload : fromJS(payload);
+  if (
+    payloadMap.hasIn(['coords', 'longitude']) &&
+    payloadMap.hasIn(['content', 'latitude'])
+  ) {
+    return state;
+  }
+  return state.set('currentLocation', Map({
+    longitude: payloadMap.getIn(['coords', 'longitude']),
+    latitude: payloadMap.getIn(['coords', 'latitude']),
+  }));
+};
+
 const handleLocationDataUpdate = (state, payload = Map()) => {
   const sanitizedPayload = sanitizePayload(payload);
   const realtimeLocationData = state.get('realtimeLocationData', List());
@@ -23,12 +37,18 @@ const handleLocationDataUpdate = (state, payload = Map()) => {
   }
   const updatedPayload = sanitizedPayload.set('averageSpeed', averageSpeed);
   return state
+    // TODO: add update here for currentLocation
+    // .update('currentLocation', Map(), () => getCurrentLocation(sanitizedPayload))
     .update('realtimeLocationData', List(), locationList => locationList.push(updatedPayload));
 };
 
 const initialLocationState = Map({
   errorMessage: '',
   realtimeLocationData: List(),
+  currentLocation: Map({
+    latitude: 37.779360,
+    longitude: -122.409491,
+  }),
 });
 
 export default (state = initialLocationState, { type, payload }) => {
@@ -37,6 +57,8 @@ export default (state = initialLocationState, { type, payload }) => {
     return handleLocationDataUpdate(state, payload);
   case actionTypes.location.errorMessage.UPDATE:
     return state.set('errorMessage', payload);
+  case actionTypes.location.currentLocation.UPDATE:
+    return updateCurrentLocation(state, payload);
   default:
     return state;
   }

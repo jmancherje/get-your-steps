@@ -17,3 +17,8 @@ export const getLatestLocationData = createSelector(
   [getRealtimeLocationData],
   locationData => locationData.get(-1, Map()),
 );
+
+export const getCurrentLocation = createSelector(
+  [getLocation],
+  location => location.get('currentLocation')
+);
