@@ -19,6 +19,9 @@ export const getLatestLocationData = createSelector(
 );
 
 export const getCurrentLocation = createSelector(
-  [getLocation],
-  location => location.get('currentLocation')
+  [getLatestLocationData],
+  latestLocationData => Map({
+    longitude: latestLocationData.getIn(['coords', 'longitude']),
+    latitude: latestLocationData.getIn(['coords', 'latitude']),
+  })
 );

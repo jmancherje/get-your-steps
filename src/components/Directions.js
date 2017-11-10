@@ -47,8 +47,6 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
 const url = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking';
 
 const mapRegion = {
-  latitude: 37.779360,
-  longitude: -122.409491,
   latitudeDelta: LATITUDE_DELTA,
   longitudeDelta: LONGITUDE_DELTA,
 };
@@ -113,30 +111,37 @@ export default class Directions extends Component {
     const { currentLocation } = this.props;
     const longitude = currentLocation.get('longitude');
     const latitude = currentLocation.get('latitude');
+    const region = {
+      ...mapRegion,
+      longitude,
+      latitude,
+    };
     return (
       <View style={ styles.device }>
         { !this.state.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
-        <MapView
-          ref={ this.setMapRef }
-          style={ styles.mapDimensions }
-          initialRegion={ mapRegion }
-          region={ mapRegion }
-        >
-          <MapView.Marker
-            coordinate={ { latitude, longitude } }
-            title="🖕😎🖕"
+        { longitude && latitude ? (
+          <MapView
+            ref={ this.setMapRef }
+            style={ styles.mapDimensions }
+            initialRegion={ region }
+            // region={ region }
           >
-            <View
-              style={ styles.mapMarker }
-            />
-          </MapView.Marker>
-          { this.state.steps.length ? (
-            <MapView.Polyline
-              coordinates={ this.state.steps }
-              strokeWidth={ 2 }
-            />
-          ) : null }
-        </MapView>
+            <MapView.Marker
+              coordinate={ { latitude, longitude } }
+              title="🖕😎🖕"
+            >
+              <View
+                style={ styles.mapMarker }
+              />
+            </MapView.Marker>
+            { this.state.steps.length ? (
+              <MapView.Polyline
+                coordinates={ this.state.steps }
+                strokeWidth={ 2 }
+              />
+            ) : null }
+          </MapView>
+        ) : null }
         { this.state.distance && (
           <Card>
             <CardItem header>
