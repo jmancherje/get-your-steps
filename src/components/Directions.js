@@ -39,7 +39,7 @@ type LocationObjectType = {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
-const mapHeight = Math.round(deviceHeight - 500);
+const mapHeight = Math.round(deviceHeight / 2);
 const aspectRatio = mapWidth / mapHeight;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
@@ -114,9 +114,7 @@ export default class Directions extends Component {
     const longitude = currentLocation.get('longitude');
     const latitude = currentLocation.get('latitude');
     return (
-      <View
-        style={ styles.device }
-      >
+      <View style={ styles.device }>
         { !this.state.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
         <MapView
           ref={ this.setMapRef }
@@ -184,7 +182,6 @@ const styles = StyleSheet.create({
     width: deviceWidth,
   },
   mapDimensions: {
-    marginTop: 40,
     width: mapWidth,
     height: mapHeight,
   },
