@@ -14,10 +14,12 @@ import {
 
 import Directions from '../components/Directions';
 
-const mapStateToProps = (state) => ({
-  currentLocation: getCurrentLocation(state),
-  currentStepCount: getCurrentStepCount(state),
-});
+const mapStateToProps = (state) => {
+  return {
+    currentLocation: getCurrentLocation(state),
+    currentStepCount: getCurrentStepCount(state),
+  };
+};
 
 export default connect(mapStateToProps, {
   resetCurrentStepCount,

@@ -104,6 +104,13 @@ export default class Directions extends Component {
     this.fitMap(steps);
   };
 
+  resetMap = () => {
+    this.setState({
+      steps: [],
+      distance: null,
+    });
+  };
+
   render() {
     // TODO: this is current location right when the app opens
     // We need realtime current location
@@ -149,7 +156,20 @@ export default class Directions extends Component {
             </CardItem>
             <CardItem>
               <Body>
-                <Text>{ `${Math.round(this.state.distance / 0.724)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
+                <Grid>
+                  <Col size={ 5 }>
+                    <Text>{ `${Math.round(this.state.distance / 0.724)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
+                  </Col>
+                  <Col size={ 3 }>
+                    <Button
+                      small
+                      transparent
+                      onPress={ this.resetMap }
+                    >
+                      <Text>Reset Route</Text>
+                    </Button>
+                  </Col>
+                </Grid>
               </Body>
             </CardItem>
           </Card>
@@ -161,16 +181,16 @@ export default class Directions extends Component {
           <CardItem>
             <Body>
               <Grid>
-                <Col size={ 7 }>
+                <Col size={ 5 }>
                   <Text>Total Steps: { this.props.currentStepCount }</Text>
                 </Col>
                 <Col size={ 3 }>
                   <Button
-                    transparent
                     small
+                    transparent
                     onPress={ this.props.resetCurrentStepCount }
                   >
-                    <Text>Reset</Text>
+                    <Text>Reset Steps</Text>
                   </Button>
                 </Col>
               </Grid>
