@@ -25,6 +25,9 @@ export default Object.freeze({
     },
     errorMessage: {
       UPDATE: 'location/errorMessage/UPDATE',
+    },
+    currentLocation: {
+      UPDATE: 'location/currentLocation/UPDATE',
     }
   },
 });

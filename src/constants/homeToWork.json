@@ -1,0 +1,139 @@
+{
+    "geocoded_waypoints": [
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJjQjKhIOAhYARzzCXJJx5nQA",
+            "types": [
+                "premise"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJzbAHuoCAhYARnZKWuNwaRlk",
+            "types": [
+                "street_address"
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 37.7812648,
+                    "lng": -122.402174
+                },
+                "southwest": {
+                    "lat": 37.7785241,
+                    "lng": -122.4095947
+                }
+            },
+            "copyrights": "Map data ©2017 Google",
+            "legs": [
+                {
+                    "distance": {
+                        "text": "0.6 mi",
+                        "value": 925
+                    },
+                    "duration": {
+                        "text": "11 mins",
+                        "value": 687
+                    },
+                    "end_address": "840 Folsom St, San Francisco, CA 94107, USA",
+                    "end_location": {
+                        "lat": 37.7812648,
+                        "lng": -122.402174
+                    },
+                    "start_address": "563 Minna St, San Francisco, CA 94103, USA",
+                    "start_location": {
+                        "lat": 37.7794416,
+                        "lng": -122.4095947
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "0.1 mi",
+                                "value": 175
+                            },
+                            "duration": {
+                                "text": "2 mins",
+                                "value": 126
+                            },
+                            "end_location": {
+                                "lat": 37.7805617,
+                                "lng": -122.4081948
+                            },
+                            "html_instructions": "Head <b>northeast</b> on <b>Minna St</b> toward <b>6th St</b>",
+                            "polyline": {
+                                "points": "oxqeF|bcjVo@{@oD{E"
+                            },
+                            "start_location": {
+                                "lat": 37.7794416,
+                                "lng": -122.4095947
+                            },
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.2 mi",
+                                "value": 319
+                            },
+                            "duration": {
+                                "text": "4 mins",
+                                "value": 229
+                            },
+                            "end_location": {
+                                "lat": 37.7785241,
+                                "lng": -122.4056342
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>6th St</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "o_reFdzbjVjA{AvAoBpAgBhA}AvAmB"
+                            },
+                            "start_location": {
+                                "lat": 37.7805617,
+                                "lng": -122.4081948
+                            },
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 mi",
+                                "value": 431
+                            },
+                            "duration": {
+                                "text": "6 mins",
+                                "value": 332
+                            },
+                            "end_location": {
+                                "lat": 37.7812648,
+                                "lng": -122.402174
+                            },
+                            "html_instructions": "Turn <b>left</b> onto <b>Folsom St</b><div style=\"font-size:0.9em\">Destination will be on the left</div>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "wrqeFdjbjVc@i@wC_EcDoEcEyF"
+                            },
+                            "start_location": {
+                                "lat": 37.7785241,
+                                "lng": -122.4056342
+                            },
+                            "travel_mode": "WALKING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "oxqeF|bcjV_FwGbDkEzCeEvAmBc@i@{HoKcEyF"
+            },
+            "summary": "6th St and Folsom St",
+            "warnings": [
+                "Walking directions are in beta.    Use caution – This route may be missing sidewalks or pedestrian paths."
+            ],
+            "waypoint_order": []
+        }
+    ],
+    "status": "OK"
+}
