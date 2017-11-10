@@ -14,10 +14,11 @@ export default Object.freeze({
     },
     currentStepCount: {
       UPDATE: 'steps/currentStepCount/UPDATE',
+      RESET: 'steps/currentStepCount/RESET',
     },
     historicData: {
       SET: 'steps/historicData/SET',
-    }
+    },
   },
   location: {
     locationData: {
@@ -28,6 +29,6 @@ export default Object.freeze({
     },
     currentLocation: {
       UPDATE: 'location/currentLocation/UPDATE',
-    }
+    },
   },
 });

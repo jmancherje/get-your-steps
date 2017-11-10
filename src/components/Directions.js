@@ -7,12 +7,22 @@ import {
   StyleSheet,
 } from 'react-native';
 import { MapView } from 'expo';
-import { Text } from 'native-base';
+import {
+  Text,
+  Card,
+  CardItem,
+  Body,
+  Button,
+  Grid,
+  Col,
+} from 'native-base';
 
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
 import LocationSearch from './LocationSearch';
+import { metersToMiles } from '../helpers/conversions';
 
+// This type is just for reference
 // eslint-disable-next-line no-unused-vars
 type LocationObjectType = {
   coords: {
@@ -45,6 +55,8 @@ const mapRegion = {
 export default class Directions extends Component {
   static propTypes = {
     currentLocation: PropTypes.instanceOf(Map).isRequired,
+    currentStepCount: PropTypes.number.isRequired,
+    resetCurrentStepCount: PropTypes.func.isRequired,
   }
 
   state = {
@@ -57,9 +69,8 @@ export default class Directions extends Component {
   };
 
   fitMap = (steps = this.state.steps) => {
-    const stepsCount = steps.length;
-    if (!this.map || stepsCount < 2) return;
-    this.map.fitToCoordinates([steps[0], steps[stepsCount - 1]], {
+    if (!this.map || steps.length < 2) return;
+    this.map.fitToCoordinates(steps, {
       edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
       animated: true,
     });
@@ -74,7 +85,6 @@ export default class Directions extends Component {
 
     const currentLocationString = `${currentLocation.get('latitude')},${currentLocation.get('longitude')}`;
     const apiUrl = `${url}&origin=${currentLocationString}&destination=${destination}&key=${key}`;
-    console.log('url', apiUrl);
     fetch(apiUrl)
       .then(res => res.json())
       .then(this.updateSteps);
@@ -95,7 +105,11 @@ export default class Directions extends Component {
     this.setState({ steps, distance: meters });
     this.fitMap(steps);
   };
+
   render() {
+    // TODO: this is current location right when the app opens
+    // We need realtime current location
+    // And location at time of generating route
     const { currentLocation } = this.props;
     const longitude = currentLocation.get('longitude');
     const latitude = currentLocation.get('latitude');
@@ -103,7 +117,7 @@ export default class Directions extends Component {
       <View
         style={ styles.device }
       >
-        <LocationSearch handleSelectLocation={ this.handleSelectLocation } />
+        { !this.state.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
         <MapView
           ref={ this.setMapRef }
           style={ styles.mapDimensions }
@@ -125,7 +139,41 @@ export default class Directions extends Component {
             />
           ) : null }
         </MapView>
-        { this.state.distance && <Text>{ `${this.state.distance} meters in ${this.state.distance / 0.724} steps` }</Text> }
+        { this.state.distance && (
+          <Card>
+            <CardItem header>
+              <Text>Estimated Steps To Walk To Destination</Text>
+            </CardItem>
+            <CardItem>
+              <Body>
+                <Text>{ `${Math.round(this.state.distance / 0.724)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
+              </Body>
+            </CardItem>
+          </Card>
+        ) }
+        <Card>
+          <CardItem header>
+            <Text>Realtime Step Count</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Grid>
+                <Col size={ 7 }>
+                  <Text>Total Steps: { this.props.currentStepCount }</Text>
+                </Col>
+                <Col size={ 3 }>
+                  <Button
+                    transparent
+                    small
+                    onPress={ this.props.resetCurrentStepCount }
+                  >
+                    <Text>Reset</Text>
+                  </Button>
+                </Col>
+              </Grid>
+            </Body>
+          </CardItem>
+        </Card>
       </View>
     );
   }
