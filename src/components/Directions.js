@@ -37,6 +37,12 @@ type LocationObjectType = {
   timestamp: number,
 };
 
+// const STEPS_PER_METER = 0.724;
+// const STEPS_PER_METER = 0.632;
+// Based on average 5'8" person
+const STEPS_PER_METER = 0.713;
+
+
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
 const mapHeight = Math.round(deviceHeight / 2);
@@ -85,10 +91,11 @@ export default class Directions extends Component {
     const apiUrl = `${url}&origin=${currentLocationString}&destination=${destination}&key=${key}`;
     fetch(apiUrl)
       .then(res => res.json())
-      .then(this.updateSteps);
+      .then(this.updateDirectionSteps);
   };
 
-  updateSteps = (response) => {
+  updateDirectionSteps = (response) => {
+    console.log('response', response);
     // NOTE: only handling the first route for now
     const route = response.routes[0];
     const leg = route.legs[0];
@@ -112,9 +119,6 @@ export default class Directions extends Component {
   };
 
   render() {
-    // TODO: this is current location right when the app opens
-    // We need realtime current location
-    // And location at time of generating route
     const { currentLocation } = this.props;
     const longitude = currentLocation.get('longitude');
     const latitude = currentLocation.get('latitude');
@@ -158,7 +162,7 @@ export default class Directions extends Component {
               <Body>
                 <Grid>
                   <Col size={ 5 }>
-                    <Text>{ `${Math.round(this.state.distance / 0.724)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
+                    <Text>{ `${Math.round(this.state.distance / STEPS_PER_METER)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
                   </Col>
                   <Col size={ 3 }>
                     <Button
