@@ -12,7 +12,11 @@
     root: true,
     rules: {
         camelcase: 0,
-        'comma-dangle': 0,
+        'comma-dangle': ["error", {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline"
+        }],
         'eol-last': 0,
         'func-style': 0,
         'import/imports-first': 0,
