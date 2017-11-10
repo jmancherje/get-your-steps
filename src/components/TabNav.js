@@ -25,16 +25,16 @@ const LocationSearchView = () => (
 );
 
 const Tabs = TabNavigator({
-  Steps: {
-    screen: Root,
-    navigationOptions: {
-      tabBarLabel: 'Steps',
-    },
-  },
   Location: {
     screen: LocationSearchView,
     navigationOptions: {
       tabBarLabel: 'Location',
+    },
+  },
+  Steps: {
+    screen: Root,
+    navigationOptions: {
+      tabBarLabel: 'Steps',
     },
   },
 }, {
