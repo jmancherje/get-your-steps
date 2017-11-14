@@ -35,6 +35,8 @@ const handleRealtimeStepsUpdate = (state, payload) => {
   return state.set('realtimeSteps', realtimeSteps.push(updatedPayload));
 };
 
+const updateCurrentStepCount = (state, stepCount) => state.set('currentStepCount', stepCount);
+
 const initialStepsState = fromJS({
   hoursBack: 1,
   stepsSinceHour: 0,
@@ -44,7 +46,6 @@ const initialStepsState = fromJS({
 });
 
 export default (state = initialStepsState, { type, payload }) => {
-  window._state = state;
   switch (type) {
   case actionTypes.steps.hoursBack.UPDATE:
     return state.set('hoursBack', payload);
@@ -52,6 +53,10 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('stepsSinceHour', payload);
   case actionTypes.steps.realtimeSteps.UPDATE:
     return handleRealtimeStepsUpdate(state, payload);
+  case actionTypes.steps.currentStepCount.UPDATE:
+    return updateCurrentStepCount(state, payload);
+  case actionTypes.steps.currentStepCount.RESET:
+    return state.set('currentStepCount', 0);
   case actionTypes.steps.isPedometerAvailable.UPDATE:
     return state.set('isPedometerAvailable', payload);
   case actionTypes.steps.historicData.SET:

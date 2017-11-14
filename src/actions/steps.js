@@ -10,9 +10,9 @@ export const setStepsSinceHour = (steps) => ({
   payload: steps,
 });
 
-export const setRealtimeStepData = (stepArray) => ({
+export const updateRealtimeStepData = (stepPayload) => ({
   type: actionTypes.steps.realtimeSteps.UPDATE,
-  payload: stepArray,
+  payload: stepPayload,
 });
 
 export const setIsPedometerAvailable = (isPedometerAvailable) => ({
@@ -23,4 +23,13 @@ export const setIsPedometerAvailable = (isPedometerAvailable) => ({
 export const setHistoricStepData = (historicData) => ({
   type: actionTypes.steps.historicData.SET,
   payload: historicData,
+});
+
+export const updateCurrentStepCount = (totalSteps) => ({
+  type: actionTypes.steps.currentStepCount.UPDATE,
+  payload: totalSteps,
+});
+
+export const resetCurrentStepCount = () => ({
+  type: actionTypes.steps.currentStepCount.RESET,
 });

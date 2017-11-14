@@ -28,11 +28,13 @@ export default class Steps extends React.Component {
     stepsSinceHour: PropTypes.number.isRequired,
     realtimeSteps: PropTypes.instanceOf(List).isRequired,
     setIsPedometerAvailable: PropTypes.func.isRequired,
-    setRealtimeStepData: PropTypes.func.isRequired,
+    updateRealtimeStepData: PropTypes.func.isRequired,
     setHoursBack: PropTypes.func.isRequired,
     setStepsSinceHour: PropTypes.func.isRequired,
     setHistoricStepData: PropTypes.func.isRequired,
+    updateCurrentStepCount: PropTypes.func.isRequired,
   };
+
   static defaultProps = {
     realtimeSteps: List(),
   };
@@ -90,7 +92,8 @@ export default class Steps extends React.Component {
     this._subscription = Pedometer.watchStepCount((result) => {
       const {
         realtimeSteps,
-        setRealtimeStepData,
+        updateRealtimeStepData,
+        updateCurrentStepCount,
       } = this.props;
       const {
         totalSteps: lastTotalSteps = 0,
@@ -105,7 +108,8 @@ export default class Steps extends React.Component {
         timeIncrement: typeof lastTimeStamp === 'number' ? currentTime - lastTimeStamp : 0,
         totalSteps: result.steps,
       });
-      setRealtimeStepData(nextStepData);
+      updateRealtimeStepData(nextStepData);
+      updateCurrentStepCount(nextStepData.get('totalSteps'));
       // Update the steps count based on hours back button/slider
       this.getLastHoursSteps();
     });

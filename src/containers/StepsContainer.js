@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import {
   setHoursBack,
   setStepsSinceHour,
-  setRealtimeStepData,
+  updateRealtimeStepData,
   setHistoricStepData,
   setIsPedometerAvailable,
+  updateCurrentStepCount,
 } from '../actions/steps';
 
 import {
@@ -31,7 +32,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setHoursBack,
   setStepsSinceHour,
-  setRealtimeStepData,
+  updateRealtimeStepData,
   setHistoricStepData,
   setIsPedometerAvailable,
+  updateCurrentStepCount,
 })(Steps);

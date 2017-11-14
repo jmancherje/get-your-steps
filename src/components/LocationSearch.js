@@ -39,18 +39,18 @@ export default class LocationSearch extends React.Component {
           // available options: https://developers.google.com/places/web-service/autocomplete
           key: GOOGLE_PLACES_KEY,
           language: 'en', // language of the results
-          types: 'address' // default: 'geocode'
+          // types: 'address', // default: 'geocode'
         } }
         styles={ {
           textInputContainer: {
-            width: '100%'
+            width: '100%',
           },
           description: {
-            fontWeight: 'bold'
+            fontWeight: 'bold',
           },
           predefinedPlacesDescription: {
-            color: '#1faadb'
-          }
+            color: '#1faadb',
+          },
         } }
         // currentLocation // Will add a 'Current location' button at the top of the predefined places list
         // currentLocationLabel="Current location"
@@ -61,7 +61,7 @@ export default class LocationSearch extends React.Component {
         GooglePlacesSearchQuery={ {
           // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
           rankby: 'distance',
-          types: 'food'
+          types: 'food',
         } }
         filterReverseGeocodingByTypes={ ['locality', 'administrative_area_level_3'] } // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
         // predefinedPlaces={ [homePlace, workPlace] }
