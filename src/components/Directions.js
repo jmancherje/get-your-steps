@@ -21,6 +21,7 @@ import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
 import LocationSearch from './LocationSearch';
 import { metersToMiles } from '../helpers/conversions';
+import Polyline from './Polyline';
 
 // This type is just for reference
 // eslint-disable-next-line no-unused-vars
@@ -64,13 +65,20 @@ export default class Directions extends Component {
   }
 
   state = {
-    allSteps: [],
+    allRoutes: [],
     steps: [],
+    activeRouteIndex: 0,
     distance: null,
   };
 
   setMapRef = (ref) => {
     this.map = ref;
+  };
+
+  setActiveRouteIndex = (index) => {
+    console.log('setting index', index, this.state.activeRouteIndex);
+    if (index === this.state.activeRouteIndex) return;
+    this.setState({ activeRouteIndex: index });
   };
 
   fitMap = (steps = []) => {
@@ -99,7 +107,7 @@ export default class Directions extends Component {
     const routes = response.routes;
     if (!Array.isArray(routes) || routes.length < 1) return;
 
-    const allSteps = routes.reduce((steps, route) => {
+    const allRoutes = routes.reduce((steps, route) => {
       const leg = route.legs[0];
       const meters = leg.distance.value;
       const nextStep = {
@@ -116,14 +124,14 @@ export default class Directions extends Component {
       return steps;
     }, []);
     // NOTE: only handling the first route for now
-    this.setState({ allSteps });
-    this.fitMap(allSteps[0].steps);
+    this.setState({ allRoutes });
+    this.fitMap(allRoutes[0].steps);
   };
 
   resetMap = () => {
     this.setState({
-      steps: [],
-      allSteps: [],
+      activeRouteIndex: 0,
+      allRoutes: [],
       distance: null,
     });
   };
@@ -137,16 +145,17 @@ export default class Directions extends Component {
       longitude,
       latitude,
     };
-    const maplines = this.state.allSteps.map((route, idx) => (
-      <MapView.Polyline
+    const maplines = this.state.allRoutes.map((route, idx) => (
+      <Polyline
         key={ route.distance }
-        coordinates={ route.steps }
-        lineDashPattern={ idx === 1 ? null : [10] }
-        strokeWidth={ idx === 1 ? 5 : 3 }
-        strokeColor={ idx === 1 ? '#3b9323' : '#e27ca5' }
+        route={ route }
+        index={ idx }
+        activeIndex={ this.state.activeRouteIndex }
+        onPress={ this.setActiveRouteIndex }
       />
     ));
-    const activeRoute = this.state.allSteps[0] || {};
+    const { allRoutes, activeRouteIndex } = this.state;
+    const activeRoute = allRoutes[activeRouteIndex] || {};
     const activeSteps = activeRoute.steps || [];
     return (
       <View style={ styles.device }>
