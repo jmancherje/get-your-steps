@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Map } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import {
   View,
   Dimensions,
@@ -38,8 +38,6 @@ type LocationObjectType = {
   timestamp: number,
 };
 
-// const STEPS_PER_METER = 0.724;
-// const STEPS_PER_METER = 0.632;
 // Based on average 5'8" person
 const STEPS_PER_METER = 0.713;
 
@@ -62,26 +60,19 @@ export default class Directions extends Component {
     currentLocation: PropTypes.instanceOf(Map).isRequired,
     currentStepCount: PropTypes.number.isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
-  }
-
-  state = {
-    allRoutes: [],
-    steps: [],
-    activeRouteIndex: 0,
-    distance: null,
+    updateActiveIndex: PropTypes.func.isRequired,
+    updateSearchedRouteOptions: PropTypes.func.isRequired,
+    resetActiveSearchedRoutes: PropTypes.func.isRequired,
+    activeRouteIndex: PropTypes.number.isRequired,
+    searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
   };
 
   setMapRef = (ref) => {
     this.map = ref;
   };
 
-  setActiveRouteIndex = (index) => {
-    console.log('setting index', index, this.state.activeRouteIndex);
-    if (index === this.state.activeRouteIndex) return;
-    this.setState({ activeRouteIndex: index });
-  };
-
   fitMap = (steps = []) => {
+    // NOTE this is expecting an array of objects, not a list of maps
     if (!this.map || steps.length < 2) return;
     this.map.fitToCoordinates(steps, {
       edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
@@ -124,20 +115,22 @@ export default class Directions extends Component {
       return steps;
     }, []);
     // NOTE: only handling the first route for now
-    this.setState({ allRoutes });
+    this.props.updateSearchedRouteOptions(fromJS(allRoutes));
     this.fitMap(allRoutes[0].steps);
   };
 
   resetMap = () => {
-    this.setState({
-      activeRouteIndex: 0,
-      allRoutes: [],
-      distance: null,
-    });
+    this.props.resetActiveSearchedRoutes();
   };
 
   render() {
-    const { currentLocation } = this.props;
+    const {
+      currentLocation,
+      updateActiveIndex,
+      activeRouteIndex,
+      searchedRouteOptions = List(),
+    } = this.props;
+    if (!searchedRouteOptions) return null;
     const longitude = currentLocation.get('longitude');
     const latitude = currentLocation.get('latitude');
     const region = {
@@ -145,21 +138,20 @@ export default class Directions extends Component {
       longitude,
       latitude,
     };
-    const maplines = this.state.allRoutes.map((route, idx) => (
+    const maplines = searchedRouteOptions.map((route, idx) => (
       <Polyline
-        key={ route.distance }
-        route={ route }
+        key={ route.get('distance') }
+        steps={ route.get('steps', List()).toJS() }
         index={ idx }
-        activeIndex={ this.state.activeRouteIndex }
-        onPress={ this.setActiveRouteIndex }
+        activeIndex={ activeRouteIndex }
+        onPress={ updateActiveIndex }
       />
     ));
-    const { allRoutes, activeRouteIndex } = this.state;
-    const activeRoute = allRoutes[activeRouteIndex] || {};
-    const activeSteps = activeRoute.steps || [];
+    const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
+    const activeSteps = activeRoute.get('steps', List());
     return (
       <View style={ styles.device }>
-        { !activeRoute.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
+        { !activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
         { longitude && latitude ? (
           <MapView
             ref={ this.setMapRef }
@@ -174,10 +166,10 @@ export default class Directions extends Component {
                 style={ styles.mapMarker }
               />
             </MapView.Marker>
-            { activeSteps.length ? maplines : null }
+            { activeSteps.size ? maplines : null }
           </MapView>
         ) : null }
-        { activeRoute.distance && (
+        { activeRoute.has('distance') && (
           <Card>
             <CardItem header>
               <Text>Estimated Steps To Walk To Destination</Text>
@@ -186,7 +178,7 @@ export default class Directions extends Component {
               <Body>
                 <Grid>
                   <Col size={ 5 }>
-                    <Text>{ `${Math.round(activeRoute.distance / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.distance).toFixed(2)} miles)` }</Text>
+                    <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
                   </Col>
                   <Col size={ 3 }>
                     <Button

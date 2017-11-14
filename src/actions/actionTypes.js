@@ -31,4 +31,13 @@ export default Object.freeze({
       UPDATE: 'location/currentLocation/UPDATE',
     },
   },
+  directions: {
+    activeIndex: {
+      UPDATE: 'directions/activeIndex/UPDATE',
+    },
+    searchedRouteOptions: {
+      UPDATE: 'directions/searchedRouteOptions/UPDATE',
+      RESET: 'directions/searchedRouteOptions/RESET',
+    },
+  },
 });

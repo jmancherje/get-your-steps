@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';;
+import PropTypes from 'prop-types';
 import { MapView } from 'expo';
 
 export default class Polyline extends Component {
@@ -8,7 +8,7 @@ export default class Polyline extends Component {
     activeIndex: PropTypes.number.isRequired,
     onPress: PropTypes.func.isRequired,
     // TODO make this more strict
-    route: PropTypes.object.isRequired, // eslint-disable-line
+    steps: PropTypes.array.isRequired, // eslint-disable-line
   };
 
   handlePress = () => {
@@ -16,11 +16,11 @@ export default class Polyline extends Component {
   };
 
   render() {
-    const { route, index, activeIndex } = this.props;
+    const { steps, index, activeIndex } = this.props;
     return (
       <MapView.Polyline
         onPress={ this.handlePress }
-        coordinates={ route.steps }
+        coordinates={ steps }
         lineDashPattern={ index === activeIndex ? null : [10] }
         strokeWidth={ index === activeIndex ? 5 : 3 }
         strokeColor={ index === activeIndex ? '#3b9323' : '#e27ca5' }
