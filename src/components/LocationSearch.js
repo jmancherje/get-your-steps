@@ -39,7 +39,7 @@ export default class LocationSearch extends React.Component {
           // available options: https://developers.google.com/places/web-service/autocomplete
           key: GOOGLE_PLACES_KEY,
           language: 'en', // language of the results
-          types: 'address', // default: 'geocode'
+          // types: 'address', // default: 'geocode'
         } }
         styles={ {
           textInputContainer: {

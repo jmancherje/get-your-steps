@@ -50,7 +50,7 @@ const aspectRatio = mapWidth / mapHeight;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
 
-const url = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking';
+const url = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking&alternatives=true';
 
 const mapRegion = {
   latitudeDelta: LATITUDE_DELTA,
@@ -64,6 +64,7 @@ export default class Directions extends Component {
   }
 
   state = {
+    allSteps: [],
     steps: [],
     distance: null,
   };
@@ -72,7 +73,7 @@ export default class Directions extends Component {
     this.map = ref;
   };
 
-  fitMap = (steps = this.state.steps) => {
+  fitMap = (steps = []) => {
     if (!this.map || steps.length < 2) return;
     this.map.fitToCoordinates(steps, {
       edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
@@ -95,25 +96,34 @@ export default class Directions extends Component {
   };
 
   updateDirectionSteps = (response) => {
-    console.log('response', response);
+    const routes = response.routes;
+    if (!Array.isArray(routes) || routes.length < 1) return;
+
+    const allSteps = routes.reduce((steps, route) => {
+      const leg = route.legs[0];
+      const meters = leg.distance.value;
+      const nextStep = {
+        distance: meters,
+        steps: [{
+          latitude: leg.start_location.lat,
+          longitude: leg.start_location.lng,
+        }].concat(leg.steps.map(step => ({
+          latitude: step.end_location.lat,
+          longitude: step.end_location.lng,
+        }))),
+      };
+      steps.push(nextStep);
+      return steps;
+    }, []);
     // NOTE: only handling the first route for now
-    const route = response.routes[0];
-    const leg = route.legs[0];
-    const meters = leg.distance.value;
-    const steps = [{
-      latitude: leg.start_location.lat,
-      longitude: leg.start_location.lng,
-    }].concat(leg.steps.map(step => ({
-      latitude: step.end_location.lat,
-      longitude: step.end_location.lng,
-    })));
-    this.setState({ steps, distance: meters });
-    this.fitMap(steps);
+    this.setState({ allSteps });
+    this.fitMap(allSteps[0].steps);
   };
 
   resetMap = () => {
     this.setState({
       steps: [],
+      allSteps: [],
       distance: null,
     });
   };
@@ -127,15 +137,25 @@ export default class Directions extends Component {
       longitude,
       latitude,
     };
+    const maplines = this.state.allSteps.map((route, idx) => (
+      <MapView.Polyline
+        key={ route.distance }
+        coordinates={ route.steps }
+        lineDashPattern={ idx === 1 ? null : [10] }
+        strokeWidth={ idx === 1 ? 5 : 3 }
+        strokeColor={ idx === 1 ? '#3b9323' : '#e27ca5' }
+      />
+    ));
+    const activeRoute = this.state.allSteps[0] || {};
+    const activeSteps = activeRoute.steps || [];
     return (
       <View style={ styles.device }>
-        { !this.state.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
+        { !activeRoute.distance && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
         { longitude && latitude ? (
           <MapView
             ref={ this.setMapRef }
             style={ styles.mapDimensions }
             initialRegion={ region }
-            // region={ region }
           >
             <MapView.Marker
               coordinate={ { latitude, longitude } }
@@ -145,15 +165,10 @@ export default class Directions extends Component {
                 style={ styles.mapMarker }
               />
             </MapView.Marker>
-            { this.state.steps.length ? (
-              <MapView.Polyline
-                coordinates={ this.state.steps }
-                strokeWidth={ 2 }
-              />
-            ) : null }
+            { activeSteps.length ? maplines : null }
           </MapView>
         ) : null }
-        { this.state.distance && (
+        { activeRoute.distance && (
           <Card>
             <CardItem header>
               <Text>Estimated Steps To Walk To Destination</Text>
@@ -162,7 +177,7 @@ export default class Directions extends Component {
               <Body>
                 <Grid>
                   <Col size={ 5 }>
-                    <Text>{ `${Math.round(this.state.distance / STEPS_PER_METER)} steps (for ${metersToMiles(this.state.distance).toFixed(2)} miles)` }</Text>
+                    <Text>{ `${Math.round(activeRoute.distance / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.distance).toFixed(2)} miles)` }</Text>
                   </Col>
                   <Col size={ 3 }>
                     <Button
