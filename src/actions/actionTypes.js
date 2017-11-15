@@ -39,5 +39,15 @@ export default Object.freeze({
       UPDATE: 'directions/searchedRouteOptions/UPDATE',
       RESET: 'directions/searchedRouteOptions/RESET',
     },
+    currentSearch: {
+      origin: {
+        UPDATE: 'directions/currentSearch/origin/UPDATE',
+        CLEAR: 'directions/currentSearch/origin/CLEAR',
+      },
+      destination: {
+        UPDATE: 'directions/currentSearch/destination/UPDATE',
+        CLEAR: 'directions/currentSearch/destination/CLEAR',
+      },
+    },
   },
 });

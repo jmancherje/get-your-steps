@@ -1,9 +1,13 @@
-import { List, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 
 import actionTypes from '../actions/actionTypes';
 
 const initialStepsState = fromJS({
-  searchedRouteOptions: List(),
+  currentSearch: {
+    origin: null,
+    destination: null,
+  },
+  searchedRouteOptions: [],
   activeRouteIndex: 0,
   // TODO Saved routes
 });
