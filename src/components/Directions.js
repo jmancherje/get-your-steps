@@ -128,7 +128,7 @@ export default class Directions extends Component {
       currentLocation,
       updateActiveIndex,
       activeRouteIndex,
-      searchedRouteOptions = List(),
+      searchedRouteOptions,
     } = this.props;
     if (!searchedRouteOptions) return null;
     const longitude = currentLocation.get('longitude');
@@ -151,7 +151,21 @@ export default class Directions extends Component {
     const activeSteps = activeRoute.get('steps', List());
     return (
       <View style={ styles.device }>
-        { !activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.handleSelectLocation } /> }
+        <Card>
+          <CardItem>
+            <Grid>
+              <Col size={ 3 } style={ styles.justifyCenter }>
+                <Text>Origin: Current Location</Text>
+              </Col>
+              <Col size={ 2 }>
+                <Button small transparent>
+                  <Text>Change Origin</Text>
+                </Button>
+              </Col>
+            </Grid>
+          </CardItem>
+        </Card>
+        { !activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.handleSelectLocation } leftButtonText="Destination" /> }
         { longitude && latitude ? (
           <MapView
             ref={ this.setMapRef }
@@ -177,7 +191,7 @@ export default class Directions extends Component {
             <CardItem>
               <Body>
                 <Grid>
-                  <Col size={ 5 }>
+                  <Col size={ 5 } style={ styles.justifyCenter }>
                     <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
                   </Col>
                   <Col size={ 3 }>
@@ -201,7 +215,7 @@ export default class Directions extends Component {
           <CardItem>
             <Body>
               <Grid>
-                <Col size={ 5 }>
+                <Col size={ 5 } style={ styles.justifyCenter }>
                   <Text>Total Steps: { this.props.currentStepCount }</Text>
                 </Col>
                 <Col size={ 3 }>
@@ -242,5 +256,8 @@ const styles = StyleSheet.create({
   },
   listDivider: {
     height: 30,
+  },
+  justifyCenter: {
+    justifyContent: 'center',
   },
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'native-base';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
@@ -8,7 +9,8 @@ import { GOOGLE_PLACES_KEY } from '../../keys';
 export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
-  }
+    leftButtonText: PropTypes.string.isRequired,
+  };
 
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
     this.props.handleSelectLocation({
@@ -19,15 +21,13 @@ export default class LocationSearch extends React.Component {
 
   renderDescription = row => row.description;
 
-  renderLefttButton = () => <Text>Custom text after the input</Text>;
-
-  renderRightButton = () => <Text>Where are you going</Text>;
+  renderLeftButton = () => <View style={ styles.leftButton }><Text>{ this.props.leftButtonText }</Text></View>;
 
   render() {
     return (
       <GooglePlacesAutocomplete
         placeholder="Search"
-        minLength={ 2 } // minimum length of text to search
+        minLength={ 4 } // minimum length of text to search
         autoFocus={ false }
         /* returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype */
         listViewDisplayed="auto" // true/false/undefined
@@ -66,9 +66,13 @@ export default class LocationSearch extends React.Component {
         filterReverseGeocodingByTypes={ ['locality', 'administrative_area_level_3'] } // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
         // predefinedPlaces={ [homePlace, workPlace] }
         debounce={ 200 } // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-        // renderLefttButton={ this.renderLefttButton }
+        renderLeftButton={ this.renderLeftButton }
         // renderRightButton={ this.renderRightButton }
       />
     );
   }
 }
+
+const styles = StyleSheet.create({
+  leftButton: { paddingLeft: 10, justifyContent: 'center' },
+});
