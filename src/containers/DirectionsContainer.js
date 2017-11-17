@@ -11,6 +11,7 @@ import {
 import {
   getSearchedRouteOptions,
   getActiveRouteIndex,
+  getDestinations,
 } from '../selectors/directions';
 
 import {
@@ -31,6 +32,7 @@ const mapStateToProps = (state) => ({
   currentLocation: getCurrentLocation(state),
   currentStepCount: getCurrentStepCount(state),
   activeRouteIndex: getActiveRouteIndex(state),
+  destinations: getDestinations(state),
 });
 
 export default connect(mapStateToProps, {

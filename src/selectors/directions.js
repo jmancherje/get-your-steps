@@ -27,3 +27,8 @@ export const getCurrentSearchDestination = createSelector(
   [getCurrentSearch],
   currentSearchMap => currentSearchMap.get('destination', Map())
 );
+
+export const getDestinations = createSelector(
+  [getDirections],
+  directions => directions.get('destinations', List())
+);

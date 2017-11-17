@@ -66,6 +66,7 @@ export default class Directions extends Component {
     activeRouteIndex: PropTypes.number.isRequired,
     searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
     updateDestinations: PropTypes.func.isRequired,
+    destinations: PropTypes.instanceOf(List).isRequired,
   };
 
   setMapRef = (ref) => {
