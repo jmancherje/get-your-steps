@@ -11,18 +11,13 @@ import {
 import {
   getSearchedRouteOptions,
   getActiveRouteIndex,
-  getCurrentSearchOrigin,
-  getCurrentSearchDestination,
 } from '../selectors/directions';
 
 import {
   updateActiveIndex,
   updateSearchedRouteOptions,
   resetActiveSearchedRoutes,
-  updateCurrentSearchOrigin,
-  updateCurrentSearchDestination,
-  clearCurrentSearchResultsOrigin,
-  clearCurrentSearchResultsDestination,
+  updateDestinations,
 } from '../actions/directions';
 
 import {
@@ -36,8 +31,6 @@ const mapStateToProps = (state) => ({
   currentLocation: getCurrentLocation(state),
   currentStepCount: getCurrentStepCount(state),
   activeRouteIndex: getActiveRouteIndex(state),
-  currentSearchOrigin: getCurrentSearchOrigin(state),
-  currentSearchDestination: getCurrentSearchDestination(state),
 });
 
 export default connect(mapStateToProps, {
@@ -45,8 +38,5 @@ export default connect(mapStateToProps, {
   updateActiveIndex,
   updateSearchedRouteOptions,
   resetActiveSearchedRoutes,
-  updateCurrentSearchOrigin,
-  updateCurrentSearchDestination,
-  clearCurrentSearchResultsOrigin,
-  clearCurrentSearchResultsDestination,
+  updateDestinations,
 })(Directions);

@@ -39,8 +39,8 @@ type LocationObjectType = {
 };
 
 // Based on average 5'8" person
+// TODO: customize this for all users
 const STEPS_PER_METER = 0.713;
-
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
@@ -65,6 +65,7 @@ export default class Directions extends Component {
     resetActiveSearchedRoutes: PropTypes.func.isRequired,
     activeRouteIndex: PropTypes.number.isRequired,
     searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
+    updateDestinations: PropTypes.func.isRequired,
   };
 
   setMapRef = (ref) => {
@@ -80,53 +81,71 @@ export default class Directions extends Component {
     });
   };
 
-  handleSelectLocation = ({ data, details }) => {
-    const { currentLocation } = this.props;
-    const placeId = data.place_id;
-    const location = details.geometry.location;
-    const destination = placeId ? `place_id:${placeId}` : `${location.latitude},${location.longitude}`;
-    if (!destination) return;
+  // handleSelectLocation = ({ data, details }) => {
+  //   const { currentLocation } = this.props;
+  //   const placeId = data.place_id;
+  //   const location = details.geometry.location;
+  //   const destination = placeId ? `place_id:${placeId}` : `${location.latitude},${location.longitude}`;
+  //   if (!destination) return;
 
-    const currentLocationString = `${currentLocation.get('latitude')},${currentLocation.get('longitude')}`;
-    const apiUrl = `${url}&origin=${currentLocationString}&destination=${destination}&key=${key}`;
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(this.updateDirectionSteps);
-  };
+  //   const currentLocationString = `${currentLocation.get('latitude')},${currentLocation.get('longitude')}`;
+  //   const apiUrl = `${url}&origin=${currentLocationString}&destination=${destination}&key=${key}`;
+  //   fetch(apiUrl)
+  //     .then(res => res.json())
+  //     .then(this.updateDirectionSteps);
+  // };
 
-  updateDirectionSteps = (response) => {
-    const routes = response.routes;
-    if (!Array.isArray(routes) || routes.length < 1) return;
+  // updateDirectionSteps = (response) => {
+  //   const routes = response.routes;
+  //   if (!Array.isArray(routes) || routes.length < 1) return;
 
-    const allRoutes = routes.reduce((steps, route) => {
-      const leg = route.legs[0];
-      const meters = leg.distance.value;
-      const nextStep = {
-        distance: meters,
-        steps: [{
-          latitude: leg.start_location.lat,
-          longitude: leg.start_location.lng,
-        }].concat(leg.steps.map(step => ({
-          latitude: step.end_location.lat,
-          longitude: step.end_location.lng,
-        }))),
-      };
-      steps.push(nextStep);
-      return steps;
-    }, []);
-    // NOTE: only handling the first route for now
-    this.props.updateSearchedRouteOptions(fromJS(allRoutes));
-    this.fitMap(allRoutes[0].steps);
-  };
+  //   const allRoutes = routes.reduce((steps, route) => {
+  //     const leg = route.legs[0];
+  //     const meters = leg.distance.value;
+  //     const nextStep = {
+  //       distance: meters,
+  //       steps: [{
+  //         latitude: leg.start_location.lat,
+  //         longitude: leg.start_location.lng,
+  //       }].concat(leg.steps.map(step => ({
+  //         latitude: step.end_location.lat,
+  //         longitude: step.end_location.lng,
+  //       }))),
+  //     };
+  //     steps.push(nextStep);
+  //     return steps;
+  //   }, []);
+  //   // NOTE: only handling the first route for now
+  //   this.props.updateSearchedRouteOptions(fromJS(allRoutes));
+  //   this.fitMap(allRoutes[0].steps);
+  // };
 
   resetMap = () => {
     this.props.resetActiveSearchedRoutes();
   };
 
+  getPolylines = () => {
+    const {
+      searchedRouteOptions,
+      activeRouteIndex,
+      updateActiveIndex,
+    } = this.props;
+    if (!searchedRouteOptions) return null;
+
+    return searchedRouteOptions.map((route, idx) => (
+      <Polyline
+        key={ route.get('distance') }
+        steps={ route.get('steps', List()).toJS() }
+        index={ idx }
+        activeIndex={ activeRouteIndex }
+        onPress={ updateActiveIndex }
+      />
+    ));
+  };
+
   render() {
     const {
       currentLocation,
-      updateActiveIndex,
       activeRouteIndex,
       searchedRouteOptions,
     } = this.props;
@@ -138,15 +157,7 @@ export default class Directions extends Component {
       longitude,
       latitude,
     };
-    const maplines = searchedRouteOptions.map((route, idx) => (
-      <Polyline
-        key={ route.get('distance') }
-        steps={ route.get('steps', List()).toJS() }
-        index={ idx }
-        activeIndex={ activeRouteIndex }
-        onPress={ updateActiveIndex }
-      />
-    ));
+    const maplines = this.getPolylines();
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const activeSteps = activeRoute.get('steps', List());
     return (
@@ -165,7 +176,7 @@ export default class Directions extends Component {
             </Grid>
           </CardItem>
         </Card>
-        { !activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.handleSelectLocation } leftButtonText="Destination" /> }
+        {!activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.props.updateDestinations } leftButtonText="Destination" /> }
         { longitude && latitude ? (
           <MapView
             ref={ this.setMapRef }

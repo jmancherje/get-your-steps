@@ -39,6 +39,9 @@ export default Object.freeze({
       UPDATE: 'directions/searchedRouteOptions/UPDATE',
       RESET: 'directions/searchedRouteOptions/RESET',
     },
+    destinations: {
+      UPDATE: 'directions/destinations/UPDATE',
+    },
     currentSearch: {
       origin: {
         UPDATE: 'directions/currentSearch/origin/UPDATE',

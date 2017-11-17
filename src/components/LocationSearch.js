@@ -10,12 +10,14 @@ export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
     leftButtonText: PropTypes.string.isRequired,
+    index: PropTypes.number, // eslint-disable-line
   };
 
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
     this.props.handleSelectLocation({
       data,
       details,
+      index: this.props.index,
     });
   };
 
