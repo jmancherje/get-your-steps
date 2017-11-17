@@ -4,8 +4,8 @@ import actionTypes from '../actions/actionTypes';
 
 const initialStepsState = fromJS({
   currentSearch: {
-    origin: null,
-    destination: null,
+    origin: Map(),
+    destination: Map(),
   },
   searchedRouteOptions: [],
   activeRouteIndex: 0,
@@ -21,17 +21,17 @@ const updateCurrentSearch = (state, { data, details }, originOrDestination) => {
     dataPlaceId: data.place_id,
     detailsPlaceId: details.place_id,
     coordinates: Map({
-      longitude: details.geometry.location.lat,
-      latitude: details.geometry.location.lng,
+      longitude: details.geometry.location.lng,
+      latitude: details.geometry.location.lat,
     }),
     viewPort: Map({
       northEast: Map({
-        longitude: details.geometry.viewport.northeast.lat,
-        latitude: details.geometry.viewport.northeast.lng,
+        longitude: details.geometry.viewport.northeast.lng,
+        latitude: details.geometry.viewport.northeast.lat,
       }),
       southWest: Map({
-        longitude: details.geometry.viewport.southwest.lat,
-        latitude: details.geometry.viewport.southwest.lng,
+        longitude: details.geometry.viewport.southwest.lng,
+        latitude: details.geometry.viewport.southwest.lat,
       }),
     }),
   });
