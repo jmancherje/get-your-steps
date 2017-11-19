@@ -69,6 +69,12 @@ export default class Directions extends Component {
     destinations: PropTypes.instanceOf(List).isRequired,
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
+      this.fitMap(nextProps.searchedRouteOptions.getIn([0, 'steps']));
+    }
+  }
+
   setMapRef = (ref) => {
     this.map = ref;
   };

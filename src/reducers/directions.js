@@ -52,12 +52,36 @@ const updateDestinations = (state, { data, details, index }) => (
     })
 );
 
+const updateSearchedRouteOptions = (state, payload) => {
+  const routes = payload.routes;
+  if (!Array.isArray(routes) || routes.length < 1) return state;
+
+  const allRoutes = routes.reduce((steps, route) => {
+    const leg = route.legs[0];
+    const meters = leg.distance.value;
+    const nextStep = {
+      distance: meters,
+      steps: [{
+        latitude: leg.start_location.lat,
+        longitude: leg.start_location.lng,
+      }].concat(leg.steps.map(step => ({
+        latitude: step.end_location.lat,
+        longitude: step.end_location.lng,
+      }))),
+    };
+    steps.push(nextStep);
+    return steps;
+  }, []);
+
+  return state.set('searchedRouteOptions', fromJS(allRoutes));
+};
+
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
     return state.set('activeRouteIndex', payload);
   case actionTypes.directions.searchedRouteOptions.UPDATE:
-    return state.set('searchedRouteOptions', payload);
+    return updateSearchedRouteOptions(state, payload);
   case actionTypes.directions.destinations.UPDATE:
     return updateDestinations(state, payload);
   default:
