@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Map, List, fromJS } from 'immutable';
+import { Map, List } from 'immutable';
 import {
   View,
   Dimensions,
@@ -10,14 +10,14 @@ import { MapView } from 'expo';
 import {
   Text,
   Card,
+  List as NbList,
+  ListItem,
   CardItem,
   Body,
   Button,
   Grid,
   Col,
 } from 'native-base';
-
-import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
 import LocationSearch from './LocationSearch';
 import { metersToMiles } from '../helpers/conversions';
@@ -48,8 +48,6 @@ const mapHeight = Math.round(deviceHeight / 2);
 const aspectRatio = mapWidth / mapHeight;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
-
-const url = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking&alternatives=true';
 
 const mapRegion = {
   latitudeDelta: LATITUDE_DELTA,
@@ -155,6 +153,7 @@ export default class Directions extends Component {
       currentLocation,
       activeRouteIndex,
       searchedRouteOptions,
+      destinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
     const longitude = currentLocation.get('longitude');
@@ -169,21 +168,33 @@ export default class Directions extends Component {
     const activeSteps = activeRoute.get('steps', List());
     return (
       <View style={ styles.device }>
-        <Card>
-          <CardItem>
-            <Grid>
-              <Col size={ 3 } style={ styles.justifyCenter }>
-                <Text>Origin: Current Location</Text>
-              </Col>
-              <Col size={ 2 }>
-                <Button small transparent>
-                  <Text>Change Origin</Text>
-                </Button>
-              </Col>
-            </Grid>
-          </CardItem>
-        </Card>
-        {!activeRoute.has('distance') && <LocationSearch handleSelectLocation={ this.props.updateDestinations } leftButtonText="Destination" /> }
+        { destinations.size ? (
+          <NbList>
+            { destinations.map((destination, index) => {
+              console.log(destination.toJS());
+              return (
+                <ListItem key={ destination.get('dataPlaceId') }>
+                  <Body>
+                    <Grid>
+                      <Col size={ 6 } style={ styles.justifyCenter }>
+                        <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
+                      </Col>
+                      <Col size={ 1 }>
+                        <Button small transparent>
+                          <Text>X</Text>
+                        </Button>
+                      </Col>
+                    </Grid>
+                  </Body>
+                </ListItem>
+              );
+            }) }
+          </NbList>
+        ) : null }
+        <LocationSearch
+          handleSelectLocation={ this.props.updateDestinations }
+          leftButtonText="Destination"
+        />
         { longitude && latitude ? (
           <MapView
             ref={ this.setMapRef }

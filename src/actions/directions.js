@@ -19,16 +19,24 @@ export const resetActiveSearchedRoutes = () => ({
 });
 
 const fetchDirections = (destinations) => {
-  // TODO: make this work for multiple locations instead of just 2
-  const origin = destinations.get(0, Map());
-  const destination = destinations.get(1, Map());
-  let destinationString = `place_id:${destination.get('dataPlaceId')}`;
-  if (!destination.get('dataPlaceId')) {
-    destinationString = `${destination.getIn(['coordinates', 'latitude'])},${destination.getIn(['coordinates', 'longitutde'])}`;
-  }
+  const requestDestinationString = destinations.reduce((reqString, destination, index) => {
+    let destinationString = `place_id:${destination.get('dataPlaceId')}`;
+    if (!destination.get('dataPlaceId')) {
+      destinationString = `${destination.getIn(['coordinates', 'latitude'])},${destination.getIn(['coordinates', 'longitutde'])}`;
+    }
+    if (index === 0) {
+      return `${reqString}${destinationString}`;
+    }
+    if (index + 1 === destinations.size) {
+      return `${reqString}&destination=${destinationString}`;
+    }
+    if (index === 1) {
+      return `${reqString}&waypoints=${destinationString}`;
+    }
+    return `${reqString}|${destinationString}`;
+  }, 'origin=');
   const url = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking&alternatives=true';
-  const currentLocationString = `${origin.getIn(['coordinates', 'latitude'])},${origin.getIn(['coordinates', 'longitude'])}`;
-  const apiUrl = `${url}&origin=${currentLocationString}&destination=${destinationString}&key=${key}`;
+  const apiUrl = `${url}&${requestDestinationString}&key=${key}`;
   return fetch(apiUrl)
     .then(res => res.json())
     .then(response => response);
