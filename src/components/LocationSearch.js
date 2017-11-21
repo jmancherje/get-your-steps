@@ -6,11 +6,29 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
 
+const inputStyles = {
+  textInputContainer: {
+    width: '100%',
+  },
+  description: {
+    fontWeight: 'bold',
+  },
+  predefinedPlacesDescription: {
+    color: '#1faadb',
+  },
+};
+
 export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
     leftButtonText: PropTypes.string.isRequired,
     index: PropTypes.number, // eslint-disable-line
+  };
+
+  ref = null;
+
+  setRef = (ref) => {
+    this.ref = ref;
   };
 
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
@@ -19,6 +37,8 @@ export default class LocationSearch extends React.Component {
       details,
       index: this.props.index,
     });
+
+    this.ref && this.ref.setAddressText('');
   };
 
   renderDescription = row => row.description;
@@ -28,8 +48,9 @@ export default class LocationSearch extends React.Component {
   render() {
     return (
       <GooglePlacesAutocomplete
+        ref={ this.setRef }
         placeholder="Search"
-        minLength={ 4 } // minimum length of text to search
+        minLength={ 2 } // minimum length of text to search
         autoFocus={ false }
         /* returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype */
         listViewDisplayed="auto" // true/false/undefined
@@ -43,17 +64,7 @@ export default class LocationSearch extends React.Component {
           language: 'en', // language of the results
           // types: 'address', // default: 'geocode'
         } }
-        styles={ {
-          textInputContainer: {
-            width: '100%',
-          },
-          description: {
-            fontWeight: 'bold',
-          },
-          predefinedPlacesDescription: {
-            color: '#1faadb',
-          },
-        } }
+        styles={ inputStyles }
         // currentLocation // Will add a 'Current location' button at the top of the predefined places list
         // currentLocationLabel="Current location"
         nearbyPlacesAPI="GooglePlacesSearch" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch

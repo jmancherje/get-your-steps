@@ -1,5 +1,3 @@
-import { Map } from 'immutable';
-
 import actionTypes from './actionTypes';
 import { getDestinations } from '../selectors/directions';
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
@@ -48,7 +46,6 @@ export const updateDestinations = (payload) => (dispatch, getState) => {
     payload,
   });
 
-  // TODO: add logic here to generate route if destinations.size > 1
   const destinations = getDestinations(getState());
   if (destinations.size < 2) return;
   fetchDirections(destinations)
