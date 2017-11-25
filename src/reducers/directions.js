@@ -83,9 +83,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('activeRouteIndex', payload);
   case actionTypes.directions.searchedRouteOptions.UPDATE:
     return updateSearchedRouteOptions(state, payload);
-  // TODO: figure out why this exploded the fitMap
-  // case actionTypes.directions.searchedRouteOptions.RESET:
-  //   return state.set('searchedRouteOptions', List()).set('destinations', List());
+  case actionTypes.directions.searchedRouteOptions.RESET:
+    return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.destinations.UPDATE:
     return updateDestinations(state, payload);
   case actionTypes.directions.destinations.CLEAR_INDEX:

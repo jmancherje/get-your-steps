@@ -56,7 +56,6 @@ const mapRegion = {
 };
 export default class Directions extends Component {
   static propTypes = {
-    currentLocation: PropTypes.instanceOf(Map).isRequired,
     currentStepCount: PropTypes.number.isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
     updateActiveIndex: PropTypes.func.isRequired,
@@ -74,7 +73,7 @@ export default class Directions extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
+    if (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
       this.fitMap(nextProps.searchedRouteOptions.getIn([0, 'steps']));
     }
 
