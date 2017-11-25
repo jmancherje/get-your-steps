@@ -1,5 +1,6 @@
 import actionTypes from './actionTypes';
 import { getDestinations } from '../selectors/directions';
+import { getCurrentLocation } from '../selectors/location';
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
 export const updateActiveIndex = (index) => ({
@@ -52,4 +53,28 @@ export const updateDestinations = (payload) => (dispatch, getState) => {
     .then(response => {
       dispatch(updateSearchedRouteOptions(response));
     });
+};
+
+export const clearDestinationIndex = (index) => ({
+  type: actionTypes.directions.destinations.CLEAR_INDEX,
+  payload: index,
+});
+
+export const addCurrentLocationToDestinations = () => (dispatch, getState) => {
+  const currentLocation = getCurrentLocation(getState());
+  dispatch({
+    type: actionTypes.directions.destinations.UPDATE,
+    payload: {
+      data: { description: 'Current Location' },
+      details: {
+        name: 'Current Location',
+        geometry: {
+          location: {
+            lat: currentLocation.get('latitude'),
+            lng: currentLocation.get('longitude'),
+          },
+        },
+      },
+    },
+  });
 };

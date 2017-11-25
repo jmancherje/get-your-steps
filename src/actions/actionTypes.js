@@ -41,16 +41,8 @@ export default Object.freeze({
     },
     destinations: {
       UPDATE: 'directions/destinations/UPDATE',
-    },
-    currentSearch: {
-      origin: {
-        UPDATE: 'directions/currentSearch/origin/UPDATE',
-        CLEAR: 'directions/currentSearch/origin/CLEAR',
-      },
-      destination: {
-        UPDATE: 'directions/currentSearch/destination/UPDATE',
-        CLEAR: 'directions/currentSearch/destination/CLEAR',
-      },
+      CLEAR_INDEX: 'directions/destinations/CLEAR_INDEX',
+      CLEAR: 'directions/destinations/CLEAR',
     },
   },
 });

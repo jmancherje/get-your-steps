@@ -11,15 +11,16 @@ import {
   Text,
   Card,
   List as NbList,
-  ListItem,
   CardItem,
   Body,
   Button,
   Grid,
   Col,
+  ListItem,
 } from 'native-base';
 
 import LocationSearch from './LocationSearch';
+import WaypointListItem from './WaypointListItem';
 import { metersToMiles } from '../helpers/conversions';
 import Polyline from './Polyline';
 
@@ -59,25 +60,41 @@ export default class Directions extends Component {
     currentStepCount: PropTypes.number.isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
     updateActiveIndex: PropTypes.func.isRequired,
-    updateSearchedRouteOptions: PropTypes.func.isRequired,
+    clearDestinationIndex: PropTypes.func.isRequired,
     resetActiveSearchedRoutes: PropTypes.func.isRequired,
     activeRouteIndex: PropTypes.number.isRequired,
     searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
     updateDestinations: PropTypes.func.isRequired,
+    addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
+  };
+
+  state = {
+    showMap: false,
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
       this.fitMap(nextProps.searchedRouteOptions.getIn([0, 'steps']));
     }
+
+    if (this.props.destinations.size === 0 && nextProps.destinations.size !== 0) {
+      this.setState({ showMap: true });
+    }
   }
+
+  toggleShowMap = () => {
+    this.setState({ showMap: !this.state.showMap });
+  };
 
   setMapRef = (ref) => {
     this.map = ref;
   };
 
-  fitMap = (steps = []) => {
+  fitMap = (steps) => {
+    if (List.isList(steps)) {
+      steps = steps.toJS();
+    }
     // NOTE this is expecting an array of objects, not a list of maps
     if (!this.map || steps.length < 2) return;
     this.map.fitToCoordinates(steps, {
@@ -85,45 +102,6 @@ export default class Directions extends Component {
       animated: true,
     });
   };
-
-  // handleSelectLocation = ({ data, details }) => {
-  //   const { currentLocation } = this.props;
-  //   const placeId = data.place_id;
-  //   const location = details.geometry.location;
-  //   const destination = placeId ? `place_id:${placeId}` : `${location.latitude},${location.longitude}`;
-  //   if (!destination) return;
-
-  //   const currentLocationString = `${currentLocation.get('latitude')},${currentLocation.get('longitude')}`;
-  //   const apiUrl = `${url}&origin=${currentLocationString}&destination=${destination}&key=${key}`;
-  //   fetch(apiUrl)
-  //     .then(res => res.json())
-  //     .then(this.updateDirectionSteps);
-  // };
-
-  // updateDirectionSteps = (response) => {
-  //   const routes = response.routes;
-  //   if (!Array.isArray(routes) || routes.length < 1) return;
-
-  //   const allRoutes = routes.reduce((steps, route) => {
-  //     const leg = route.legs[0];
-  //     const meters = leg.distance.value;
-  //     const nextStep = {
-  //       distance: meters,
-  //       steps: [{
-  //         latitude: leg.start_location.lat,
-  //         longitude: leg.start_location.lng,
-  //       }].concat(leg.steps.map(step => ({
-  //         latitude: step.end_location.lat,
-  //         longitude: step.end_location.lng,
-  //       }))),
-  //     };
-  //     steps.push(nextStep);
-  //     return steps;
-  //   }, []);
-  //   // NOTE: only handling the first route for now
-  //   this.props.updateSearchedRouteOptions(fromJS(allRoutes));
-  //   this.fitMap(allRoutes[0].steps);
-  // };
 
   resetMap = () => {
     this.props.resetActiveSearchedRoutes();
@@ -148,57 +126,40 @@ export default class Directions extends Component {
     ));
   };
 
-  render() {
+  renderMap = () => {
     const {
-      currentLocation,
-      activeRouteIndex,
-      searchedRouteOptions,
       destinations,
+      searchedRouteOptions,
+      activeRouteIndex,
     } = this.props;
-    if (!searchedRouteOptions) return null;
-    const longitude = currentLocation.get('longitude');
-    const latitude = currentLocation.get('latitude');
+    if (destinations.size === 0) return null;
+    const lastDestination = destinations.last();
+    const longitude = lastDestination.getIn(['coordinates', 'longitude']);
+    const latitude = lastDestination.getIn(['coordinates', 'latitude']);
     const region = {
+      // TODO: calculate the deltas using the viewport data with ...mapRegion as a fallback
       ...mapRegion,
       longitude,
       latitude,
     };
-    const maplines = this.getPolylines();
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const activeSteps = activeRoute.get('steps', List());
-    return (
-      <View style={ styles.device }>
-        { destinations.size ? (
-          <NbList>
-            { destinations.map((destination, index) => {
-              console.log(destination.toJS());
-              return (
-                <ListItem key={ destination.get('dataPlaceId') }>
-                  <Body>
-                    <Grid>
-                      <Col size={ 6 } style={ styles.justifyCenter }>
-                        <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
-                      </Col>
-                      <Col size={ 1 }>
-                        <Button small transparent>
-                          <Text>X</Text>
-                        </Button>
-                      </Col>
-                    </Grid>
-                  </Body>
-                </ListItem>
-              );
-            }) }
-          </NbList>
-        ) : null }
-        <LocationSearch
-          handleSelectLocation={ this.props.updateDestinations }
-          leftButtonText="Destination"
-        />
-        { longitude && latitude ? (
+    if (this.state.showMap) {
+      return (
+        <View
+          style={ styles.mapDimensions }
+        >
+          <Button
+            transparent
+            small
+            style={ { position: 'absolute', left: 0, top: 0, zIndex: 100 } }
+            onPress={ this.toggleShowMap }
+          >
+            <Text>Hide Map</Text>
+          </Button>
           <MapView
             ref={ this.setMapRef }
-            style={ styles.mapDimensions }
+            style={ { width: '100%', height: '100%' } }
             initialRegion={ region }
           >
             <MapView.Marker
@@ -209,9 +170,55 @@ export default class Directions extends Component {
                 style={ styles.mapMarker }
               />
             </MapView.Marker>
-            { activeSteps.size ? maplines : null }
+            { activeSteps.size ? this.getPolylines() : null }
           </MapView>
-        ) : null }
+        </View>
+      );
+    }
+
+    return (
+      <ListItem>
+        <Button
+          transparent
+          small
+          style={ { position: 'absolute', left: 0, top: 0, zIndex: 100 } }
+          onPress={ this.toggleShowMap }
+        >
+          <Text>Show Map</Text>
+        </Button>
+      </ListItem>
+    );
+  };
+
+  render() {
+    const {
+      activeRouteIndex,
+      searchedRouteOptions,
+      destinations,
+      clearDestinationIndex,
+    } = this.props;
+    if (!searchedRouteOptions) return null;
+    const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
+    return (
+      <View style={ styles.device }>
+        <NbList>
+          { destinations.size ? (
+            destinations.map((destination, index) => (
+              <WaypointListItem
+                key={ destination.get('dataPlaceId') || `key_${index}` }
+                clearDestinationIndex={ clearDestinationIndex }
+                destination={ destination }
+                index={ index }
+              />
+            ))
+          ) : null }
+          <LocationSearch
+            handleSelectLocation={ this.props.updateDestinations }
+            leftButtonText="Destination"
+            addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+          />
+          { this.renderMap() }
+        </NbList>
         { activeRoute.has('distance') && (
           <Card>
             <CardItem header>

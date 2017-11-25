@@ -1,4 +1,5 @@
 import { fromJS, Map, List } from 'immutable';
+import { get } from 'lodash';
 
 import actionTypes from '../actions/actionTypes';
 
@@ -16,23 +17,23 @@ const initialStepsState = fromJS({
 const createDestinationFromResponse = ({ data, details }) => {
   const locationData = Map({
     // Long description
-    description: data.description,
+    description: get(data, 'description'),
     // Short description
-    name: details.name,
-    dataPlaceId: data.place_id,
-    detailsPlaceId: details.place_id,
+    name: get(details, 'name'),
+    dataPlaceId: get(data, 'place_id'),
+    detailsPlaceId: get(details, 'place_id'),
     coordinates: Map({
-      longitude: details.geometry.location.lng,
-      latitude: details.geometry.location.lat,
+      longitude: get(details, 'geometry.location.lng'),
+      latitude: get(details, 'geometry.location.lat'),
     }),
     viewPort: Map({
       northEast: Map({
-        longitude: details.geometry.viewport.northeast.lng,
-        latitude: details.geometry.viewport.northeast.lat,
+        longitude: get(details, 'geometry.viewport.northeast.lng'),
+        latitude: get(details, ['geometry', 'viewport', 'northeast', 'lat']),
       }),
       southWest: Map({
-        longitude: details.geometry.viewport.southwest.lng,
-        latitude: details.geometry.viewport.southwest.lat,
+        longitude: get(details, 'geometry.viewport.southwest.lng'),
+        latitude: get(details, ['geometry', 'viewport', 'southwest', 'lat']),
       }),
     }),
   });
@@ -82,8 +83,15 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('activeRouteIndex', payload);
   case actionTypes.directions.searchedRouteOptions.UPDATE:
     return updateSearchedRouteOptions(state, payload);
+  // TODO: figure out why this exploded the fitMap
+  // case actionTypes.directions.searchedRouteOptions.RESET:
+  //   return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.destinations.UPDATE:
     return updateDestinations(state, payload);
+  case actionTypes.directions.destinations.CLEAR_INDEX:
+    return state.update('destinations', destinations => destinations.splice(payload, 1));
+  case actionTypes.directions.destinations.CLEAR:
+    return state.update('destinations', List());
   default:
     return state;
   }

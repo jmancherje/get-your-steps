@@ -16,9 +16,12 @@ import {
 
 import {
   updateActiveIndex,
+  updateDestinations,
+  clearDestinationIndex,
+  clearDestinations,
+  addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
   resetActiveSearchedRoutes,
-  updateDestinations,
 } from '../actions/directions';
 
 import {
@@ -38,7 +41,10 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   resetCurrentStepCount,
   updateActiveIndex,
+  updateDestinations,
+  clearDestinationIndex,
+  clearDestinations,
+  addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
   resetActiveSearchedRoutes,
-  updateDestinations,
 })(Directions);

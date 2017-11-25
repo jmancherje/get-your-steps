@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
-import { Text } from 'native-base';
+import {
+  Text,
+  Icon,
+  Button,
+} from 'native-base';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
@@ -21,7 +25,7 @@ const inputStyles = {
 export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
-    leftButtonText: PropTypes.string.isRequired,
+    addCurrentLocationToDestinations: PropTypes.func.isRequired,
     index: PropTypes.number, // eslint-disable-line
   };
 
@@ -43,7 +47,16 @@ export default class LocationSearch extends React.Component {
 
   renderDescription = row => row.description;
 
-  renderLeftButton = () => <View style={ styles.leftButton }><Text>{ this.props.leftButtonText }</Text></View>;
+  renderLeftButton = () => <View style={ styles.leftButton }><Text>Add Destination</Text></View>;
+
+  renderRightButton = () => (
+    <Button
+      small
+      transparent
+      onPress={ this.props.addCurrentLocationToDestinations }
+      style={ styles.currentLocationBtn }
+    ><Icon name="locate" /></Button>
+  );
 
   render() {
     return (
@@ -80,7 +93,7 @@ export default class LocationSearch extends React.Component {
         // predefinedPlaces={ [homePlace, workPlace] }
         debounce={ 200 } // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
         renderLeftButton={ this.renderLeftButton }
-        // renderRightButton={ this.renderRightButton }
+        renderRightButton={ this.renderRightButton }
       />
     );
   }
@@ -88,4 +101,6 @@ export default class LocationSearch extends React.Component {
 
 const styles = StyleSheet.create({
   leftButton: { paddingLeft: 10, justifyContent: 'center' },
+  rightButton: { paddingRight: 10, justifyContent: 'center' },
+  currentLocationBtn: { justifyContent: 'center', height: '100%' },
 });
