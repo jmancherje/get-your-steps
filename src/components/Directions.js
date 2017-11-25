@@ -198,6 +198,7 @@ export default class Directions extends Component {
       clearDestinationIndex,
     } = this.props;
     if (!searchedRouteOptions) return null;
+    const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     return (
       <View style={ styles.device }>
@@ -215,6 +216,7 @@ export default class Directions extends Component {
           <LocationSearch
             handleSelectLocation={ this.props.updateDestinations }
             leftButtonText="Destination"
+            hasCurrentLocation={ hasCurrentLocation }
             addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
           />
           { this.renderMap() }

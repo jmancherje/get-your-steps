@@ -26,6 +26,7 @@ export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
+    hasCurrentLocation: PropTypes.bool.isRequired,
     index: PropTypes.number, // eslint-disable-line
   };
 
@@ -93,7 +94,7 @@ export default class LocationSearch extends React.Component {
         // predefinedPlaces={ [homePlace, workPlace] }
         debounce={ 200 } // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
         renderLeftButton={ this.renderLeftButton }
-        renderRightButton={ this.renderRightButton }
+        renderRightButton={ !this.props.hasCurrentLocation ? this.renderRightButton : null }
       />
     );
   }
