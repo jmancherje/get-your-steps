@@ -21,7 +21,7 @@ const fetchDirections = (destinations) => {
   const requestDestinationString = destinations.reduce((reqString, destination, index) => {
     let destinationString = `place_id:${destination.get('dataPlaceId')}`;
     if (!destination.get('dataPlaceId')) {
-      destinationString = `${destination.getIn(['coordinates', 'latitude'])},${destination.getIn(['coordinates', 'longitutde'])}`;
+      destinationString = `${destination.getIn(['coordinates', 'latitude'])},${destination.getIn(['coordinates', 'longitude'])}`;
     }
     if (index === 0) {
       return `${reqString}${destinationString}`;
@@ -62,19 +62,16 @@ export const clearDestinationIndex = (index) => ({
 
 export const addCurrentLocationToDestinations = () => (dispatch, getState) => {
   const currentLocation = getCurrentLocation(getState());
-  dispatch({
-    type: actionTypes.directions.destinations.UPDATE,
-    payload: {
-      data: { description: 'Current Location' },
-      details: {
-        name: 'Current Location',
-        geometry: {
-          location: {
-            lat: currentLocation.get('latitude'),
-            lng: currentLocation.get('longitude'),
-          },
+  dispatch(updateDestinations({
+    data: { description: 'Current Location' },
+    details: {
+      name: 'Current Location',
+      geometry: {
+        location: {
+          lat: currentLocation.get('latitude'),
+          lng: currentLocation.get('longitude'),
         },
       },
     },
-  });
+  }));
 };
