@@ -202,6 +202,13 @@ export default class Directions extends Component {
     return (
       <View style={ styles.device }>
         <NbList>
+          <LocationSearch
+            handleSelectLocation={ this.props.updateDestinations }
+            leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+            hasCurrentLocation={ hasCurrentLocation }
+            addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+          />
+          { this.renderMap() }
           { destinations.size ? (
             destinations.map((destination, index) => (
               <WaypointListItem
@@ -212,13 +219,6 @@ export default class Directions extends Component {
               />
             ))
           ) : null }
-          <LocationSearch
-            handleSelectLocation={ this.props.updateDestinations }
-            leftButtonText="Destination"
-            hasCurrentLocation={ hasCurrentLocation }
-            addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-          />
-          { this.renderMap() }
         </NbList>
         { activeRoute.has('distance') && (
           <Card>

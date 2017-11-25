@@ -30,19 +30,20 @@ export default class WaypointListItem extends Component {
       destination,
     } = this.props;
     return (
-      <ListItem key={ destination.get('dataPlaceId') }>
+      <ListItem key={ destination.get('dataPlaceId') } style={ styles.listItem }>
         <Body>
           <Grid>
             <Col size={ 6 } style={ styles.justifyCenter }>
               <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
             </Col>
-            <Col size={ 1 }>
+            <Col size={ 2 } style={ styles.justifyCenter }>
               <Button
                 small
                 transparent
+                danger
                 onPress={ this.clearDirection }
               >
-                <Text>X</Text>
+                <Text>Remove</Text>
               </Button>
             </Col>
           </Grid>
@@ -55,5 +56,8 @@ export default class WaypointListItem extends Component {
 const styles = StyleSheet.create({
   justifyCenter: {
     justifyContent: 'center',
+  },
+  listItem: {
+    height: 30,
   },
 });

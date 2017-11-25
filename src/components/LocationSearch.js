@@ -27,6 +27,7 @@ export default class LocationSearch extends React.Component {
     handleSelectLocation: PropTypes.func.isRequired,
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     hasCurrentLocation: PropTypes.bool.isRequired,
+    leftButtonText: PropTypes.string.isRequired,
     index: PropTypes.number, // eslint-disable-line
   };
 
@@ -48,7 +49,7 @@ export default class LocationSearch extends React.Component {
 
   renderDescription = row => row.description;
 
-  renderLeftButton = () => <View style={ styles.leftButton }><Text>Add Destination</Text></View>;
+  renderLeftButton = () => <View style={ styles.leftButton }><Text>{ this.props.leftButtonText }</Text></View>;
 
   renderRightButton = () => (
     <Button

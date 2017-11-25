@@ -15,7 +15,7 @@ const LocationSearchView = () => (
   <Container>
     <Header>
       <Body>
-        <Title>Steps</Title>
+        <Title>Create Walking Route</Title>
       </Body>
     </Header>
     <Content>
