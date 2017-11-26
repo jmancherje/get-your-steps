@@ -15,6 +15,7 @@ import {
   Button,
   ListItem,
 } from 'native-base';
+import Collapsible from 'react-native-collapsible';
 
 import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
@@ -67,6 +68,10 @@ export default class Directions extends Component {
     showMap: PropTypes.bool.isRequired,
   };
 
+  state = {
+    isShowingRoute: true,
+  };
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
       this.fitMap(nextProps.searchedRouteOptions.getIn([0, 'steps']));
@@ -76,6 +81,10 @@ export default class Directions extends Component {
       this.props.updateShowMap(true);
     }
   }
+
+  toggleRoute = () => {
+    this.setState({ isShowingRoute: !this.state.isShowingRoute });
+  };
 
   hideMap = () => {
     this.props.updateShowMap(false);
@@ -186,38 +195,47 @@ export default class Directions extends Component {
     return (
       <View style={ styles.device }>
         <NbList>
-          <ListItem itemDivider>
-            <Text>Walking Route</Text>
+          <ListItem itemDivider style={ styles.header }>
+            <Left>
+              <Text>Walking Route</Text>
+            </Left>
+            <Right>
+              <Button small transparent onPress={ this.toggleRoute }>
+                <Text>Toggle</Text>
+              </Button>
+            </Right>
           </ListItem>
-          <View>
-            { destinations.size ? (
-              destinations.map((destination, index) => (
-                <WaypointListItem
-                  key={ destination.get('dataPlaceId') || `key_${index}` }
-                  clearDestinationIndex={ clearDestinationIndex }
-                  destination={ destination }
-                  index={ index }
-                />
-              ))
-            ) : null }
-            <LocationSearch
-              handleSelectLocation={ this.props.updateDestinations }
-              leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-              hasCurrentLocation={ hasCurrentLocation }
-              addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-            />
-          </View>
-          <ListItem itemDivider>
+          <Collapsible collapsed={ !this.state.isShowingRoute }>
+            <View>
+              { destinations.size ? (
+                destinations.map((destination, index) => (
+                  <WaypointListItem
+                    key={ destination.get('dataPlaceId') || `key_${index}` }
+                    clearDestinationIndex={ clearDestinationIndex }
+                    destination={ destination }
+                    index={ index }
+                  />
+                ))
+              ) : null }
+              <LocationSearch
+                handleSelectLocation={ this.props.updateDestinations }
+                leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+                hasCurrentLocation={ hasCurrentLocation }
+                addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+              />
+            </View>
+          </Collapsible>
+          <ListItem itemDivider style={ styles.header }>
             <Text>Map</Text>
           </ListItem>
           { this.renderMap() }
-          <ListItem itemDivider>
+          <ListItem itemDivider style={ styles.header }>
             <Text>Distance and Estimated Steps</Text>
           </ListItem>
           <ListItem>
             <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
           </ListItem>
-          <ListItem itemDivider>
+          <ListItem itemDivider style={ styles.header }>
             <Text>Current Step Count</Text>
           </ListItem>
           <ListItem>
@@ -269,5 +287,10 @@ const styles = StyleSheet.create({
   },
   stepText: {
     marginLeft: 0,
+  },
+  header: {
+    backgroundColor: '#dddddd',
+    borderBottomWidth: 1,
+    borderBottomColor: '#bfbfbf',
   },
 });
