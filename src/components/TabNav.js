@@ -1,4 +1,7 @@
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { TabNavigator } from 'react-navigation';
+import { Foundation } from '@expo/vector-icons';
 
 import Root from './Root';
 import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
@@ -7,23 +10,37 @@ const Tabs = TabNavigator({
   Location: {
     screen: RoutePlanningViewContainer,
     navigationOptions: {
-      tabBarLabel: 'Location',
+      tabBarLabel: 'Routes',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },
   Steps: {
     screen: Root,
     navigationOptions: {
       tabBarLabel: 'Steps',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
+    },
+  },
+  Data: {
+    screen: RoutePlanningViewContainer,
+    navigationOptions: {
+      tabBarLabel: 'Route',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },
 }, {
-  tabBarPosition: 'bottom',
   animationEnabled: true,
   tabBarOptions: {
-    activeTintColor: '#e91e63',
     labelStyle: {
-      fontSize: 14,
+      fontSize: 16,
     },
+    activeBackgroundColor: '#CEE1F8',
+  },
+});
+
+const styles = StyleSheet.create({
+  icon: {
+    fontSize: 18,
   },
 });
 

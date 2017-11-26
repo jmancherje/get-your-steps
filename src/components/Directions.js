@@ -70,6 +70,9 @@ export default class Directions extends Component {
 
   state = {
     isShowingRoute: true,
+    isShowingMap: false,
+    isShowingDistance: false,
+    isShowingSteps: true,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -84,6 +87,18 @@ export default class Directions extends Component {
 
   toggleRoute = () => {
     this.setState({ isShowingRoute: !this.state.isShowingRoute });
+  };
+
+  toggleMap = () => {
+    this.setState({ isShowingMap: !this.state.isShowingMap });
+  };
+
+  toggleDistance = () => {
+    this.setState({ isShowingDistance: !this.state.isShowingDistance });
+  };
+
+  toggleSteps = () => {
+    this.setState({ isShowingSteps: !this.state.isShowingSteps });
   };
 
   hideMap = () => {
@@ -201,7 +216,7 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleRoute }>
-                <Text>Toggle</Text>
+                <Text style={{ fontSize: 16 }}>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
@@ -226,32 +241,59 @@ export default class Directions extends Component {
             </View>
           </Collapsible>
           <ListItem itemDivider style={ styles.header }>
-            <Text>Map</Text>
-          </ListItem>
-          { this.renderMap() }
-          <ListItem itemDivider style={ styles.header }>
-            <Text>Distance and Estimated Steps</Text>
-          </ListItem>
-          <ListItem>
-            <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
-          </ListItem>
-          <ListItem itemDivider style={ styles.header }>
-            <Text>Current Step Count</Text>
-          </ListItem>
-          <ListItem>
             <Left>
-              <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
+              <Text>Map</Text>
             </Left>
             <Right>
-              <Button
-                small
-                transparent
-                onPress={ this.props.resetCurrentStepCount }
-              >
-                <Text>Reset</Text>
+              <Button small transparent onPress={ this.toggleMap }>
+                <Text style={{ fontSize: 16 }}>{ this.state.isShowingMap ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
+          <Collapsible collapsed={ !this.state.isShowingMap }>
+            { this.renderMap() }
+          </Collapsible>
+          <ListItem itemDivider style={ styles.header }>
+            <Left>
+              <Text>Distance and Estimated Steps</Text>
+            </Left>
+            <Right>
+              <Button small transparent onPress={ this.toggleDistance }>
+                <Text style={{ fontSize: 16 }}>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
+              </Button>
+            </Right>
+          </ListItem>
+          <Collapsible collapsed={ !this.state.isShowingDistance }>
+            <ListItem>
+              <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+            </ListItem>
+          </Collapsible>
+          <ListItem itemDivider style={ styles.header }>
+            <Left>
+              <Text>Current Step Count</Text>
+            </Left>
+            <Right>
+              <Button small transparent onPress={ this.toggleSteps }>
+                <Text style={{ fontSize: 16 }}>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
+              </Button>
+            </Right>
+          </ListItem>
+          <Collapsible collapsed={ !this.state.isShowingSteps }>
+            <ListItem>
+              <Left>
+                <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
+              </Left>
+              <Right>
+                <Button
+                  small
+                  transparent
+                  onPress={ this.props.resetCurrentStepCount }
+                >
+                  <Text>Reset</Text>
+                </Button>
+              </Right>
+            </ListItem>
+          </Collapsible>
         </NbList>
       </View>
     );
@@ -292,5 +334,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#dddddd',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
+    height: 40,
   },
 });
