@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
   },
   listItem: {
     height: 30,
-    marginLeft: 0,
+    marginLeft: 10,
     marginRight: 0,
+    paddingRight: 0,
   },
 });

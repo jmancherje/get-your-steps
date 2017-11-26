@@ -9,40 +9,42 @@ import {
   Right,
   Button,
   Text,
+  Left,
 } from 'native-base';
 
 import DirectionsContainer from '../containers/DirectionsContainer';
 
 export default class RoutePlanningView extends React.Component {
   static propTypes = {
-    showMap: PropTypes.bool.isRequired,
-    updateShowMap: PropTypes.func.isRequired,
-    hasDestinations: PropTypes.bool.isRequired,
+    numberOfDestinations: PropTypes.number.isRequired,
+    resetDirections: PropTypes.func.isRequired,
   };
 
   render() {
-    const {
-      showMap,
-      updateShowMap,
-      hasDestinations,
-    } = this.props;
-
+    const { numberOfDestinations, resetDirections } = this.props;
     return (
       <Container>
         <Header>
+          <Left>
+            <Button
+              small
+              danger
+              disabled={ numberOfDestinations < 1 }
+              onPress={ resetDirections }
+            >
+              <Text>Reset</Text>
+            </Button>
+          </Left>
           <Body>
             <Title>Create Route</Title>
           </Body>
           <Right>
-            { hasDestinations ? (
-              <Button
-                transparent
-                small
-                onPress={ updateShowMap }
-              >
-                <Text>{ showMap ? 'Hide Map' : 'Show Map' }</Text>
-              </Button>
-            ) : null }
+            <Button
+              small
+              disabled={ numberOfDestinations < 2 }
+            >
+              <Text>Save</Text>
+            </Button>
           </Right>
         </Header>
         <Content>

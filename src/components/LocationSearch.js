@@ -13,6 +13,10 @@ import { GOOGLE_PLACES_KEY } from '../../keys';
 const inputStyles = {
   textInputContainer: {
     width: '100%',
+    backgroundColor: 'white',
+  },
+  textInput: {
+    backgroundColor: '#e2e2e2',
   },
   description: {
     fontWeight: 'bold',
