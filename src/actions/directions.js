@@ -13,8 +13,8 @@ export const updateSearchedRouteOptions = (routesList) => ({
   payload: routesList,
 });
 
-export const resetActiveSearchedRoutes = () => ({
-  type: actionTypes.directions.searchedRouteOptions.RESET,
+export const resetDirections = () => ({
+  type: actionTypes.directions.RESET,
 });
 
 const fetchDirections = (destinations) => {

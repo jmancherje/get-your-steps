@@ -32,6 +32,7 @@ export default Object.freeze({
     },
   },
   directions: {
+    RESET: 'directions/RESET',
     activeIndex: {
       UPDATE: 'directions/activeIndex/UPDATE',
     },

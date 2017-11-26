@@ -86,8 +86,6 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('activeRouteIndex', payload);
   case actionTypes.directions.searchedRouteOptions.UPDATE:
     return updateSearchedRouteOptions(state, payload);
-  case actionTypes.directions.searchedRouteOptions.RESET:
-    return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.destinations.UPDATE:
     return updateDestinations(state, payload);
   case actionTypes.directions.destinations.CLEAR_INDEX:
@@ -96,6 +94,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.update('destinations', List());
   case actionTypes.directions.map.UPDATE:
     return updateShowMap(state, payload);
+  case actionTypes.directions.RESET:
+    return state.set('searchedRouteOptions', List()).set('destinations', List());
   default:
     return state;
   }

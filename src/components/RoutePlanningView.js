@@ -17,10 +17,11 @@ import DirectionsContainer from '../containers/DirectionsContainer';
 export default class RoutePlanningView extends React.Component {
   static propTypes = {
     numberOfDestinations: PropTypes.number.isRequired,
+    resetDirections: PropTypes.func.isRequired,
   };
 
   render() {
-    const { numberOfDestinations } = this.props;
+    const { numberOfDestinations, resetDirections } = this.props;
     return (
       <Container>
         <Header>
@@ -29,6 +30,7 @@ export default class RoutePlanningView extends React.Component {
               small
               danger
               disabled={ numberOfDestinations < 1 }
+              onPress={ resetDirections }
             >
               <Text>Reset</Text>
             </Button>

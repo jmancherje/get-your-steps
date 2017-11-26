@@ -58,7 +58,6 @@ export default class Directions extends Component {
     resetCurrentStepCount: PropTypes.func.isRequired,
     updateActiveIndex: PropTypes.func.isRequired,
     clearDestinationIndex: PropTypes.func.isRequired,
-    resetActiveSearchedRoutes: PropTypes.func.isRequired,
     activeRouteIndex: PropTypes.number.isRequired,
     searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
     updateDestinations: PropTypes.func.isRequired,
@@ -124,10 +123,6 @@ export default class Directions extends Component {
       edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
       animated: true,
     });
-  };
-
-  resetMap = () => {
-    this.props.resetActiveSearchedRoutes();
   };
 
   getPolylines = () => {
