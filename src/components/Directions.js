@@ -190,12 +190,6 @@ export default class Directions extends Component {
             <Text>Walking Route</Text>
           </ListItem>
           <View>
-            <LocationSearch
-              handleSelectLocation={ this.props.updateDestinations }
-              leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-              hasCurrentLocation={ hasCurrentLocation }
-              addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-            />
             { destinations.size ? (
               destinations.map((destination, index) => (
                 <WaypointListItem
@@ -206,6 +200,12 @@ export default class Directions extends Component {
                 />
               ))
             ) : null }
+            <LocationSearch
+              handleSelectLocation={ this.props.updateDestinations }
+              leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+              hasCurrentLocation={ hasCurrentLocation }
+              addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+            />
           </View>
           <ListItem itemDivider>
             <Text>Map</Text>
@@ -221,14 +221,14 @@ export default class Directions extends Component {
             <Text>Current Step Count</Text>
           </ListItem>
           <ListItem>
-            <Left style={{ marginLeft: 0 }}>
-              <Text style={{ marginLeft: 0 }}>Total Steps: { this.props.currentStepCount }</Text>
+            <Left>
+              <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
             </Left>
             <Right>
               <Button
                 small
                 transparent
-                onPress={ this.resetMap }
+                onPress={ this.props.resetCurrentStepCount }
               >
                 <Text>Reset</Text>
               </Button>
@@ -266,5 +266,8 @@ const styles = StyleSheet.create({
   },
   itemHeader: {
     height: 30,
+  },
+  stepText: {
+    marginLeft: 0,
   },
 });
