@@ -43,7 +43,7 @@ const STEPS_PER_METER = 0.713;
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const mapWidth = deviceWidth;
-const mapHeight = Math.round(deviceHeight / 2);
+const mapHeight = Math.round(deviceHeight / 3);
 const aspectRatio = mapWidth / mapHeight;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
@@ -65,7 +65,7 @@ export default class Directions extends Component {
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
     updateShowMap: PropTypes.func.isRequired,
-    showMap: PropTypes.bool.isRequired,
+    currentLocation: PropTypes.instanceOf(Map).isRequired,
   };
 
   state = {
@@ -90,6 +90,11 @@ export default class Directions extends Component {
   };
 
   toggleMap = () => {
+    // const { searchedRouteOptions, activeRouteIndex } = this.props;
+    // // If we're opening the map, fit it to the route
+    // if (!this.state.isShowingMap) {
+    //   this.fitMap(searchedRouteOptions.getIn([activeRouteIndex, 'steps']));
+    // }
     this.setState({ isShowingMap: !this.state.isShowingMap });
   };
 
@@ -149,12 +154,18 @@ export default class Directions extends Component {
       destinations,
       searchedRouteOptions,
       activeRouteIndex,
-      showMap,
+      currentLocation,
     } = this.props;
-    if (destinations.size === 0) return null;
-    const lastDestination = destinations.last();
-    const longitude = lastDestination.getIn(['coordinates', 'longitude']);
-    const latitude = lastDestination.getIn(['coordinates', 'latitude']);
+    const lastDestination = destinations.last() || Map();
+    let longitude = lastDestination.getIn(['coordinates', 'longitude']);
+    let latitude = lastDestination.getIn(['coordinates', 'latitude']);
+    // Center map on the current location if it's opened
+    // When the user hasn't input any destinations
+    if (!longitude || !latitude) {
+      longitude = currentLocation.get('longitude');
+      latitude = currentLocation.get('latitude');
+    }
+    if (!longitude || !latitude) return null;
     const region = {
       // TODO: calculate the deltas using the viewport data with ...mapRegion as a fallback
       ...mapRegion,
@@ -163,38 +174,27 @@ export default class Directions extends Component {
     };
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const activeSteps = activeRoute.get('steps', List());
-    if (showMap) {
-      return (
-        <View
-          style={ styles.mapDimensions }
+    return (
+      <View
+        style={ styles.mapDimensions }
+      >
+        <MapView
+          ref={ this.setMapRef }
+          style={ { width: '100%', height: '100%' } }
+          initialRegion={ region }
         >
-          <Button
-            transparent
-            small
-            style={ { position: 'absolute', left: 0, top: 0, zIndex: 100 } }
-            onPress={ this.hideMap }
+          <MapView.Marker
+            coordinate={ { latitude, longitude } }
+            title="Current Location"
           >
-            <Text>Hide Map</Text>
-          </Button>
-          <MapView
-            ref={ this.setMapRef }
-            style={ { width: '100%', height: '100%' } }
-            initialRegion={ region }
-          >
-            <MapView.Marker
-              coordinate={ { latitude, longitude } }
-              title="🖕😎🖕"
-            >
-              <View
-                style={ styles.mapMarker }
-              />
-            </MapView.Marker>
-            { activeSteps.size ? this.getPolylines() : null }
-          </MapView>
-        </View>
-      );
-    }
-    return null;
+            <View
+              style={ styles.mapMarker }
+            />
+          </MapView.Marker>
+          { activeSteps.size ? this.getPolylines() : null }
+        </MapView>
+      </View>
+    );
   };
 
   render() {
@@ -235,9 +235,18 @@ export default class Directions extends Component {
               <LocationSearch
                 handleSelectLocation={ this.props.updateDestinations }
                 leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-                hasCurrentLocation={ hasCurrentLocation }
+                hasCurrentLocation // Currently hard coding to true so we can use the button below
                 addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
               />
+              { hasCurrentLocation ? null : (
+                <Button
+                  small
+                  transparent
+                  onPress={ this.props.addCurrentLocationToDestinations }
+                >
+                  <Text>Or add your current location</Text>
+                </Button>
+              ) }
             </View>
           </Collapsible>
           <ListItem itemDivider style={ styles.header }>
@@ -246,7 +255,7 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleMap }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingMap ? 'v' : '>' }</Text>
+                <Text style={ { fontSize: 16 } }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
@@ -265,7 +274,11 @@ export default class Directions extends Component {
           </ListItem>
           <Collapsible collapsed={ !this.state.isShowingDistance }>
             <ListItem>
-              <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+              { activeRoute.get('distance') ? (
+                <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+              ) : (
+                <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
+              ) }
             </ListItem>
           </Collapsible>
           <ListItem itemDivider style={ styles.header }>
@@ -279,7 +292,7 @@ export default class Directions extends Component {
             </Right>
           </ListItem>
           <Collapsible collapsed={ !this.state.isShowingSteps }>
-            <ListItem>
+            <ListItem style={ styles.listItem }>
               <Left>
                 <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
               </Left>
@@ -335,5 +348,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
     height: 40,
+  },
+  smallText: {
+    fontSize: 13,
+    color: '#8c8c8c',
+  },
+  listItem: {
+    height: 30,
+    marginLeft: 10,
+    marginRight: 0,
+    paddingRight: 0,
   },
 });

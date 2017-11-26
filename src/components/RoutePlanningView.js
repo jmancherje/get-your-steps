@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   Container,
   Header,
@@ -10,18 +10,17 @@ import {
   Button,
   Text,
   Left,
-  Icon,
 } from 'native-base';
 
 import DirectionsContainer from '../containers/DirectionsContainer';
 
 export default class RoutePlanningView extends React.Component {
-  static navigatorOptions = {
-    tabBarLabel: 'Routes',
-    tabBarIcon: () => (<Icon name="home" />),
+  static propTypes = {
+    numberOfDestinations: PropTypes.number.isRequired,
   };
 
   render() {
+    const { numberOfDestinations } = this.props;
     return (
       <Container>
         <Header>
@@ -29,6 +28,7 @@ export default class RoutePlanningView extends React.Component {
             <Button
               small
               danger
+              disabled={ numberOfDestinations < 1 }
             >
               <Text>Reset</Text>
             </Button>
@@ -37,7 +37,10 @@ export default class RoutePlanningView extends React.Component {
             <Title>Create Route</Title>
           </Body>
           <Right>
-            <Button small>
+            <Button
+              small
+              disabled={ numberOfDestinations < 2 }
+            >
               <Text>Save</Text>
             </Button>
           </Right>

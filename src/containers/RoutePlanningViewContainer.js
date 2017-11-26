@@ -5,11 +5,11 @@ import {
 } from '../actions/directions';
 
 import RoutePlanningView from '../components/RoutePlanningView';
-import { getIsShowingMap, hasDestinations } from '../selectors/directions';
+import { getIsShowingMap, getNumberOfDestinations } from '../selectors/directions';
 
 const mapStateToProps = (state) => ({
   showMap: getIsShowingMap(state),
-  hasDestinations: hasDestinations(state),
+  numberOfDestinations: getNumberOfDestinations(state),
 });
 
 export default connect(mapStateToProps, {
