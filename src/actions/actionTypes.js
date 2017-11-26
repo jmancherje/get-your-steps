@@ -39,5 +39,13 @@ export default Object.freeze({
       UPDATE: 'directions/searchedRouteOptions/UPDATE',
       RESET: 'directions/searchedRouteOptions/RESET',
     },
+    destinations: {
+      UPDATE: 'directions/destinations/UPDATE',
+      CLEAR_INDEX: 'directions/destinations/CLEAR_INDEX',
+      CLEAR: 'directions/destinations/CLEAR',
+    },
+    map: {
+      UPDATE: 'directions/map/UPDATE',
+    },
   },
 });

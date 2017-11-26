@@ -1,32 +1,11 @@
-import React from 'react';
-import {
-  Container,
-  Header,
-  Body,
-  Title,
-  Content,
-} from 'native-base';
 import { TabNavigator } from 'react-navigation';
 
 import Root from './Root';
-import DirectionsContainer from '../containers/DirectionsContainer';
-
-const LocationSearchView = () => (
-  <Container>
-    <Header>
-      <Body>
-        <Title>Steps</Title>
-      </Body>
-    </Header>
-    <Content>
-      <DirectionsContainer />
-    </Content>
-  </Container>
-);
+import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
 
 const Tabs = TabNavigator({
   Location: {
-    screen: LocationSearchView,
+    screen: RoutePlanningViewContainer,
     navigationOptions: {
       tabBarLabel: 'Location',
     },

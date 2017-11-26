@@ -1,19 +1,101 @@
-import { List, fromJS } from 'immutable';
+import { fromJS, Map, List } from 'immutable';
+import { get } from 'lodash';
 
 import actionTypes from '../actions/actionTypes';
 
 const initialStepsState = fromJS({
-  searchedRouteOptions: List(),
+  destinations: List(),
+  searchedRouteOptions: [],
   activeRouteIndex: 0,
+  showMap: false,
   // TODO Saved routes
 });
+
+const createDestinationFromResponse = ({ data, details }) => {
+  const locationData = Map({
+    // Long description
+    description: get(data, 'description'),
+    // Short description
+    name: get(details, 'name'),
+    dataPlaceId: get(data, 'place_id'),
+    detailsPlaceId: get(details, 'place_id'),
+    coordinates: Map({
+      longitude: get(details, 'geometry.location.lng'),
+      latitude: get(details, 'geometry.location.lat'),
+    }),
+    viewPort: Map({
+      northEast: Map({
+        longitude: get(details, 'geometry.viewport.northeast.lng'),
+        latitude: get(details, ['geometry', 'viewport', 'northeast', 'lat']),
+      }),
+      southWest: Map({
+        longitude: get(details, 'geometry.viewport.southwest.lng'),
+        latitude: get(details, ['geometry', 'viewport', 'southwest', 'lat']),
+      }),
+    }),
+  });
+  return locationData;
+};
+
+const updateDestinations = (state, { data, details, index }) => (
+  state.update(
+    'destinations',
+    List(),
+    destinations => {
+      const locationData = createDestinationFromResponse({ data, details });
+      if (typeof index === 'number') {
+        return destinations.insert(index, locationData);
+      }
+      return destinations.push(locationData);
+    })
+);
+
+const updateSearchedRouteOptions = (state, payload) => {
+  console.log('response', payload);
+  const routes = payload.routes;
+  if (!Array.isArray(routes) || routes.length < 1) return state;
+
+  // TODO: do this without immutable to prevent unnecessary .toJS
+  const allRoutes = routes.reduce((steps, route) => {
+    const combinedLegs = route.legs.reduce((legsMap, leg) => (
+      legsMap
+        .update('distance', distance => distance + leg.distance.value)
+        .update('steps', nextSteps => nextSteps.push(Map({
+          latitude: leg.start_location.lat,
+          longitude: leg.start_location.lng,
+        })).concat(leg.steps.map(step => ({
+          latitude: step.end_location.lat,
+          longitude: step.end_location.lng,
+        }))))
+    ), Map({ distance: 0, steps: List() }));
+    steps.push(combinedLegs.toJS());
+    return steps;
+  }, []);
+
+  return state.set('searchedRouteOptions', fromJS(allRoutes));
+};
+
+const updateShowMap = (state, showMap) => {
+  showMap = typeof showMap === 'boolean' ? showMap : !state.get('showMap');
+  return state.set('showMap', showMap);
+};
 
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
     return state.set('activeRouteIndex', payload);
   case actionTypes.directions.searchedRouteOptions.UPDATE:
-    return state.set('searchedRouteOptions', payload);
+    return updateSearchedRouteOptions(state, payload);
+  case actionTypes.directions.searchedRouteOptions.RESET:
+    return state.set('searchedRouteOptions', List()).set('destinations', List());
+  case actionTypes.directions.destinations.UPDATE:
+    return updateDestinations(state, payload);
+  case actionTypes.directions.destinations.CLEAR_INDEX:
+    return state.update('destinations', destinations => destinations.splice(payload, 1));
+  case actionTypes.directions.destinations.CLEAR:
+    return state.update('destinations', List());
+  case actionTypes.directions.map.UPDATE:
+    return updateShowMap(state, payload);
   default:
     return state;
   }
