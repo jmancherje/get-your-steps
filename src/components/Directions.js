@@ -206,7 +206,7 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleRoute }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
+                <Text style={ styles.expandButton }>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
@@ -245,7 +245,7 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleMap }>
-                <Text style={ { fontSize: 16 } }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
+                <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
@@ -258,7 +258,7 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleDistance }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
+                <Text style={ styles.expandButton }>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
@@ -277,12 +277,12 @@ export default class Directions extends Component {
             </Left>
             <Right>
               <Button small transparent onPress={ this.toggleSteps }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
+                <Text style={ styles.expandButton }>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
               </Button>
             </Right>
           </ListItem>
           <Collapsible collapsed={ !this.state.isShowingSteps }>
-            <ListItem style={ styles.listItem }>
+            <ListItem>
               <Left>
                 <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
               </Left>
@@ -343,10 +343,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#8c8c8c',
   },
-  listItem: {
-    height: 30,
-    marginLeft: 10,
-    marginRight: 0,
-    paddingRight: 0,
+  expandButton: {
+    fontSize: 16,
   },
 });
