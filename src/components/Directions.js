@@ -66,10 +66,8 @@ export default class Directions extends Component {
     updateDestinations: PropTypes.func.isRequired,
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
-  };
-
-  state = {
-    showMap: false,
+    updateShowMap: PropTypes.func.isRequired,
+    showMap: PropTypes.bool.isRequired,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -78,12 +76,12 @@ export default class Directions extends Component {
     }
 
     if (this.props.destinations.size === 0 && nextProps.destinations.size !== 0) {
-      this.setState({ showMap: true });
+      this.props.updateShowMap(true);
     }
   }
 
-  toggleShowMap = () => {
-    this.setState({ showMap: !this.state.showMap });
+  hideMap = () => {
+    this.props.updateShowMap(false);
   };
 
   setMapRef = (ref) => {
@@ -130,6 +128,7 @@ export default class Directions extends Component {
       destinations,
       searchedRouteOptions,
       activeRouteIndex,
+      showMap,
     } = this.props;
     if (destinations.size === 0) return null;
     const lastDestination = destinations.last();
@@ -143,7 +142,7 @@ export default class Directions extends Component {
     };
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const activeSteps = activeRoute.get('steps', List());
-    if (this.state.showMap) {
+    if (showMap) {
       return (
         <View
           style={ styles.mapDimensions }
@@ -152,7 +151,7 @@ export default class Directions extends Component {
             transparent
             small
             style={ { position: 'absolute', left: 0, top: 0, zIndex: 100 } }
-            onPress={ this.toggleShowMap }
+            onPress={ this.hideMap }
           >
             <Text>Hide Map</Text>
           </Button>
@@ -174,19 +173,7 @@ export default class Directions extends Component {
         </View>
       );
     }
-
-    return (
-      <ListItem>
-        <Button
-          transparent
-          small
-          style={ { position: 'absolute', left: 0, top: 0, zIndex: 100 } }
-          onPress={ this.toggleShowMap }
-        >
-          <Text>Show Map</Text>
-        </Button>
-      </ListItem>
-    );
+    return null;
   };
 
   render() {
@@ -209,16 +196,25 @@ export default class Directions extends Component {
             addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
           />
           { this.renderMap() }
-          { destinations.size ? (
-            destinations.map((destination, index) => (
-              <WaypointListItem
-                key={ destination.get('dataPlaceId') || `key_${index}` }
-                clearDestinationIndex={ clearDestinationIndex }
-                destination={ destination }
-                index={ index }
-              />
-            ))
-          ) : null }
+          <View>
+            <ListItem
+              itemHeader
+              first
+              style={ styles.itemHeader }
+            >
+              <Text>Route</Text>
+            </ListItem>
+            { destinations.size ? (
+              destinations.map((destination, index) => (
+                <WaypointListItem
+                  key={ destination.get('dataPlaceId') || `key_${index}` }
+                  clearDestinationIndex={ clearDestinationIndex }
+                  destination={ destination }
+                  index={ index }
+                />
+              ))
+            ) : null }
+          </View>
         </NbList>
         { activeRoute.has('distance') && (
           <Card>
@@ -296,5 +292,8 @@ const styles = StyleSheet.create({
   },
   justifyCenter: {
     justifyContent: 'center',
+  },
+  itemHeader: {
+    height: 30,
   },
 });

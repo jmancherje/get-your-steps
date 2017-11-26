@@ -44,5 +44,8 @@ export default Object.freeze({
       CLEAR_INDEX: 'directions/destinations/CLEAR_INDEX',
       CLEAR: 'directions/destinations/CLEAR',
     },
+    map: {
+      UPDATE: 'directions/map/UPDATE',
+    },
   },
 });

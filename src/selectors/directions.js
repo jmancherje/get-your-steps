@@ -32,3 +32,13 @@ export const getDestinations = createSelector(
   [getDirections],
   directions => directions.get('destinations', List())
 );
+
+export const getIsShowingMap = createSelector(
+  [getDirections],
+  directions => directions.get('showMap', false)
+);
+
+export const hasDestinations = createSelector(
+  [getDestinations],
+  destinations => Boolean(destinations.size)
+);

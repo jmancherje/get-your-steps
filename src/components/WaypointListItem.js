@@ -30,7 +30,7 @@ export default class WaypointListItem extends Component {
       destination,
     } = this.props;
     return (
-      <ListItem key={ destination.get('dataPlaceId') } style={ styles.listItem }>
+      <ListItem style={ styles.listItem }>
         <Body>
           <Grid>
             <Col size={ 6 } style={ styles.justifyCenter }>
@@ -59,5 +59,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     height: 30,
+    marginLeft: 0,
+    marginRight: 0,
   },
 });

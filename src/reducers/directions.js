@@ -4,13 +4,10 @@ import { get } from 'lodash';
 import actionTypes from '../actions/actionTypes';
 
 const initialStepsState = fromJS({
-  currentSearch: {
-    origin: Map(),
-    destination: Map(),
-  },
   destinations: List(),
   searchedRouteOptions: [],
   activeRouteIndex: 0,
+  showMap: false,
   // TODO Saved routes
 });
 
@@ -54,6 +51,7 @@ const updateDestinations = (state, { data, details, index }) => (
 );
 
 const updateSearchedRouteOptions = (state, payload) => {
+  console.log('response', payload);
   const routes = payload.routes;
   if (!Array.isArray(routes) || routes.length < 1) return state;
 
@@ -77,6 +75,11 @@ const updateSearchedRouteOptions = (state, payload) => {
   return state.set('searchedRouteOptions', fromJS(allRoutes));
 };
 
+const updateShowMap = (state, showMap) => {
+  showMap = typeof showMap === 'boolean' ? showMap : !state.get('showMap');
+  return state.set('showMap', showMap);
+};
+
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
@@ -91,6 +94,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.update('destinations', destinations => destinations.splice(payload, 1));
   case actionTypes.directions.destinations.CLEAR:
     return state.update('destinations', List());
+  case actionTypes.directions.map.UPDATE:
+    return updateShowMap(state, payload);
   default:
     return state;
   }

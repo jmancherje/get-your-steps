@@ -75,3 +75,8 @@ export const addCurrentLocationToDestinations = () => (dispatch, getState) => {
     },
   }));
 };
+
+export const updateShowMap = (showMap) => ({
+  type: actionTypes.directions.map.UPDATE,
+  payload: showMap,
+});
