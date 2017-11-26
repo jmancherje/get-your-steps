@@ -9,13 +9,10 @@ import {
 import { MapView } from 'expo';
 import {
   Text,
-  Card,
   List as NbList,
-  CardItem,
-  Body,
+  Left,
+  Right,
   Button,
-  Grid,
-  Col,
   ListItem,
 } from 'native-base';
 
@@ -189,21 +186,16 @@ export default class Directions extends Component {
     return (
       <View style={ styles.device }>
         <NbList>
-          <LocationSearch
-            handleSelectLocation={ this.props.updateDestinations }
-            leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-            hasCurrentLocation={ hasCurrentLocation }
-            addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-          />
-          { this.renderMap() }
+          <ListItem itemDivider>
+            <Text>Walking Route</Text>
+          </ListItem>
           <View>
-            <ListItem
-              itemHeader
-              first
-              style={ styles.itemHeader }
-            >
-              <Text>Route</Text>
-            </ListItem>
+            <LocationSearch
+              handleSelectLocation={ this.props.updateDestinations }
+              leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+              hasCurrentLocation={ hasCurrentLocation }
+              addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+            />
             { destinations.size ? (
               destinations.map((destination, index) => (
                 <WaypointListItem
@@ -215,55 +207,34 @@ export default class Directions extends Component {
               ))
             ) : null }
           </View>
+          <ListItem itemDivider>
+            <Text>Map</Text>
+          </ListItem>
+          { this.renderMap() }
+          <ListItem itemDivider>
+            <Text>Distance and Estimated Steps</Text>
+          </ListItem>
+          <ListItem>
+            <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+          </ListItem>
+          <ListItem itemDivider>
+            <Text>Current Step Count</Text>
+          </ListItem>
+          <ListItem>
+            <Left style={{ marginLeft: 0 }}>
+              <Text style={{ marginLeft: 0 }}>Total Steps: { this.props.currentStepCount }</Text>
+            </Left>
+            <Right>
+              <Button
+                small
+                transparent
+                onPress={ this.resetMap }
+              >
+                <Text>Reset</Text>
+              </Button>
+            </Right>
+          </ListItem>
         </NbList>
-        { activeRoute.has('distance') && (
-          <Card>
-            <CardItem header>
-              <Text>Estimated Steps To Walk To Destination</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Grid>
-                  <Col size={ 5 } style={ styles.justifyCenter }>
-                    <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
-                  </Col>
-                  <Col size={ 3 }>
-                    <Button
-                      small
-                      transparent
-                      onPress={ this.resetMap }
-                    >
-                      <Text>Reset Route</Text>
-                    </Button>
-                  </Col>
-                </Grid>
-              </Body>
-            </CardItem>
-          </Card>
-        ) }
-        <Card>
-          <CardItem header>
-            <Text>Realtime Step Count</Text>
-          </CardItem>
-          <CardItem>
-            <Body>
-              <Grid>
-                <Col size={ 5 } style={ styles.justifyCenter }>
-                  <Text>Total Steps: { this.props.currentStepCount }</Text>
-                </Col>
-                <Col size={ 3 }>
-                  <Button
-                    small
-                    transparent
-                    onPress={ this.props.resetCurrentStepCount }
-                  >
-                    <Text>Reset Steps</Text>
-                  </Button>
-                </Col>
-              </Grid>
-            </Body>
-          </CardItem>
-        </Card>
       </View>
     );
   }
