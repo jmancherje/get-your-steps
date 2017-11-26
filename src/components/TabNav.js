@@ -10,7 +10,7 @@ const Tabs = TabNavigator({
   Location: {
     screen: RoutePlanningViewContainer,
     navigationOptions: {
-      tabBarLabel: 'Routes',
+      tabBarLabel: 'New Route',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },
@@ -24,7 +24,7 @@ const Tabs = TabNavigator({
   Data: {
     screen: RoutePlanningViewContainer,
     navigationOptions: {
-      tabBarLabel: 'Route',
+      tabBarLabel: 'All Routes',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },

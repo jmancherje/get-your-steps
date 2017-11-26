@@ -63,7 +63,6 @@ export default class Directions extends Component {
     updateDestinations: PropTypes.func.isRequired,
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
-    updateShowMap: PropTypes.func.isRequired,
     currentLocation: PropTypes.instanceOf(Map).isRequired,
   };
 
@@ -71,7 +70,7 @@ export default class Directions extends Component {
     isShowingRoute: true,
     isShowingMap: false,
     isShowingDistance: false,
-    isShowingSteps: true,
+    isShowingSteps: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -79,8 +78,13 @@ export default class Directions extends Component {
       this.fitMap(nextProps.searchedRouteOptions.getIn([0, 'steps']));
     }
 
-    if (this.props.destinations.size === 0 && nextProps.destinations.size !== 0) {
-      this.props.updateShowMap(true);
+    if (this.props.destinations.size === 1 && nextProps.destinations.size === 2) {
+      this.setState({
+        isShowingRoute: true,
+        isShowingMap: true,
+        isShowingDistance: true,
+        isShowingSteps: true,
+      });
     }
   }
 
@@ -89,11 +93,6 @@ export default class Directions extends Component {
   };
 
   toggleMap = () => {
-    // const { searchedRouteOptions, activeRouteIndex } = this.props;
-    // // If we're opening the map, fit it to the route
-    // if (!this.state.isShowingMap) {
-    //   this.fitMap(searchedRouteOptions.getIn([activeRouteIndex, 'steps']));
-    // }
     this.setState({ isShowingMap: !this.state.isShowingMap });
   };
 
@@ -103,10 +102,6 @@ export default class Directions extends Component {
 
   toggleSteps = () => {
     this.setState({ isShowingSteps: !this.state.isShowingSteps });
-  };
-
-  hideMap = () => {
-    this.props.updateShowMap(false);
   };
 
   setMapRef = (ref) => {
