@@ -85,10 +85,11 @@ export const updateShowMap = (showMap) => ({
   payload: showMap,
 });
 
-export const saveRoute = () => (dispatch, getState) => {
+export const saveRoute = (name) => (dispatch, getState) => {
   // Save the current direction
   dispatch({
     type: actionTypes.directions.SAVE,
+    payload: name,
   });
   // TODO: override current async storage saved routes
   // const state = getState();

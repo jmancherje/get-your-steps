@@ -80,7 +80,7 @@ const updateShowMap = (state, showMap) => {
   return state.set('showMap', showMap);
 };
 
-const saveRoute = (state) => {
+const saveRoute = (state, name) => {
   const destinations = state.get('destinations', List());
   const routeOptions = state.get('searchedRouteOptions', List());
   const activeRouteIndex = state.get('activeRouteIndex', 0);
@@ -89,7 +89,7 @@ const saveRoute = (state) => {
   return state.update(
     'savedRoutes',
     List(),
-    routes => routes.push(Map({ destinations, route })),
+    routes => routes.push(Map({ destinations, route, name })),
   );
 };
 
@@ -110,7 +110,7 @@ export default (state = initialStepsState, { type, payload }) => {
   case actionTypes.directions.RESET:
     return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.SAVE:
-    return saveRoute(state);
+    return saveRoute(state, payload);
   default:
     return state;
   }
