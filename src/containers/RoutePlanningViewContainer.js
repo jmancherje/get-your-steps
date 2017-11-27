@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import {
   resetDirections,
+  saveRoute,
 } from '../actions/directions';
 
 import RoutePlanningView from '../components/RoutePlanningView';
@@ -13,4 +14,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   resetDirections,
+  saveRoute,
 })(RoutePlanningView);

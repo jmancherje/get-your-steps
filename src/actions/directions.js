@@ -1,5 +1,9 @@
 import actionTypes from './actionTypes';
-import { getDestinations } from '../selectors/directions';
+import {
+  getDestinations,
+  // getSearchedRouteOptions,
+  // getActiveRouteIndex,
+} from '../selectors/directions';
 import { getCurrentLocation } from '../selectors/location';
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
@@ -80,3 +84,17 @@ export const updateShowMap = (showMap) => ({
   type: actionTypes.directions.map.UPDATE,
   payload: showMap,
 });
+
+export const saveRoute = () => (dispatch, getState) => {
+  // Save the current direction
+  dispatch({
+    type: actionTypes.directions.SAVE,
+  });
+  // TODO: override current async storage saved routes
+  // const state = getState();
+  // const destinations = getDestinations(state);
+  // const routes = getSearchedRouteOptions(state);
+  // const activeRouteIndex = getActiveRouteIndex(state);
+  // const chosenRoute = routes.get(activeRouteIndex);
+
+};

@@ -8,7 +8,7 @@ const initialStepsState = fromJS({
   searchedRouteOptions: [],
   activeRouteIndex: 0,
   showMap: false,
-  // TODO Saved routes
+  savedRoutes: List(),
 });
 
 const createDestinationFromResponse = ({ data, details }) => {
@@ -80,6 +80,19 @@ const updateShowMap = (state, showMap) => {
   return state.set('showMap', showMap);
 };
 
+const saveRoute = (state) => {
+  const destinations = state.get('destinations', List());
+  const routeOptions = state.get('searchedRouteOptions', List());
+  const activeRouteIndex = state.get('activeRouteIndex', 0);
+  const route = routeOptions.get(activeRouteIndex, Map());
+  if (route.isEmpty() || !routeOptions.size) return state;
+  return state.update(
+    'savedRoutes',
+    List(),
+    routes => routes.push(Map({ destinations, route })),
+  );
+};
+
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
@@ -96,6 +109,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return updateShowMap(state, payload);
   case actionTypes.directions.RESET:
     return state.set('searchedRouteOptions', List()).set('destinations', List());
+  case actionTypes.directions.SAVE:
+    return saveRoute(state);
   default:
     return state;
   }

@@ -18,6 +18,7 @@ export default class RoutePlanningView extends React.Component {
   static propTypes = {
     numberOfDestinations: PropTypes.number.isRequired,
     resetDirections: PropTypes.func.isRequired,
+    saveRoute: PropTypes.func.isRequired,
   };
 
   render() {
@@ -42,6 +43,7 @@ export default class RoutePlanningView extends React.Component {
             <Button
               small
               disabled={ numberOfDestinations < 2 }
+              onPress={ this.props.saveRoute }
             >
               <Text>Save</Text>
             </Button>
