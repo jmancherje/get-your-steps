@@ -5,6 +5,7 @@ import { Foundation } from '@expo/vector-icons';
 
 import Root from './Root';
 import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
+import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 
 const Tabs = TabNavigator({
   Location: {
@@ -21,8 +22,8 @@ const Tabs = TabNavigator({
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
     },
   },
-  Data: {
-    screen: RoutePlanningViewContainer,
+  SavedRoutes: {
+    screen: SavedRoutesContainer,
     navigationOptions: {
       tabBarLabel: 'All Routes',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
