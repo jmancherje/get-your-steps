@@ -80,7 +80,7 @@ const updateShowMap = (state, showMap) => {
   return state.set('showMap', showMap);
 };
 
-const saveRoute = (state, name) => {
+const saveRoute = (state, name = 'Unnamed Route') => {
   const destinations = state.get('destinations', List());
   const routeOptions = state.get('searchedRouteOptions', List());
   const activeRouteIndex = state.get('activeRouteIndex', 0);
@@ -89,8 +89,15 @@ const saveRoute = (state, name) => {
   return state.update(
     'savedRoutes',
     List(),
-    routes => routes.push(Map({ destinations, route, name })),
+    // NOTE: name is not being used because it's an event currently
+    routes => routes.push(Map({ destinations, route })),
   );
+};
+
+const initializeSavedRoutes = (state, stringifiedData) => {
+  // This is very expensive but it only happens on initializing the app
+  const immutableData = fromJS(JSON.parse(stringifiedData));
+  return state.set('savedRoutes', immutableData);
 };
 
 export default (state = initialStepsState, { type, payload }) => {
@@ -111,6 +118,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.SAVE:
     return saveRoute(state, payload);
+  case actionTypes.directions.INITIALIZE:
+    return initializeSavedRoutes(state, payload);
   default:
     return state;
   }

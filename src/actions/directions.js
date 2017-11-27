@@ -1,8 +1,9 @@
+import { AsyncStorage } from 'react-native';
+
 import actionTypes from './actionTypes';
 import {
   getDestinations,
-  // getSearchedRouteOptions,
-  // getActiveRouteIndex,
+  getSavedRoutes,
 } from '../selectors/directions';
 import { getCurrentLocation } from '../selectors/location';
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
@@ -91,11 +92,8 @@ export const saveRoute = (name) => (dispatch, getState) => {
     type: actionTypes.directions.SAVE,
     payload: name,
   });
-  // TODO: override current async storage saved routes
-  // const state = getState();
-  // const destinations = getDestinations(state);
-  // const routes = getSearchedRouteOptions(state);
-  // const activeRouteIndex = getActiveRouteIndex(state);
-  // const chosenRoute = routes.get(activeRouteIndex);
 
+  const savedRoutes = getSavedRoutes(getState());
+
+  AsyncStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
 };
