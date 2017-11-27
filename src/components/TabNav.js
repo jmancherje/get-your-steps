@@ -8,7 +8,14 @@ import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 
 const Tabs = TabNavigator({
-  Location: {
+  SavedRoutes: {
+    screen: SavedRoutesContainer,
+    navigationOptions: {
+      tabBarLabel: 'All Routes',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+    },
+  },
+  PlanRoute: {
     screen: RoutePlanningViewContainer,
     navigationOptions: {
       tabBarLabel: 'New Route',
@@ -22,15 +29,9 @@ const Tabs = TabNavigator({
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
     },
   },
-  SavedRoutes: {
-    screen: SavedRoutesContainer,
-    navigationOptions: {
-      tabBarLabel: 'All Routes',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
-    },
-  },
 }, {
   animationEnabled: true,
+  initialRouteName: 'PlanRoute',
   tabBarOptions: {
     labelStyle: {
       fontSize: 16,

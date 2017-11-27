@@ -18,10 +18,8 @@ const store = createStore(Reducer, composeWithDevTools(
 AsyncStorage.getItem('savedRoutes')
   .then((results, err) => {
     if (err) {
-      console.log('error', err); // eslint-disable-line
       throw err;
     }
-    console.log('results', results);
     if (results) {
       store.dispatch({
         type: actionTypes.directions.INITIALIZE,
