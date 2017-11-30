@@ -86,11 +86,11 @@ export const updateShowMap = (showMap) => ({
   payload: showMap,
 });
 
-export const saveRoute = (name) => (dispatch, getState) => {
+export const saveRoute = (payload) => (dispatch, getState) => {
   // Save the current direction
   dispatch({
     type: actionTypes.directions.SAVE,
-    payload: name,
+    payload,
   });
 
   const savedRoutes = getSavedRoutes(getState());

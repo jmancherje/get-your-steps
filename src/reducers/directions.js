@@ -51,7 +51,6 @@ const updateDestinations = (state, { data, details, index }) => (
 );
 
 const updateSearchedRouteOptions = (state, payload) => {
-  console.log('response', payload);
   const routes = payload.routes;
   if (!Array.isArray(routes) || routes.length < 1) return state;
 
@@ -80,7 +79,7 @@ const updateShowMap = (state, showMap) => {
   return state.set('showMap', showMap);
 };
 
-const saveRoute = (state, name = 'Unnamed Route') => {
+const saveRoute = (state, { name = 'Unnamed Route', details }) => {
   const destinations = state.get('destinations', List());
   const routeOptions = state.get('searchedRouteOptions', List());
   const activeRouteIndex = state.get('activeRouteIndex', 0);
@@ -90,7 +89,7 @@ const saveRoute = (state, name = 'Unnamed Route') => {
     'savedRoutes',
     List(),
     // NOTE: name is not being used because it's an event currently
-    routes => routes.push(Map({ destinations, route })),
+    routes => routes.push(Map({ destinations, route, name, details })),
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Header, Content, Form, Item, Input } from 'native-base';
+
 import { StyleSheet } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { Foundation } from '@expo/vector-icons';
 import Root from './Root';
 import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
+import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
 
 const Tabs = TabNavigator({
   SavedRoutes: {
@@ -47,23 +48,6 @@ const styles = StyleSheet.create({
   },
 });
 
-class SaveForm extends React.Component {
-  render() {
-    return (
-      <Container>
-        <Header />
-        <Content>
-          <Form>
-            <Item>
-              <Input placeholder="Route Name" />
-            </Item>
-          </Form>
-        </Content>
-      </Container>
-    );
-  }
-}
-
 export default StackNavigator({
   Routes: {
     screen: Tabs,
@@ -71,5 +55,10 @@ export default StackNavigator({
       title: 'Plan My Walks',
     },
   },
-  SaveForm: { screen: SaveForm },
+  SaveForm: {
+    screen: SaveRouteFormContainer,
+    navigationOptions: {
+      title: 'Name your Route',
+    },
+  },
 });
