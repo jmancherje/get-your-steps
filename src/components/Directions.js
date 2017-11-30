@@ -53,6 +53,9 @@ const mapRegion = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 export default class Directions extends Component {
+  static navigationOptions = {
+    title: 'Create a New Route',
+  };
   static propTypes = {
     currentStepCount: PropTypes.number.isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
@@ -66,6 +69,7 @@ export default class Directions extends Component {
     currentLocation: PropTypes.instanceOf(Map).isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
     resetDirections: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
     saveRoute: PropTypes.func.isRequired,
   };
 
@@ -91,6 +95,11 @@ export default class Directions extends Component {
       });
     }
   }
+
+  navigateToSave = () => {
+    console.log('navigating..');
+    this.props.navigation.navigate('SaveForm');
+  };
 
   toggleRoute = () => {
     this.setState({ isShowingRoute: !this.state.isShowingRoute });
@@ -202,7 +211,7 @@ export default class Directions extends Component {
       destinations,
       clearDestinationIndex,
       resetDirections,
-      saveRoute,
+      // saveRoute,
       numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
@@ -211,7 +220,7 @@ export default class Directions extends Component {
     return (
       <View style={ styles.device }>
         <NbList>
-          <ListItem itemDivider style={ styles.header }>
+          <ListItem itemDivider style={ [styles.header, { marginLeft: 0 }] }>
             <Left>
               <Text>Walking Route</Text>
             </Left>
@@ -221,35 +230,33 @@ export default class Directions extends Component {
               </Button>
             </Right>
           </ListItem>
-          <Collapsible collapsed={ !this.state.isShowingRoute }>
-            <View>
-              { destinations.size ? (
-                destinations.map((destination, index) => (
-                  <WaypointListItem
-                    key={ destination.get('dataPlaceId') || `key_${index}` }
-                    clearDestinationIndex={ clearDestinationIndex }
-                    destination={ destination }
-                    index={ index }
-                  />
-                ))
-              ) : null }
-              <LocationSearch
-                handleSelectLocation={ this.props.updateDestinations }
-                leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-                hasCurrentLocation // Currently hard coding to true so we can use the button below
-                addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-              />
-              { /* hasCurrentLocation ? null : (
-                <Button
-                  small
-                  transparent
-                  onPress={ this.props.addCurrentLocationToDestinations }
-                >
-                  <Text>Or add your current location</Text>
-                </Button>
-              ) */ }
-            </View>
-          </Collapsible>
+          <View>
+            { destinations.size ? (
+              destinations.map((destination, index) => (
+                <WaypointListItem
+                  key={ destination.get('dataPlaceId') || `key_${index}` }
+                  clearDestinationIndex={ clearDestinationIndex }
+                  destination={ destination }
+                  index={ index }
+                />
+              ))
+            ) : null }
+            <LocationSearch
+              handleSelectLocation={ this.props.updateDestinations }
+              leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+              hasCurrentLocation // Currently hard coding to true so we can use the button below
+              addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+            />
+            { /* hasCurrentLocation ? null : (
+              <Button
+                small
+                transparent
+                onPress={ this.props.addCurrentLocationToDestinations }
+              >
+                <Text>Or add your current location</Text>
+              </Button>
+            ) */ }
+          </View>
           <ListItem itemDivider style={ styles.header }>
             <Left>
               <Text>Map</Text>
@@ -293,7 +300,7 @@ export default class Directions extends Component {
             </Right>
           </ListItem>
           <Collapsible collapsed={ !this.state.isShowingSteps }>
-            <ListItem>
+            <ListItem style={ styles.listItem }>
               <Left>
                 <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
               </Left>
@@ -322,8 +329,9 @@ export default class Directions extends Component {
             <Button
               full
               info
-              onPress={ saveRoute }
-              disabled={ numberOfDestinations < 2 }
+              onPress={ this.navigateToSave }
+              // onPress={ saveRoute }
+              // disabled={ numberOfDestinations < 2 }
             >
               <Text>Save Route</Text>
             </Button>
@@ -369,6 +377,10 @@ const styles = StyleSheet.create({
   itemHeader: {
     height: 30,
   },
+  listItem: {
+    marginLeft: 0,
+    paddingLeft: 10,
+  },
   stepText: {
     marginLeft: 0,
   },
@@ -377,6 +389,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
     height: 40,
+    marginLeft: 0,
+    paddingLeft: 10,
   },
   smallText: {
     fontSize: 13,

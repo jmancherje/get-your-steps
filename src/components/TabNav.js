@@ -65,6 +65,11 @@ class SaveForm extends React.Component {
 }
 
 export default StackNavigator({
-  Routes: { screen: Tabs },
+  Routes: {
+    screen: Tabs,
+    navigationOptions: {
+      title: 'Plan My Walks',
+    },
+  },
   SaveForm: { screen: SaveForm },
 });
