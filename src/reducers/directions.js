@@ -1,5 +1,6 @@
 import { fromJS, Map, List } from 'immutable';
 import { get } from 'lodash';
+import uuid from 'uuid-v4';
 
 import actionTypes from '../actions/actionTypes';
 
@@ -88,8 +89,7 @@ const saveRoute = (state, { name = 'Unnamed Route', details }) => {
   return state.update(
     'savedRoutes',
     List(),
-    // NOTE: name is not being used because it's an event currently
-    routes => routes.push(Map({ destinations, route, name, details })),
+    routes => routes.push(Map({ destinations, route, name, details, _wId: uuid() })),
   );
 };
 
@@ -117,6 +117,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('searchedRouteOptions', List()).set('destinations', List());
   case actionTypes.directions.SAVE:
     return saveRoute(state, payload);
+  case actionTypes.directions.CLEAR_ALL:
+    return state.set('savedRoutes', List());
   case actionTypes.directions.INITIALIZE:
     return initializeSavedRoutes(state, payload);
   default:

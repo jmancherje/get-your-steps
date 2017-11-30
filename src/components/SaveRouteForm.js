@@ -13,21 +13,10 @@ import {
   Button,
 } from 'native-base';
 
-// const examples = [
-//   'Walk to Work',
-//   'Walk the dog',
-//   'Walking to the gym',
-//   'Walking to class',
-// ];
-
-// const getRandomPlaceholder = () => {
-//   const index = Math.floor(Math.random() * (examples.length ));
-//   return examples[index];
-// };
-
 export default class SaveRouteForm extends React.Component {
   static propTypes = {
     saveRoute: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
   state = {
@@ -46,6 +35,7 @@ export default class SaveRouteForm extends React.Component {
   handleSave = () => {
     const { name, details } = this.state;
     this.props.saveRoute({ name, details });
+    this.props.navigation.navigate('SavedRoutes');
   };
 
   render() {

@@ -97,3 +97,12 @@ export const saveRoute = (payload) => (dispatch, getState) => {
 
   AsyncStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
 };
+
+export const clearAllSavedRoutes = (payload) => (dispatch, getState) => {
+  dispatch({
+    type: actionTypes.directions.CLEAR_ALL,
+    payload,
+  });
+
+  AsyncStorage.removeItem('savedRoutes');
+};

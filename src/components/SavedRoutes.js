@@ -7,39 +7,32 @@ import {
   Text,
   Container,
   Content,
-  Header,
-  Body,
-  Title,
+  Button,
 } from 'native-base';
 
 import { metersToMiles } from '../helpers/conversions';
+import sharedStyles from './styles/sharedStyles';
 
 const STEPS_PER_METER = 0.713;
 
 export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
+    clearAllSavedRoutes: PropTypes.func.isRequired,
   };
 
   render() {
     const { savedRoutes } = this.props;
-    const placeholder = <ListItem><Text>You have no saved routes</Text></ListItem>;
+    const placeholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
     return (
       <Container>
-        <Header>
-          <Body>
-            <Title>Saved Routes</Title>
-          </Body>
-        </Header>
         <Content>
           <NbList>
             { !savedRoutes.size ? placeholder : (
               savedRoutes.map((route, index) => {
                 const distance = route.getIn(['route', 'distance']);
                 return (
-                  // TODO: get a uuid to use for a key
-                  // eslint-disable-next-line
-                  <ListItem key={ `key_${index}` }>
+                  <ListItem key={ `key_${route.get('_wId')}` } style={ sharedStyles.listStackCorrection }>
                     <Text>
                       { route.get('name', 'Unnamed Route') }
                     </Text>
@@ -50,6 +43,13 @@ export default class SavedRoutes extends React.Component {
                 );
               })
             ) }
+            { savedRoutes.size ? (
+              <ListItem style={ sharedStyles.listStackCorrection }>
+                <Button transparent onPress={ this.props.clearAllSavedRoutes }>
+                  <Text>Clear all Saved Routes</Text>
+                </Button>
+              </ListItem>
+            ) : null }
           </NbList>
         </Content>
       </Container>

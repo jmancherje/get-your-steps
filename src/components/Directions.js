@@ -330,8 +330,7 @@ export default class Directions extends Component {
               full
               info
               onPress={ this.navigateToSave }
-              // onPress={ saveRoute }
-              // disabled={ numberOfDestinations < 2 }
+              disabled={ numberOfDestinations < 2 }
             >
               <Text>Save Route</Text>
             </Button>
