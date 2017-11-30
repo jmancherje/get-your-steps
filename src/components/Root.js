@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   Container,
-  Header,
-  Body,
-  Title,
   Content,
 } from 'native-base';
 
@@ -14,11 +11,6 @@ export default class Root extends React.Component {
   render() {
     return (
       <Container>
-        <Header>
-          <Body>
-            <Title>Steps</Title>
-          </Body>
-        </Header>
         <Content>
           <LocationContainer />
           <StepsContainer />

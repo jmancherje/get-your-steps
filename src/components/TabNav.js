@@ -5,7 +5,7 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
 import Root from './Root';
-import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
+import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
 
@@ -18,7 +18,7 @@ const Tabs = TabNavigator({
     },
   },
   PlanRoute: {
-    screen: RoutePlanningViewContainer,
+    screen: DirectionsContainer,
     navigationOptions: {
       tabBarLabel: 'New Route',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
