@@ -10,6 +10,7 @@ import {
 
 import {
   getSearchedRouteOptions,
+  getNumberOfDestinations,
   getActiveRouteIndex,
   getDestinations,
   getIsShowingMap,
@@ -22,6 +23,8 @@ import {
   clearDestinations,
   addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
+  resetDirections,
+  saveRoute,
 } from '../actions/directions';
 
 import {
@@ -31,6 +34,7 @@ import {
 import Directions from '../components/Directions';
 
 const mapStateToProps = (state) => ({
+  numberOfDestinations: getNumberOfDestinations(state),
   searchedRouteOptions: getSearchedRouteOptions(state),
   currentLocation: getCurrentLocation(state),
   currentStepCount: getCurrentStepCount(state),
@@ -47,4 +51,6 @@ export default connect(mapStateToProps, {
   clearDestinations,
   addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
+  resetDirections,
+  saveRoute,
 })(Directions);

@@ -1,6 +1,7 @@
 import React from 'react';
+import { Container, Header, Content, Form, Item, Input } from 'native-base';
 import { StyleSheet } from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
 import Root from './Root';
@@ -46,4 +47,24 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Tabs;
+class SaveForm extends React.Component {
+  render() {
+    return (
+      <Container>
+        <Header />
+        <Content>
+          <Form>
+            <Item>
+              <Input placeholder="Route Name" />
+            </Item>
+          </Form>
+        </Content>
+      </Container>
+    );
+  }
+}
+
+export default StackNavigator({
+  Routes: { screen: Tabs },
+  SaveForm: { screen: SaveForm },
+});

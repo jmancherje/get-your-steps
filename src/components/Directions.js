@@ -64,13 +64,16 @@ export default class Directions extends Component {
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map).isRequired,
+    numberOfDestinations: PropTypes.number.isRequired,
+    resetDirections: PropTypes.func.isRequired,
+    saveRoute: PropTypes.func.isRequired,
   };
 
   state = {
     isShowingRoute: true,
     isShowingMap: false,
     isShowingDistance: false,
-    isShowingSteps: false,
+    isShowingSteps: true,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -84,6 +87,7 @@ export default class Directions extends Component {
         isShowingMap: true,
         isShowingDistance: true,
         isShowingSteps: true,
+        isShowingSave: false,
       });
     }
   }
@@ -102,6 +106,10 @@ export default class Directions extends Component {
 
   toggleSteps = () => {
     this.setState({ isShowingSteps: !this.state.isShowingSteps });
+  };
+
+  toggleSave = () => {
+    this.setState({ isShowingSave: !this.state.isShowingSave });
   };
 
   setMapRef = (ref) => {
@@ -193,9 +201,12 @@ export default class Directions extends Component {
       searchedRouteOptions,
       destinations,
       clearDestinationIndex,
+      resetDirections,
+      saveRoute,
+      numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
-    const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
+    // const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     return (
       <View style={ styles.device }>
@@ -228,7 +239,7 @@ export default class Directions extends Component {
                 hasCurrentLocation // Currently hard coding to true so we can use the button below
                 addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
               />
-              { hasCurrentLocation ? null : (
+              { /* hasCurrentLocation ? null : (
                 <Button
                   small
                   transparent
@@ -236,7 +247,7 @@ export default class Directions extends Component {
                 >
                   <Text>Or add your current location</Text>
                 </Button>
-              ) }
+              ) */ }
             </View>
           </Collapsible>
           <ListItem itemDivider style={ styles.header }>
@@ -296,6 +307,34 @@ export default class Directions extends Component {
                 </Button>
               </Right>
             </ListItem>
+          </Collapsible>
+          <ListItem itemDivider style={ styles.header }>
+            <Left>
+              <Text>Save or Reset</Text>
+            </Left>
+            <Right>
+              <Button small transparent onPress={ this.toggleSave }>
+                <Text style={ styles.expandButton }>{ this.state.isShowingSave ? 'v' : '>' }</Text>
+              </Button>
+            </Right>
+          </ListItem>
+          <Collapsible collapsed={ !this.state.isShowingSave }>
+            <Button
+              full
+              info
+              onPress={ saveRoute }
+              disabled={ numberOfDestinations < 2 }
+            >
+              <Text>Save Route</Text>
+            </Button>
+            <Button
+              full
+              danger
+              onPress={ resetDirections }
+              disabled={ numberOfDestinations < 1 }
+            >
+              <Text>Reset</Text>
+            </Button>
           </Collapsible>
         </NbList>
       </View>
