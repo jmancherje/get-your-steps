@@ -42,3 +42,8 @@ export const getNumberOfDestinations = createSelector(
   [getDestinations],
   destinations => destinations.size,
 );
+
+export const getSavedRoutes = createSelector(
+  [getDirections],
+  directions => directions.get('savedRoutes'),
+);

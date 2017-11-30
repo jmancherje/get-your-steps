@@ -14,6 +14,10 @@ import {
   Right,
   Button,
   ListItem,
+  Footer,
+  FooterTab,
+  Container,
+  Content,
 } from 'native-base';
 import Collapsible from 'react-native-collapsible';
 
@@ -21,6 +25,7 @@ import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
 import { metersToMiles } from '../helpers/conversions';
 import Polyline from './Polyline';
+import sharedStyles from './styles/sharedStyles';
 
 // This type is just for reference
 // eslint-disable-next-line no-unused-vars
@@ -53,6 +58,9 @@ const mapRegion = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 export default class Directions extends Component {
+  static navigationOptions = {
+    title: 'Create a New Route',
+  };
   static propTypes = {
     currentStepCount: PropTypes.number.isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
@@ -64,13 +72,17 @@ export default class Directions extends Component {
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map).isRequired,
+    numberOfDestinations: PropTypes.number.isRequired,
+    resetDirections: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
   state = {
     isShowingRoute: true,
     isShowingMap: false,
     isShowingDistance: false,
-    isShowingSteps: false,
+    isShowingSteps: true,
+    active: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -84,9 +96,14 @@ export default class Directions extends Component {
         isShowingMap: true,
         isShowingDistance: true,
         isShowingSteps: true,
+        isShowingSave: false,
       });
     }
   }
+
+  navigateToSave = () => {
+    this.props.navigation.navigate('SaveForm');
+  };
 
   toggleRoute = () => {
     this.setState({ isShowingRoute: !this.state.isShowingRoute });
@@ -102,6 +119,10 @@ export default class Directions extends Component {
 
   toggleSteps = () => {
     this.setState({ isShowingSteps: !this.state.isShowingSteps });
+  };
+
+  toggleSave = () => {
+    this.setState({ isShowingSave: !this.state.isShowingSave });
   };
 
   setMapRef = (ref) => {
@@ -193,112 +214,148 @@ export default class Directions extends Component {
       searchedRouteOptions,
       destinations,
       clearDestinationIndex,
+      resetDirections,
+      // saveRoute,
+      numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
-    const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
+    // const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     return (
-      <View style={ styles.device }>
-        <NbList>
-          <ListItem itemDivider style={ styles.header }>
-            <Left>
-              <Text>Walking Route</Text>
-            </Left>
-            <Right>
-              <Button small transparent onPress={ this.toggleRoute }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <Collapsible collapsed={ !this.state.isShowingRoute }>
-            <View>
-              { destinations.size ? (
-                destinations.map((destination, index) => (
-                  <WaypointListItem
-                    key={ destination.get('dataPlaceId') || `key_${index}` }
-                    clearDestinationIndex={ clearDestinationIndex }
-                    destination={ destination }
-                    index={ index }
-                  />
-                ))
-              ) : null }
-              <LocationSearch
-                handleSelectLocation={ this.props.updateDestinations }
-                leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-                hasCurrentLocation // Currently hard coding to true so we can use the button below
-                addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
-              />
-              { hasCurrentLocation ? null : (
+      <Container>
+        <Content>
+          <View style={ styles.device }>
+            <NbList>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header, { marginLeft: 0 }] }>
+                <Left>
+                  <Text>Walking Route</Text>
+                </Left>
+                <Right>
+                  <Button small transparent onPress={ this.toggleRoute }>
+                    <Text style={ styles.expandButton }>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <View>
+                { destinations.size ? (
+                  destinations.map((destination, index) => (
+                    <WaypointListItem
+                      key={ destination.get('dataPlaceId') || `key_${index}` }
+                      clearDestinationIndex={ clearDestinationIndex }
+                      destination={ destination }
+                      index={ index }
+                    />
+                  ))
+                ) : null }
+                <LocationSearch
+                  handleSelectLocation={ this.props.updateDestinations }
+                  leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
+                  hasCurrentLocation // Currently hard coding to true so we can use the button below
+                  addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
+                />
+                { /* hasCurrentLocation ? null : (
+                  <Button
+                    small
+                    transparent
+                    onPress={ this.props.addCurrentLocationToDestinations }
+                  >
+                    <Text>Or add your current location</Text>
+                  </Button>
+                ) */ }
+              </View>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+                <Left>
+                  <Text>Map</Text>
+                </Left>
+                <Right>
+                  <Button small transparent onPress={ this.toggleMap }>
+                    <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <Collapsible collapsed={ !this.state.isShowingMap }>
+                { this.renderMap() }
+              </Collapsible>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+                <Left>
+                  <Text>Distance and Estimated Steps</Text>
+                </Left>
+                <Right>
+                  <Button small transparent onPress={ this.toggleDistance }>
+                    <Text style={ styles.expandButton }>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <Collapsible collapsed={ !this.state.isShowingDistance }>
+                <ListItem style={ sharedStyles.listStackCorrection }>
+                  { activeRoute.get('distance') ? (
+                    <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+                  ) : (
+                    <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
+                  ) }
+                </ListItem>
+              </Collapsible>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+                <Left>
+                  <Text>Current Step Count</Text>
+                </Left>
+                <Right>
+                  <Button small transparent onPress={ this.toggleSteps }>
+                    <Text style={ styles.expandButton }>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <Collapsible collapsed={ !this.state.isShowingSteps }>
+                <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
+                  <Left>
+                    <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
+                  </Left>
+                  <Right>
+                    <Button
+                      small
+                      transparent
+                      onPress={ this.props.resetCurrentStepCount }
+                    >
+                      <Text>Reset</Text>
+                    </Button>
+                  </Right>
+                </ListItem>
+              </Collapsible>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+                <Left>
+                  <Text>Save or Reset</Text>
+                </Left>
+                <Right>
+                  <Button small transparent onPress={ this.toggleSave }>
+                    <Text style={ styles.expandButton }>{ this.state.isShowingSave ? 'v' : '>' }</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <Collapsible collapsed={ !this.state.isShowingSave }>
                 <Button
-                  small
                   transparent
-                  onPress={ this.props.addCurrentLocationToDestinations }
+                  danger
+                  onPress={ resetDirections }
+                  disabled={ numberOfDestinations < 1 }
                 >
-                  <Text>Or add your current location</Text>
+                  <Text>Reset Route</Text>
                 </Button>
-              ) }
-            </View>
-          </Collapsible>
-          <ListItem itemDivider style={ styles.header }>
-            <Left>
-              <Text>Map</Text>
-            </Left>
-            <Right>
-              <Button small transparent onPress={ this.toggleMap }>
-                <Text style={ { fontSize: 16 } }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <Collapsible collapsed={ !this.state.isShowingMap }>
-            { this.renderMap() }
-          </Collapsible>
-          <ListItem itemDivider style={ styles.header }>
-            <Left>
-              <Text>Distance and Estimated Steps</Text>
-            </Left>
-            <Right>
-              <Button small transparent onPress={ this.toggleDistance }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <Collapsible collapsed={ !this.state.isShowingDistance }>
-            <ListItem>
-              { activeRoute.get('distance') ? (
-                <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
-              ) : (
-                <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
-              ) }
-            </ListItem>
-          </Collapsible>
-          <ListItem itemDivider style={ styles.header }>
-            <Left>
-              <Text>Current Step Count</Text>
-            </Left>
-            <Right>
-              <Button small transparent onPress={ this.toggleSteps }>
-                <Text style={{ fontSize: 16 }}>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <Collapsible collapsed={ !this.state.isShowingSteps }>
-            <ListItem style={ styles.listItem }>
-              <Left>
-                <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
-              </Left>
-              <Right>
-                <Button
-                  small
-                  transparent
-                  onPress={ this.props.resetCurrentStepCount }
-                >
-                  <Text>Reset</Text>
-                </Button>
-              </Right>
-            </ListItem>
-          </Collapsible>
-        </NbList>
-      </View>
+              </Collapsible>
+            </NbList>
+          </View>
+        </Content>
+        <Footer>
+          <FooterTab>
+            <Button
+              success
+              onPress={ this.navigateToSave }
+              disabled={ numberOfDestinations < 2 }
+            >
+              <Text style={ styles.saveButton }>{ numberOfDestinations < 2 ? 'Add Destinations to Your Route' : 'Save Route' }</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Container>
     );
   }
 }
@@ -330,6 +387,10 @@ const styles = StyleSheet.create({
   itemHeader: {
     height: 30,
   },
+  listItem: {
+    marginLeft: 0,
+    paddingLeft: 10,
+  },
   stepText: {
     marginLeft: 0,
   },
@@ -338,15 +399,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
     height: 40,
+    marginLeft: 0,
+    paddingLeft: 10,
   },
   smallText: {
     fontSize: 13,
     color: '#8c8c8c',
   },
-  listItem: {
-    height: 30,
-    marginLeft: 10,
-    marginRight: 0,
-    paddingRight: 0,
+  expandButton: {
+    fontSize: 16,
+  },
+  saveButton: {
+    color: 'white',
+    fontSize: 17,
   },
 });

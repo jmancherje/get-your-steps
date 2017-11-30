@@ -1,14 +1,24 @@
 import React from 'react';
+
 import { StyleSheet } from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
 import Root from './Root';
-import RoutePlanningViewContainer from '../containers/RoutePlanningViewContainer';
+import DirectionsContainer from '../containers/DirectionsContainer';
+import SavedRoutesContainer from '../containers/SavedRoutesContainer';
+import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
 
 const Tabs = TabNavigator({
-  Location: {
-    screen: RoutePlanningViewContainer,
+  SavedRoutes: {
+    screen: SavedRoutesContainer,
+    navigationOptions: {
+      tabBarLabel: 'All Routes',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+    },
+  },
+  PlanRoute: {
+    screen: DirectionsContainer,
     navigationOptions: {
       tabBarLabel: 'New Route',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
@@ -21,15 +31,9 @@ const Tabs = TabNavigator({
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
     },
   },
-  Data: {
-    screen: RoutePlanningViewContainer,
-    navigationOptions: {
-      tabBarLabel: 'All Routes',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
-    },
-  },
 }, {
   animationEnabled: true,
+  initialRouteName: 'PlanRoute',
   tabBarOptions: {
     labelStyle: {
       fontSize: 16,
@@ -44,4 +48,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Tabs;
+export default StackNavigator({
+  Routes: {
+    screen: Tabs,
+    navigationOptions: {
+      title: 'Plan My Walks',
+    },
+  },
+  SaveForm: {
+    screen: SaveRouteFormContainer,
+    navigationOptions: {
+      title: 'Name your Route',
+    },
+  },
+});

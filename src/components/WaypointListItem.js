@@ -12,6 +12,7 @@ import {
   Col,
   Text,
 } from 'native-base';
+import sharedStyles from './styles/sharedStyles';
 
 export default class WaypointListItem extends Component {
   static propTypes = {
@@ -30,7 +31,7 @@ export default class WaypointListItem extends Component {
       destination,
     } = this.props;
     return (
-      <ListItem style={ styles.listItem }>
+      <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
         <Body>
           <Grid>
             <Col size={ 6 } style={ styles.justifyCenter }>
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
   },
   listItem: {
     height: 30,
-    marginLeft: 10,
     marginRight: 0,
     paddingRight: 0,
   },

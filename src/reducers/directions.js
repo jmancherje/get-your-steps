@@ -1,5 +1,6 @@
 import { fromJS, Map, List } from 'immutable';
 import { get } from 'lodash';
+import uuid from 'uuid-v4';
 
 import actionTypes from '../actions/actionTypes';
 
@@ -8,7 +9,7 @@ const initialStepsState = fromJS({
   searchedRouteOptions: [],
   activeRouteIndex: 0,
   showMap: false,
-  // TODO Saved routes
+  savedRoutes: List(),
 });
 
 const createDestinationFromResponse = ({ data, details }) => {
@@ -51,7 +52,6 @@ const updateDestinations = (state, { data, details, index }) => (
 );
 
 const updateSearchedRouteOptions = (state, payload) => {
-  console.log('response', payload);
   const routes = payload.routes;
   if (!Array.isArray(routes) || routes.length < 1) return state;
 
@@ -80,6 +80,25 @@ const updateShowMap = (state, showMap) => {
   return state.set('showMap', showMap);
 };
 
+const saveRoute = (state, { name = 'Unnamed Route', details }) => {
+  const destinations = state.get('destinations', List());
+  const routeOptions = state.get('searchedRouteOptions', List());
+  const activeRouteIndex = state.get('activeRouteIndex', 0);
+  const route = routeOptions.get(activeRouteIndex, Map());
+  if (route.isEmpty() || !routeOptions.size) return state;
+  return state.update(
+    'savedRoutes',
+    List(),
+    routes => routes.push(Map({ destinations, route, name, details, _wId: uuid() })),
+  );
+};
+
+const initializeSavedRoutes = (state, stringifiedData) => {
+  // This is very expensive but it only happens on initializing the app
+  const immutableData = fromJS(JSON.parse(stringifiedData));
+  return state.set('savedRoutes', immutableData);
+};
+
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
@@ -96,6 +115,12 @@ export default (state = initialStepsState, { type, payload }) => {
     return updateShowMap(state, payload);
   case actionTypes.directions.RESET:
     return state.set('searchedRouteOptions', List()).set('destinations', List());
+  case actionTypes.directions.SAVE:
+    return saveRoute(state, payload);
+  case actionTypes.directions.CLEAR_ALL:
+    return state.set('savedRoutes', List());
+  case actionTypes.directions.INITIALIZE:
+    return initializeSavedRoutes(state, payload);
   default:
     return state;
   }

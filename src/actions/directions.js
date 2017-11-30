@@ -1,5 +1,10 @@
+import { AsyncStorage } from 'react-native';
+
 import actionTypes from './actionTypes';
-import { getDestinations } from '../selectors/directions';
+import {
+  getDestinations,
+  getSavedRoutes,
+} from '../selectors/directions';
 import { getCurrentLocation } from '../selectors/location';
 import { GOOGLE_DIRECTIONS_KEY as key } from '../../keys';
 
@@ -80,3 +85,24 @@ export const updateShowMap = (showMap) => ({
   type: actionTypes.directions.map.UPDATE,
   payload: showMap,
 });
+
+export const saveRoute = (payload) => (dispatch, getState) => {
+  // Save the current direction
+  dispatch({
+    type: actionTypes.directions.SAVE,
+    payload,
+  });
+
+  const savedRoutes = getSavedRoutes(getState());
+
+  AsyncStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
+};
+
+export const clearAllSavedRoutes = (payload) => (dispatch, getState) => {
+  dispatch({
+    type: actionTypes.directions.CLEAR_ALL,
+    payload,
+  });
+
+  AsyncStorage.removeItem('savedRoutes');
+};
