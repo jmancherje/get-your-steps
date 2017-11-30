@@ -25,6 +25,7 @@ import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
 import { metersToMiles } from '../helpers/conversions';
 import Polyline from './Polyline';
+import sharedStyles from './styles/sharedStyles';
 
 // This type is just for reference
 // eslint-disable-next-line no-unused-vars
@@ -74,7 +75,6 @@ export default class Directions extends Component {
     numberOfDestinations: PropTypes.number.isRequired,
     resetDirections: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
-    saveRoute: PropTypes.func.isRequired,
   };
 
   state = {
@@ -102,7 +102,6 @@ export default class Directions extends Component {
   }
 
   navigateToSave = () => {
-    console.log('navigating..');
     this.props.navigation.navigate('SaveForm');
   };
 
@@ -227,7 +226,7 @@ export default class Directions extends Component {
         <Content>
           <View style={ styles.device }>
             <NbList>
-              <ListItem itemDivider style={ [styles.header, { marginLeft: 0 }] }>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header, { marginLeft: 0 }] }>
                 <Left>
                   <Text>Walking Route</Text>
                 </Left>
@@ -264,7 +263,7 @@ export default class Directions extends Component {
                   </Button>
                 ) */ }
               </View>
-              <ListItem itemDivider style={ styles.header }>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
                 <Left>
                   <Text>Map</Text>
                 </Left>
@@ -277,7 +276,7 @@ export default class Directions extends Component {
               <Collapsible collapsed={ !this.state.isShowingMap }>
                 { this.renderMap() }
               </Collapsible>
-              <ListItem itemDivider style={ styles.header }>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
                 <Left>
                   <Text>Distance and Estimated Steps</Text>
                 </Left>
@@ -288,7 +287,7 @@ export default class Directions extends Component {
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingDistance }>
-                <ListItem>
+                <ListItem style={ sharedStyles.listStackCorrection }>
                   { activeRoute.get('distance') ? (
                     <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
                   ) : (
@@ -296,7 +295,7 @@ export default class Directions extends Component {
                   ) }
                 </ListItem>
               </Collapsible>
-              <ListItem itemDivider style={ styles.header }>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
                 <Left>
                   <Text>Current Step Count</Text>
                 </Left>
@@ -307,7 +306,7 @@ export default class Directions extends Component {
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingSteps }>
-                <ListItem style={ styles.listItem }>
+                <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
                   <Left>
                     <Text style={ styles.stepText }>Total Steps: { this.props.currentStepCount }</Text>
                   </Left>
@@ -322,7 +321,7 @@ export default class Directions extends Component {
                   </Right>
                 </ListItem>
               </Collapsible>
-              <ListItem itemDivider style={ styles.header }>
+              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
                 <Left>
                   <Text>Save or Reset</Text>
                 </Left>
@@ -334,20 +333,12 @@ export default class Directions extends Component {
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingSave }>
                 <Button
-                  full
-                  info
-                  onPress={ this.navigateToSave }
-                  disabled={ numberOfDestinations < 2 }
-                >
-                  <Text>Save Route</Text>
-                </Button>
-                <Button
-                  full
+                  transparent
                   danger
                   onPress={ resetDirections }
                   disabled={ numberOfDestinations < 1 }
                 >
-                  <Text>Reset</Text>
+                  <Text>Reset Route</Text>
                 </Button>
               </Collapsible>
             </NbList>
@@ -355,8 +346,12 @@ export default class Directions extends Component {
         </Content>
         <Footer>
           <FooterTab>
-            <Button>
-              <Text>Save Route</Text>
+            <Button
+              success
+              onPress={ this.navigateToSave }
+              disabled={ numberOfDestinations < 2 }
+            >
+              <Text style={ styles.saveButton }>{ numberOfDestinations < 2 ? 'Add Destinations to Your Route' : 'Save Route' }</Text>
             </Button>
           </FooterTab>
         </Footer>
@@ -413,5 +408,9 @@ const styles = StyleSheet.create({
   },
   expandButton: {
     fontSize: 16,
+  },
+  saveButton: {
+    color: 'white',
+    fontSize: 17,
   },
 });

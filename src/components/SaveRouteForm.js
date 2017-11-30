@@ -61,7 +61,7 @@ export default class SaveRouteForm extends React.Component {
               disabled={ !this.state.name }
               onPress={ this.handleSave }
             >
-              <Text>Save</Text>
+              <Text>Confirm</Text>
             </Button>
           </FooterTab>
         </Footer>
