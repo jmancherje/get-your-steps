@@ -216,7 +216,6 @@ export default class Directions extends Component {
       destinations,
       clearDestinationIndex,
       resetDirections,
-      // saveRoute,
       numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
