@@ -11,6 +11,7 @@ import {
   Text,
   List as NbList,
   Left,
+  Body,
   Right,
   Button,
   ListItem,
@@ -226,15 +227,22 @@ export default class Directions extends Component {
         <Content>
           <View style={ styles.device }>
             <NbList>
-              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header, { marginLeft: 0 }] }>
+              <ListItem style={ [sharedStyles.listStackCorrection, { marginLeft: 0 }] }>
                 <Left>
                   <Text>Walking Route</Text>
                 </Left>
-                <Right>
-                  <Button small transparent onPress={ this.toggleRoute }>
-                    <Text style={ styles.expandButton }>{ this.state.isShowingRoute ? 'v' : '>' }</Text>
-                  </Button>
-                </Right>
+                { !numberOfDestinations ? (
+                  <Body>
+                    <Text>Add a starting point</Text>
+                  </Body>
+                ) : (
+                  <Right>
+                    <Button small onPress={ resetDirections }>
+                      <Text>Reset</Text>
+                    </Button>
+                  </Right>
+                ) }
+
               </ListItem>
               <View>
                 { destinations.size ? (
@@ -321,37 +329,21 @@ export default class Directions extends Component {
                   </Right>
                 </ListItem>
               </Collapsible>
-              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
-                <Left>
-                  <Text>Save or Reset</Text>
-                </Left>
-                <Right>
-                  <Button small transparent onPress={ this.toggleSave }>
-                    <Text style={ styles.expandButton }>{ this.state.isShowingSave ? 'v' : '>' }</Text>
-                  </Button>
-                </Right>
-              </ListItem>
-              <Collapsible collapsed={ !this.state.isShowingSave }>
-                <Button
-                  transparent
-                  danger
-                  onPress={ resetDirections }
-                  disabled={ numberOfDestinations < 1 }
-                >
-                  <Text>Reset Route</Text>
-                </Button>
-              </Collapsible>
             </NbList>
           </View>
         </Content>
         <Footer>
           <FooterTab>
             <Button
-              success
-              onPress={ this.navigateToSave }
+              full
               disabled={ numberOfDestinations < 2 }
+              danger={ numberOfDestinations < 2 }
+              success={ numberOfDestinations >= 2 }
+              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : null }
             >
-              <Text style={ styles.saveButton }>{ numberOfDestinations < 2 ? 'Add Destinations to Your Route' : 'Save Route' }</Text>
+              <Text style={ styles.saveButton }>
+                { numberOfDestinations < 2 ? 'Add Destinations to your Route to Save' : 'Save Route' }
+              </Text>
             </Button>
           </FooterTab>
         </Footer>
