@@ -2,11 +2,11 @@ import { connect } from 'react-redux';
 
 import {
   getSavedRoutes,
-} from '../selectors/directions';
+} from '../selectors';
 
 import {
   clearAllSavedRoutes,
-} from '../actions/directions';
+} from '../actions';
 
 import SavedRoutes from '../components/SavedRoutes';
 

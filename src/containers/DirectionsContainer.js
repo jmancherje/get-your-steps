@@ -2,19 +2,13 @@ import { connect } from 'react-redux';
 
 import {
   getCurrentLocation,
-} from '../selectors/location';
-
-import {
   getCurrentStepCount,
-} from '../selectors/steps';
-
-import {
   getSearchedRouteOptions,
   getNumberOfDestinations,
   getActiveRouteIndex,
   getDestinations,
   getIsShowingMap,
-} from '../selectors/directions';
+} from '../selectors';
 
 import {
   updateActiveIndex,
@@ -24,11 +18,8 @@ import {
   addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
   resetDirections,
-} from '../actions/directions';
-
-import {
   resetCurrentStepCount,
-} from '../actions/steps';
+} from '../actions';
 
 import Directions from '../components/Directions';
 

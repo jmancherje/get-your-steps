@@ -7,7 +7,7 @@ import {
   setHistoricStepData,
   setIsPedometerAvailable,
   updateCurrentStepCount,
-} from '../actions/steps';
+} from '../actions';
 
 import {
   getHoursBack,
@@ -16,7 +16,7 @@ import {
   getCurrentStepCount,
   getLastStepsPerSecond,
   getLastTotalSteps,
-} from '../selectors/steps';
+} from '../selectors';
 
 import Steps from '../components/Steps';
 
