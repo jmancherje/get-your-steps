@@ -60,6 +60,7 @@
         'react/jsx-no-undef': [2],
         'react/no-unknown-property': [2],
         'react/jsx-filename-extension': 0,
+        'react/no-multi-comp': 0,
         'filenames/match-exported': 0,
         'jsx-a11y/href-no-hash': 0,
         'react/require-extension': 0,
