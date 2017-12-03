@@ -380,7 +380,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   header: {
-    backgroundColor: '#dddddd',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
     height: 40,

@@ -9,7 +9,30 @@ import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
 
-const Tabs = TabNavigator({
+
+
+const styles = StyleSheet.create({
+  icon: {
+    fontSize: 18,
+  },
+});
+
+const Stack = StackNavigator({
+  Routes: {
+    screen: DirectionsContainer,
+    navigationOptions: {
+      title: 'Plan My Walks',
+    },
+  },
+  SaveForm: {
+    screen: SaveRouteFormContainer,
+    navigationOptions: {
+      title: 'Name your Route',
+    },
+  },
+});
+
+export default TabNavigator({
   SavedRoutes: {
     screen: SavedRoutesContainer,
     navigationOptions: {
@@ -18,7 +41,7 @@ const Tabs = TabNavigator({
     },
   },
   PlanRoute: {
-    screen: DirectionsContainer,
+    screen: Stack,
     navigationOptions: {
       tabBarLabel: 'New Route',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
@@ -39,26 +62,5 @@ const Tabs = TabNavigator({
       fontSize: 16,
     },
     activeBackgroundColor: '#CEE1F8',
-  },
-});
-
-const styles = StyleSheet.create({
-  icon: {
-    fontSize: 18,
-  },
-});
-
-export default StackNavigator({
-  Routes: {
-    screen: Tabs,
-    navigationOptions: {
-      title: 'Plan My Walks',
-    },
-  },
-  SaveForm: {
-    screen: SaveRouteFormContainer,
-    navigationOptions: {
-      title: 'Name your Route',
-    },
   },
 });

@@ -10,4 +10,14 @@ export default StyleSheet.create({
   justifyCenter: {
     justifyContent: 'center',
   },
+  header: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: 'rgba(0, 0, 0, 0.9)',
+    textAlign: 'center',
+    marginHorizontal: 16,
+  },
+  listDivider: {
+    fontSize: 14,
+  },
 });
