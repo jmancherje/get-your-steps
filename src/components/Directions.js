@@ -369,9 +369,6 @@ const styles = StyleSheet.create({
   listDivider: {
     height: 30,
   },
-  justifyCenter: {
-    justifyContent: 'center',
-  },
   itemHeader: {
     height: 30,
   },

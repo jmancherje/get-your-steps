@@ -34,10 +34,10 @@ export default class WaypointListItem extends Component {
       <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
         <Body>
           <Grid>
-            <Col size={ 6 } style={ styles.justifyCenter }>
+            <Col size={ 6 } style={ sharedStyles.justifyCenter }>
               <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
             </Col>
-            <Col size={ 2 } style={ styles.justifyCenter }>
+            <Col size={ 2 } style={ sharedStyles.justifyCenter }>
               <Button
                 small
                 transparent
@@ -55,9 +55,6 @@ export default class WaypointListItem extends Component {
 }
 
 const styles = StyleSheet.create({
-  justifyCenter: {
-    justifyContent: 'center',
-  },
   listItem: {
     height: 30,
     marginRight: 0,

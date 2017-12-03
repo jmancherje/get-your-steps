@@ -7,4 +7,7 @@ export default StyleSheet.create({
     marginLeft: 0,
     paddingLeft: 10,
   },
+  justifyCenter: {
+    justifyContent: 'center',
+  },
 });

@@ -49,7 +49,7 @@ class RouteDetails extends React.Component {
           onPress={ this.handlePress }
         >
           <Grid>
-            <Col size={ 1 } style={ { justifyContent: 'center' } }>
+            <Col size={ 1 } style={ sharedStyles.justifyCenter }>
               <CheckBox
                 checked={ isSelected }
                 onPress={ this.handleCheckBoxPress }
@@ -118,7 +118,7 @@ export default class SavedRoutes extends React.Component {
               ))
             ) }
             <Collapsible collapsed={ !this.state.selectedRouteIds.size }>
-              <ListItem>
+              <ListItem style={ sharedStyles.listStackCorrection }>
                 <Text>
                   { `${this.getTotalSteps()} Steps` }
                 </Text>
