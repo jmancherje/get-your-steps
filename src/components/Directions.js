@@ -260,37 +260,32 @@ export default class Directions extends Component {
                   hasCurrentLocation // Currently hard coding to true so we can use the button below
                   addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
                 />
-                { /* hasCurrentLocation ? null : (
-                  <Button
-                    small
-                    transparent
-                    onPress={ this.props.addCurrentLocationToDestinations }
-                  >
-                    <Text>Or add your current location</Text>
-                  </Button>
-                ) */ }
               </View>
-              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+              <ListItem
+                itemDivider
+                style={ [sharedStyles.listStackCorrection, styles.header] }
+                onPress={ this.toggleMap }
+              >
                 <Left>
                   <Text>Map</Text>
                 </Left>
                 <Right>
-                  <Button small transparent onPress={ this.toggleMap }>
-                    <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
-                  </Button>
+                  <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingMap }>
                 { this.renderMap() }
               </Collapsible>
-              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+              <ListItem
+                itemDivider
+                style={ [sharedStyles.listStackCorrection, styles.header] }
+                onPress={ this.toggleDistance }
+              >
                 <Left>
                   <Text>Distance and Estimated Steps</Text>
                 </Left>
                 <Right>
-                  <Button small transparent onPress={ this.toggleDistance }>
-                    <Text style={ styles.expandButton }>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
-                  </Button>
+                  <Text style={ styles.expandButton }>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingDistance }>
@@ -302,14 +297,16 @@ export default class Directions extends Component {
                   ) }
                 </ListItem>
               </Collapsible>
-              <ListItem itemDivider style={ [sharedStyles.listStackCorrection, styles.header] }>
+              <ListItem
+                itemDivider
+                style={ [sharedStyles.listStackCorrection, styles.header] }
+                onPress={ this.toggleSteps }
+              >
                 <Left>
                   <Text>Current Step Count</Text>
                 </Left>
                 <Right>
-                  <Button small transparent onPress={ this.toggleSteps }>
-                    <Text style={ styles.expandButton }>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
-                  </Button>
+                  <Text style={ styles.expandButton }>{ this.state.isShowingSteps ? 'v' : '>' }</Text>
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingSteps }>
