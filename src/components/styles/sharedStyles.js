@@ -7,4 +7,17 @@ export default StyleSheet.create({
     marginLeft: 0,
     paddingLeft: 10,
   },
+  justifyCenter: {
+    justifyContent: 'center',
+  },
+  header: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: 'rgba(0, 0, 0, 0.9)',
+    textAlign: 'center',
+    marginHorizontal: 16,
+  },
+  listDivider: {
+    fontSize: 14,
+  },
 });

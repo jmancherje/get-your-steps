@@ -4,13 +4,13 @@ import {
   setLocationData,
   setLocationErrorMessage,
   setCurrentLocation,
-} from '../actions/location';
+} from '../actions';
 
 import {
   getRealtimeLocationData,
   getLocationErrorMessage,
   getLatestLocationData,
-} from '../selectors/location';
+} from '../selectors';
 
 import LocationData from '../components/LocationData';
 

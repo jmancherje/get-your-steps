@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import {
   saveRoute,
-} from '../actions/directions';
+} from '../actions';
 
 import SaveRouteForm from '../components/SaveRouteForm';
 

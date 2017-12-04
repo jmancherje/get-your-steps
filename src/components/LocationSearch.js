@@ -49,6 +49,7 @@ export default class LocationSearch extends React.Component {
     });
 
     this.ref && this.ref.setAddressText('');
+    this.ref && this.ref.triggerFocus();
   };
 
   renderDescription = row => row.description;
