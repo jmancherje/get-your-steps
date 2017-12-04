@@ -1,6 +1,6 @@
 import React from 'react';
 import { Map } from 'immutable';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import Collapsible from 'react-native-collapsible';
 import {
@@ -35,6 +35,19 @@ export default class RouteDetails extends React.Component {
 
   handleCheckBoxPress = () => {
     this.props.toggleSelection(this.props.route.get('_wId'));
+  };
+
+  handleDeletePress = () => {
+    Alert.alert(
+      'Delete Route?',
+      this.props.route.g,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        // TODO action to delete this saved route
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false }
+    );
   };
 
   render() {
@@ -75,7 +88,7 @@ export default class RouteDetails extends React.Component {
             destinations={ route.get('destinations', Map()) }
             route={ route }
           />
-          <Button danger full><Text>Delete Route</Text></Button>
+          <Button danger full onPress={ this.handleDeletePress }><Text>Delete Route</Text></Button>
         </Collapsible>
       </View>
     );
