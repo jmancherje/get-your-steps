@@ -45,8 +45,7 @@ export default class MapComponent extends Component {
     searchedRouteOptions: PropTypes.instanceOf(List),
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map),
-    isHidden: PropTypes.bool.isRequired,
-    heightDivisor: PropTypes.number,
+    // heightDivisor: PropTypes.number,
   };
   static defaultProps = {
     route: Map(),
@@ -59,23 +58,18 @@ export default class MapComponent extends Component {
 
   constructor(props) {
     super(props);
-    this.height = { height: deviceHeight / props.heightDivisor };
     const steps = this.getRoutesFromProps().getIn([props.activeRouteIndex, 'steps'], List());
     this.fitMap(steps);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) ||
-      (this.props.isHidden && !nextProps.isHidden)
-    ) {
+    if (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
       const steps = this.getRoutesFromProps().getIn([0, 'steps']);
       this.fitMap(steps);
     }
   }
 
   handleMapReady = () => {
-    console.log('map ready', this.map);
     const steps = this.getRoutesFromProps().getIn([this.props.activeRouteIndex, 'steps'], List());
     this.fitMap(steps);
   }
@@ -86,9 +80,6 @@ export default class MapComponent extends Component {
     this.map = ref;
   };
 
-  // componentDidMount() {
-  //   console.log('component mounted map', this.map);
-  // }
 
   fitMap = (steps = this.getRoutesFromProps()) => {
     if (List.isList(steps)) {
@@ -156,7 +147,7 @@ export default class MapComponent extends Component {
     };
     return (
       <View
-        style={ [styles.mapDimensions, this.height] }
+        style={ styles.mapDimensions }
       >
         <MapView
           ref={ this.setMapRef }
@@ -187,6 +178,7 @@ const styles = StyleSheet.create({
   },
   mapDimensions: {
     width: mapWidth,
+    height: mapHeight,
   },
   mapMarker: {
     backgroundColor: 'blue',

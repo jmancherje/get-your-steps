@@ -40,7 +40,7 @@ export default class RouteDetails extends React.Component {
   handleDeletePress = () => {
     Alert.alert(
       'Delete Route?',
-      this.props.route.g,
+      null,
       [
         { text: 'Cancel', style: 'cancel' },
         // TODO action to delete this saved route

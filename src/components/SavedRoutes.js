@@ -60,9 +60,7 @@ export default class SavedRoutes extends React.Component {
         </Header>
         <Content>
           <NbList>
-            <ListItem
-              itemDivider
-            >
+            <ListItem itemDivider>
               <Text style={ sharedStyles.listDivider }>Select routes to See how many steps you‘ll take</Text>
             </ListItem>
             { !savedRoutes.size ? placeholder : (
