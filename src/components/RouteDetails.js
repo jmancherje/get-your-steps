@@ -10,8 +10,10 @@ import {
   Col,
   Row,
   CheckBox,
+  Button,
 } from 'native-base';
 
+import MapComponent from './MapComponent';
 import sharedStyles from './styles/sharedStyles';
 
 const STEPS_PER_METER = 0.713;
@@ -44,7 +46,7 @@ export default class RouteDetails extends React.Component {
           onPress={ this.handlePress }
         >
           <Grid>
-            <Col size={ 1 } style={ [sharedStyles.justifyCenter, styles.checkbox] }>
+            <Col size={ 1 } style={ [sharedStyles.justifyCenter, styles.checkbox] } onPress={ this.handleCheckBoxPress }>
               <CheckBox
                 checked={ isSelected }
                 onPress={ this.handleCheckBoxPress }
@@ -58,7 +60,7 @@ export default class RouteDetails extends React.Component {
               size={ 3 }
               style={ styles.detailsBtn }
             >
-              <Text style={ styles.detailsBtnText }>details</Text>
+              <Text style={ styles.detailsBtnText }>{ this.state.active ? 'hide details' : 'view details'}</Text>
             </Col>
           </Grid>
         </ListItem>
@@ -66,6 +68,14 @@ export default class RouteDetails extends React.Component {
           <ListItem style={ sharedStyles.listStackCorrection }>
             { route.get('details') && <Text>{ route.get('details') }</Text> }
           </ListItem>
+          <MapComponent
+            scrollEnabled={ false }
+            heightDivisor={ 5 }
+            isHidden={ !this.state.active }
+            destinations={ route.get('destinations', Map()) }
+            route={ route }
+          />
+          <Button danger full><Text>Delete Route</Text></Button>
         </Collapsible>
       </View>
     );
@@ -74,7 +84,7 @@ export default class RouteDetails extends React.Component {
 
 const styles = StyleSheet.create({
   checkbox: {
-    marginLeft: 10,
+    paddingHorizontal: 15,
   },
   detailsBtn: {
     justifyContent: 'center',

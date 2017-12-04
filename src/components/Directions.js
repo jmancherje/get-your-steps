@@ -24,8 +24,8 @@ import Collapsible from 'react-native-collapsible';
 
 import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
+import MapComponent from './MapComponent';
 import { metersToMiles } from '../helpers/conversions';
-import Polyline from './Polyline';
 import sharedStyles from './styles/sharedStyles';
 
 // This type is just for reference
@@ -124,41 +124,6 @@ export default class Directions extends Component {
 
   toggleSave = () => {
     this.setState({ isShowingSave: !this.state.isShowingSave });
-  };
-
-  setMapRef = (ref) => {
-    this.map = ref;
-  };
-
-  fitMap = (steps) => {
-    if (List.isList(steps)) {
-      steps = steps.toJS();
-    }
-    // NOTE this is expecting an array of objects, not a list of maps
-    if (!this.map || steps.length < 2) return;
-    this.map.fitToCoordinates(steps, {
-      edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
-      animated: true,
-    });
-  };
-
-  getPolylines = () => {
-    const {
-      searchedRouteOptions,
-      activeRouteIndex,
-      updateActiveIndex,
-    } = this.props;
-    if (!searchedRouteOptions) return null;
-
-    return searchedRouteOptions.map((route, idx) => (
-      <Polyline
-        key={ route.get('distance') }
-        steps={ route.get('steps', List()).toJS() }
-        index={ idx }
-        activeIndex={ activeRouteIndex }
-        onPress={ updateActiveIndex }
-      />
-    ));
   };
 
   renderMap = () => {
@@ -274,7 +239,14 @@ export default class Directions extends Component {
                 </Right>
               </ListItem>
               <Collapsible collapsed={ !this.state.isShowingMap }>
-                { this.renderMap() }
+                <MapComponent
+                  isHidden={ !this.state.isShowingMap }
+                  destinations={ this.props.destinations }
+                  updateActiveIndex={ this.props.updateActiveIndex }
+                  searchedRouteOptions={ this.props.searchedRouteOptions }
+                  activeRouteIndex={ this.props.activeRouteIndex }
+                  currentLocation={ this.props.currentLocation }
+                />
               </Collapsible>
               <ListItem
                 itemDivider
@@ -380,11 +352,11 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   header: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#bfbfbf',
-    height: 40,
-    marginLeft: 0,
-    paddingLeft: 10,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#bfbfbf',
+    // height: 40,
+    // marginLeft: 0,
+    // paddingLeft: 10,
   },
   smallText: {
     fontSize: 13,
