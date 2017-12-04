@@ -23,6 +23,7 @@ export default class RouteDetails extends React.Component {
     route: PropTypes.instanceOf(Map).isRequired,
     isSelected: PropTypes.bool.isRequired,
     toggleSelection: PropTypes.func.isRequired,
+    deleteRoute: PropTypes.func.isRequired,
   };
 
   state = {
@@ -37,14 +38,17 @@ export default class RouteDetails extends React.Component {
     this.props.toggleSelection(this.props.route.get('_wId'));
   };
 
+  deleteRoute = () => {
+    this.props.deleteRoute(this.props.route.get('_wId'));
+  };
+
   handleDeletePress = () => {
     Alert.alert(
       'Delete Route?',
       null,
       [
         { text: 'Cancel', style: 'cancel' },
-        // TODO action to delete this saved route
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'OK', onPress: this.deleteRoute },
       ],
       { cancelable: false }
     );

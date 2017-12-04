@@ -94,7 +94,6 @@ export const saveRoute = (payload) => (dispatch, getState) => {
   });
 
   const savedRoutes = getSavedRoutes(getState());
-
   AsyncStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
 };
 
@@ -105,4 +104,14 @@ export const clearAllSavedRoutes = (payload) => (dispatch, getState) => {
   });
 
   AsyncStorage.removeItem('savedRoutes');
+};
+
+export const deleteRoute = (wId) => (dispatch, getState) => {
+  dispatch({
+    type: actionTypes.directions.DELETE,
+    payload: wId,
+  });
+
+  const savedRoutes = getSavedRoutes(getState());
+  AsyncStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
 };

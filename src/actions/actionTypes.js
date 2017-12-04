@@ -36,6 +36,7 @@ export default Object.freeze({
     SAVE: 'directions/SAVE',
     CLEAR_ALL: 'directions/CLEAR_ALL',
     INITIALIZE: 'directions/INITIALIZE',
+    DELETE: 'directions/DELETE',
     activeIndex: {
       UPDATE: 'directions/activeIndex/UPDATE',
     },

@@ -24,6 +24,7 @@ export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
     clearAllSavedRoutes: PropTypes.func.isRequired,
+    deleteRoute: PropTypes.func.isRequired,
   };
 
   state = {
@@ -70,6 +71,7 @@ export default class SavedRoutes extends React.Component {
                   route={ route }
                   isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
                   toggleSelection={ this.toggleSelection }
+                  deleteRoute={ this.props.deleteRoute }
                 />
               ))
             ) }

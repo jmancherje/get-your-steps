@@ -99,6 +99,9 @@ const initializeSavedRoutes = (state, stringifiedData) => {
   return state.set('savedRoutes', immutableData);
 };
 
+const deleteSavedRoute = (state, wId) =>
+  state.update('savedRoutes', List(), savedRoutes => savedRoutes.filterNot(route => route.get('_wId') === wId));
+
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
   case actionTypes.directions.activeIndex.UPDATE:
@@ -121,6 +124,8 @@ export default (state = initialStepsState, { type, payload }) => {
     return state.set('savedRoutes', List());
   case actionTypes.directions.INITIALIZE:
     return initializeSavedRoutes(state, payload);
+  case actionTypes.directions.DELETE:
+    return deleteSavedRoute(state, payload);
   default:
     return state;
   }

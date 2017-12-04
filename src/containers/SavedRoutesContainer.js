@@ -6,6 +6,7 @@ import {
 
 import {
   clearAllSavedRoutes,
+  deleteRoute,
 } from '../actions';
 
 import SavedRoutes from '../components/SavedRoutes';
@@ -14,4 +15,7 @@ const mapStateToProps = (state) => ({
   savedRoutes: getSavedRoutes(state),
 });
 
-export default connect(mapStateToProps, { clearAllSavedRoutes })(SavedRoutes);
+export default connect(mapStateToProps, {
+  clearAllSavedRoutes,
+  deleteRoute,
+})(SavedRoutes);
