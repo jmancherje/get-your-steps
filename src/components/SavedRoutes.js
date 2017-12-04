@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { List } from 'immutable';
 import { identity } from 'lodash';
 import PropTypes from 'prop-types';
@@ -9,7 +10,6 @@ import {
   Text,
   Container,
   Content,
-  Button,
   Header,
   Body,
 } from 'native-base';
@@ -23,7 +23,6 @@ const STEPS_PER_METER = 0.713;
 export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
-    clearAllSavedRoutes: PropTypes.func.isRequired,
     deleteRoute: PropTypes.func.isRequired,
   };
 
@@ -53,7 +52,8 @@ export default class SavedRoutes extends React.Component {
     const { savedRoutes } = this.props;
     const numberOfWalks = this.state.selectedRouteIds.size;
     const totalDistance = this.getTotalDistance();
-    const placeholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
+    const noSavedRoutesPlaceholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
+    const noRoutesSelectedPlaceholderText = "Select routes to see how much you'll walk";
     return (
       <Container>
         <Header>
@@ -64,32 +64,30 @@ export default class SavedRoutes extends React.Component {
             <ListItem itemDivider>
               <Text style={ sharedStyles.listDivider }>Select routes to See how many steps you‘ll take</Text>
             </ListItem>
-            { !savedRoutes.size ? placeholder : (
+            { !savedRoutes.size ? noSavedRoutesPlaceholder : (
               savedRoutes.map((route, index) => (
-                <RouteDetails
+                <View
                   key={ route.get('_wId') }
-                  route={ route }
-                  isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
-                  toggleSelection={ this.toggleSelection }
-                  deleteRoute={ this.props.deleteRoute }
-                />
+                >
+                  <RouteDetails
+                    route={ route }
+                    isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
+                    toggleSelection={ this.toggleSelection }
+                    deleteRoute={ this.props.deleteRoute }
+                  />
+                </View>
               ))
             ) }
+            <ListItem itemDivider>
+              <Text style={ sharedStyles.listDivider }>{ !numberOfWalks ? noRoutesSelectedPlaceholderText : `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
+            </ListItem>
             <Collapsible collapsed={ !numberOfWalks }>
-              <ListItem itemDivider>
-                <Text style={ sharedStyles.listDivider }>{ `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
-              </ListItem>
               <ListItem style={ sharedStyles.listStackCorrection }>
                 <Text>
                   { `${Math.round(STEPS_PER_METER * totalDistance)} Steps for ${metersToMiles(totalDistance).toFixed(2)} miles` }
                 </Text>
               </ListItem>
             </Collapsible>
-            <ListItem style={ sharedStyles.listStackCorrection }>
-              <Button transparent onPress={ this.props.clearAllSavedRoutes } disabled={ !this.props.savedRoutes.size }>
-                <Text>Clear all Saved Routes</Text>
-              </Button>
-            </ListItem>
           </NbList>
         </Content>
       </Container>

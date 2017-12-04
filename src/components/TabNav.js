@@ -21,7 +21,7 @@ const Stack = StackNavigator({
   Routes: {
     screen: DirectionsContainer,
     navigationOptions: {
-      title: 'Plan My Walks',
+      title: 'Plan your Routes',
     },
   },
   SaveForm: {

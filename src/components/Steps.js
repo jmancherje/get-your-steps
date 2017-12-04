@@ -234,11 +234,6 @@ export default class Steps extends React.Component {
             style={ styles.slider }
           />
         </ListItem>
-        <ListItem>
-          <Button onPress={ this.initializeUserStepData }>
-            <Text>Gather all Past Data</Text>
-          </Button>
-        </ListItem>
       </NbList>
     );
   }
