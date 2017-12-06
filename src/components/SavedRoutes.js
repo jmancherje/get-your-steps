@@ -17,6 +17,7 @@ import {
 import RouteDetails from './RouteDetails';
 import sharedStyles from './styles/sharedStyles';
 import { metersToMiles } from '../helpers/conversions';
+import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
 const STEPS_PER_METER = 0.713;
 
@@ -44,7 +45,10 @@ export default class SavedRoutes extends React.Component {
     const { savedRoutes } = this.props;
 
     const selectedRoutes = selectedRouteIds.map(id => savedRoutes.find(route => route.get('_wId') === id)).filter(identity);
-    const totalDistance = selectedRoutes.reduce((distance, route) => distance + route.getIn(['route', 'distance']), 0);
+    const totalDistance = selectedRoutes.reduce((distanceAccumulator, routeDetails) => {
+      const { distance } = getDetailsArrayFromRoute(routeDetails.get('route'));
+      return distanceAccumulator + distance;
+    }, 0);
     return totalDistance;
   };
 
@@ -61,16 +65,13 @@ export default class SavedRoutes extends React.Component {
         </Header>
         <Content>
           <NbList>
-            <ListItem itemDivider>
-              <Text style={ sharedStyles.listDivider }>Select routes to See how many steps you‘ll take</Text>
-            </ListItem>
             { !savedRoutes.size ? noSavedRoutesPlaceholder : (
               savedRoutes.map((route, index) => (
                 <View
                   key={ route.get('_wId') }
                 >
                   <RouteDetails
-                    route={ route }
+                    savedRoute={ route }
                     isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
                     toggleSelection={ this.toggleSelection }
                     deleteRoute={ this.props.deleteRoute }
@@ -78,9 +79,11 @@ export default class SavedRoutes extends React.Component {
                 </View>
               ))
             ) }
-            <ListItem itemDivider>
-              <Text style={ sharedStyles.listDivider }>{ !numberOfWalks ? noRoutesSelectedPlaceholderText : `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
-            </ListItem>
+            { !savedRoutes.size ? null : (
+              <ListItem itemDivider>
+                <Text style={ sharedStyles.listDivider }>{ !numberOfWalks ? noRoutesSelectedPlaceholderText : `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
+              </ListItem>
+            ) }
             <Collapsible collapsed={ !numberOfWalks }>
               <ListItem style={ sharedStyles.listStackCorrection }>
                 <Text>

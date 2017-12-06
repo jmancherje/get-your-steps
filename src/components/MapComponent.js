@@ -8,7 +8,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import { MapView } from 'expo';
-import { Button, Text } from 'native-base';
 
 import Polyline from './Polyline';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
@@ -88,8 +87,8 @@ export default class MapComponent extends Component {
       route,
     } = this.props;
     let routes = searchedRouteOptions;
-    if (!routes.size && route.get('route')) {
-      routes = List([route.get('route')]);
+    if (!routes.size) {
+      routes = List([route]);
     }
     if (!routes.size) return List();
     return routes;
@@ -141,7 +140,7 @@ export default class MapComponent extends Component {
       >
         <MapView
           ref={ this.setMapRef }
-          // scrollEnabled={ false }
+          scrollEnabled={ false }
           // onLayout for iOS onMapReady for android
           onLayout={ this.fitMap }
           style={ { width: '100%', height: '100%' } }
