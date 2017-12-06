@@ -25,6 +25,7 @@ import WaypointListItem from './WaypointListItem';
 import MapComponent from './MapComponent';
 import { metersToMiles } from '../helpers/conversions';
 import sharedStyles from './styles/sharedStyles';
+import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
 // Based on average 5'8" person
 // TODO: customize this for all users
@@ -77,6 +78,7 @@ export default class Directions extends Component {
     if (!searchedRouteOptions) return null;
     // const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
+    const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
     return (
       <Container>
         <Content>
@@ -129,8 +131,8 @@ export default class Directions extends Component {
             </ListItem>
             <Collapsible collapsed={ !this.state.isShowingDistance }>
               <ListItem style={ sharedStyles.listStackCorrection }>
-                { activeRoute.get('distance') ? (
-                  <Text>{ `${Math.round(activeRoute.get('distance') / STEPS_PER_METER)} steps (for ${metersToMiles(activeRoute.get('distance')).toFixed(2)} miles)` }</Text>
+                { totalDistance ? (
+                  <Text>{ `${Math.round(totalDistance / STEPS_PER_METER)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
                 ) : (
                   <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
                 ) }

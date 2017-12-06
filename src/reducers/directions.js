@@ -56,23 +56,23 @@ const updateSearchedRouteOptions = (state, payload) => {
   if (!Array.isArray(routes) || routes.length < 1) return state;
 
   // TODO: do this without immutable to prevent unnecessary .toJS
-  const allRoutes = routes.reduce((steps, route) => {
-    const combinedLegs = route.legs.reduce((legsMap, leg) => (
-      legsMap
-        .update('distance', distance => distance + leg.distance.value)
-        .update('steps', nextSteps => nextSteps.push(Map({
-          latitude: leg.start_location.lat,
-          longitude: leg.start_location.lng,
-        })).concat(leg.steps.map(step => ({
-          latitude: step.end_location.lat,
-          longitude: step.end_location.lng,
-        }))))
-    ), Map({ distance: 0, steps: List() }));
-    steps.push(combinedLegs.toJS());
-    return steps;
-  }, []);
+  // const allRoutes = routes.reduce((steps, route) => {
+  //   const combinedLegs = route.legs.reduce((legsMap, leg) => (
+  //     legsMap
+  //       .update('distance', distance => distance + leg.distance.value)
+  //       .update('steps', nextSteps => nextSteps.push(Map({
+  //         latitude: leg.start_location.lat,
+  //         longitude: leg.start_location.lng,
+  //       })).concat(leg.steps.map(step => ({
+  //         latitude: step.end_location.lat,
+  //         longitude: step.end_location.lng,
+  //       }))))
+  //   ), Map({ distance: 0, steps: List() }));
+  //   steps.push(combinedLegs.toJS());
+  //   return steps;
+  // }, []);
 
-  return state.set('searchedRouteOptions', fromJS(allRoutes));
+  return state.set('searchedRouteOptions', fromJS(routes));
 };
 
 const updateShowMap = (state, showMap) => {

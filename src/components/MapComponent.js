@@ -8,8 +8,10 @@ import {
   StyleSheet,
 } from 'react-native';
 import { MapView } from 'expo';
+import { Button, Text } from 'native-base';
 
 import Polyline from './Polyline';
+import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
 // This type is just for reference
 // eslint-disable-next-line no-unused-vars
@@ -54,16 +56,13 @@ export default class MapComponent extends Component {
     currentLocation: Map(),
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
-      const steps = this.getRoutesFromProps().getIn([0, 'steps']);
-      this.fitMap(steps);
+  componentDidUpdate(prevProps) {
+    if (
+      (prevProps.searchedRouteOptions !== this.props.searchedRouteOptions) ||
+      (prevProps.activeRouteIndex !== this.props.activeRouteIndex)
+    ) {
+      this.fitMap();
     }
-  }
-
-  handleMapReady = () => {
-    const steps = this.getRoutesFromProps().getIn([this.props.activeRouteIndex, 'steps'], List());
-    this.fitMap(steps);
   }
 
   map = null;
@@ -72,13 +71,11 @@ export default class MapComponent extends Component {
     this.map = ref;
   };
 
-
-  fitMap = (steps = this.getRoutesFromProps()) => {
-    if (List.isList(steps)) {
-      steps = steps.toJS();
-    }
-    // NOTE this is expecting an array of objects, not a list of maps
-    if (!this.map || steps.length < 2) return;
+  fitMap = () => {
+    const { route, searchedRouteOptions, activeRouteIndex } = this.props;
+    const effectiveRoute = route.isEmpty() ? searchedRouteOptions.get(activeRouteIndex, Map()) : route;
+    if (effectiveRoute.isEmpty()) return;
+    const { steps } = getDetailsArrayFromRoute(effectiveRoute);
     this.map.fitToCoordinates(steps, {
       edgePadding: { top: 15, right: 15, bottom: 15, left: 15 },
       animated: true,
@@ -105,15 +102,16 @@ export default class MapComponent extends Component {
     } = this.props;
     const routes = this.getRoutesFromProps();
 
-    return routes.map((routeOption, idx) => (
-      <Polyline
-        key={ routeOption.get('distance') }
-        steps={ routeOption.get('steps', List()).toJS() }
+    return routes.map((routeOption, idx) => {
+      const { steps, distance } = getDetailsArrayFromRoute(routeOption);
+      return (<Polyline
+        key={ routeOption.getIn(['overview_polyline', 'points'], distance) }
+        steps={ steps }
         index={ idx }
         activeIndex={ activeRouteIndex }
         onPress={ updateActiveIndex }
-      />
-    ));
+      />);
+    });
   };
 
   render() {
@@ -143,9 +141,9 @@ export default class MapComponent extends Component {
       >
         <MapView
           ref={ this.setMapRef }
-          scrollEnabled={ false }
+          // scrollEnabled={ false }
           // onLayout for iOS onMapReady for android
-          onLayout={ this.handleMapReady }
+          onLayout={ this.fitMap }
           style={ { width: '100%', height: '100%' } }
           initialRegion={ region }
         >
