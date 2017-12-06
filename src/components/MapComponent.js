@@ -45,7 +45,6 @@ export default class MapComponent extends Component {
     searchedRouteOptions: PropTypes.instanceOf(List),
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map),
-    // heightDivisor: PropTypes.number,
   };
   static defaultProps = {
     route: Map(),
@@ -53,14 +52,7 @@ export default class MapComponent extends Component {
     searchedRouteOptions: List(),
     updateActiveIndex: noop,
     currentLocation: Map(),
-    heightDivisor: 3,
   };
-
-  constructor(props) {
-    super(props);
-    const steps = this.getRoutesFromProps().getIn([props.activeRouteIndex, 'steps'], List());
-    this.fitMap(steps);
-  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchedRouteOptions.size && nextProps.searchedRouteOptions !== this.props.searchedRouteOptions) {
