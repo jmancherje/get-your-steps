@@ -15,12 +15,13 @@ import {
 
 import MapComponent from './MapComponent';
 import sharedStyles from './styles/sharedStyles';
+import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
 const STEPS_PER_METER = 0.713;
 
 export default class RouteDetails extends React.Component {
   static propTypes = {
-    route: PropTypes.instanceOf(Map).isRequired,
+    savedRoute: PropTypes.instanceOf(Map).isRequired,
     isSelected: PropTypes.bool.isRequired,
     toggleSelection: PropTypes.func.isRequired,
     deleteRoute: PropTypes.func.isRequired,
@@ -35,11 +36,11 @@ export default class RouteDetails extends React.Component {
   };
 
   handleCheckBoxPress = () => {
-    this.props.toggleSelection(this.props.route.get('_wId'));
+    this.props.toggleSelection(this.props.savedRoute.get('_wId'));
   };
 
   deleteRoute = () => {
-    this.props.deleteRoute(this.props.route.get('_wId'));
+    this.props.deleteRoute(this.props.savedRoute.get('_wId'));
   };
 
   handleDeletePress = () => {
@@ -55,7 +56,9 @@ export default class RouteDetails extends React.Component {
   };
 
   render() {
-    const { route, isSelected } = this.props;
+    const { savedRoute, isSelected } = this.props;
+    const route = savedRoute.get('route');
+    const { distance } = getDetailsArrayFromRoute(route);
     return (
       <View>
         <ListItem
@@ -70,8 +73,8 @@ export default class RouteDetails extends React.Component {
               />
             </Col>
             <Col size={ 6 }>
-              <Row><Text>{ route.get('name') }</Text></Row>
-              <Row><Text>{ `${Math.round(STEPS_PER_METER * (route.getIn(['route', 'distance'])))} Steps` }</Text></Row>
+              <Row><Text>{ savedRoute.get('name') }</Text></Row>
+              <Row><Text>{ `${Math.round(STEPS_PER_METER * (distance))} Steps` }</Text></Row>
             </Col>
             <Col
               size={ 3 }
@@ -82,14 +85,16 @@ export default class RouteDetails extends React.Component {
           </Grid>
         </ListItem>
         <Collapsible collapsed={ !this.state.active }>
-          <ListItem style={ sharedStyles.listStackCorrection }>
-            { route.get('details') && <Text>{ route.get('details') }</Text> }
-          </ListItem>
+          { savedRoute.get('details') ? (
+            <ListItem style={ sharedStyles.listStackCorrection }>
+              { <Text>{ savedRoute.get('details') }</Text> }
+            </ListItem>
+          ) : null }
           <MapComponent
             scrollEnabled={ false }
             heightDivisor={ 5 }
             isHidden={ !this.state.active }
-            destinations={ route.get('destinations', Map()) }
+            destinations={ savedRoute.get('destinations', Map()) }
             route={ route }
           />
           <Button danger full onPress={ this.handleDeletePress }><Text>Delete Route</Text></Button>
