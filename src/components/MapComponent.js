@@ -113,6 +113,64 @@ export default class MapComponent extends Component {
     });
   };
 
+  getDestinationWaypoints = () => {
+    const {
+      destinations,
+      currentLocation,
+    } = this.props;
+    const pins = [];
+    if (Map.isMap(currentLocation) && !currentLocation.isEmpty()) {
+      pins.push(
+        <MapView.Marker
+          key="current location marker"
+          coordinate={ { latitude: currentLocation.get('latitude'), longitude: currentLocation.get('longitude') } }
+          title="Current Location"
+        >
+          <View
+            style={ [styles.mapMarker, styles.waypointMarker] }
+          />
+        </MapView.Marker>
+      );
+    }
+    destinations.forEach((destination, index) => {
+      if (index === 0) {
+        pins.push(
+          <MapView.Marker
+            key={ destination.get('dataPlaceId', destination.get('name')) }
+            coordinate={ destination.get('coordinates', Map()).toJS() }
+          >
+            <View
+              style={ [styles.mapMarker, styles.startMarker] }
+            />
+          </MapView.Marker>
+        );
+      } else if (index === destinations.size - 1) {
+        pins.push(
+          <MapView.Marker
+            key={ destination.get('dataPlaceId', destination.get('name')) }
+            coordinate={ destination.get('coordinates', Map()).toJS() }
+          >
+            <View
+              style={ [styles.mapMarker, styles.endMarker] }
+            />
+          </MapView.Marker>
+        );
+      } else {
+        pins.push(
+          <MapView.Marker
+            key={ destination.get('dataPlaceId', destination.get('name')) }
+            coordinate={ destination.get('coordinates', Map()).toJS() }
+          >
+            <View
+              style={ [styles.mapMarker, styles.waypointMarker] }
+            />
+          </MapView.Marker>
+        );
+      }
+    });
+    return pins;
+  };
+
   render() {
     const {
       destinations,
@@ -146,14 +204,7 @@ export default class MapComponent extends Component {
           style={ { width: '100%', height: '100%' } }
           initialRegion={ region }
         >
-          <MapView.Marker
-            coordinate={ { latitude, longitude } }
-            title="Current Location"
-          >
-            <View
-              style={ styles.mapMarker }
-            />
-          </MapView.Marker>
+          { this.getDestinationWaypoints() }
           { this.getPolylines() }
         </MapView>
       </View>
@@ -170,9 +221,20 @@ const styles = StyleSheet.create({
     height: mapHeight,
   },
   mapMarker: {
-    backgroundColor: 'blue',
     height: 10,
     width: 10,
     borderRadius: 5,
+  },
+  currentLocationMarker: {
+    backgroundColor: 'yellow',
+  },
+  waypointMarker: {
+    backgroundColor: 'blue',
+  },
+  startMarker: {
+    backgroundColor: 'green',
+  },
+  endMarker: {
+    backgroundColor: 'red',
   },
 });
