@@ -74,6 +74,12 @@ export default class Directions extends Component {
     this.setState({ isShowingMap: nextValue });
   };
 
+  // This is to prevent passing in the event as nextValue
+  // When pressing directly
+  handleMapPress = () => {
+    this.toggleMap();
+  };
+
   toggleDistance = () => {
     this.setState({ isShowingDistance: !this.state.isShowingDistance });
   };
@@ -153,7 +159,7 @@ export default class Directions extends Component {
             <ListItem
               itemDivider
               style={ sharedStyles.listStackCorrection }
-              onPress={ this.toggleMap }
+              onPress={ this.handleMapPress }
             >
               <Left>
                 <Text>Map</Text>
