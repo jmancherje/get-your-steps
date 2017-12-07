@@ -37,3 +37,8 @@ export const getCurrentStepCount = createSelector(
   [getSteps],
   steps => steps.get('currentStepCount', 0)
 );
+
+export const getStepResetDate = createSelector(
+  [getSteps],
+  steps => steps.get('stepResetDate'),
+);

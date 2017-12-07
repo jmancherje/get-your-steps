@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
-import Root from './Root';
+import ProfileContainer from '../containers/ProfileContainer';
 import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
@@ -19,7 +19,7 @@ const Stack = StackNavigator({
   Routes: {
     screen: DirectionsContainer,
     navigationOptions: {
-      title: 'Plan your Routes',
+      title: 'Create A Route',
     },
   },
   SaveForm: {
@@ -46,7 +46,7 @@ export default TabNavigator({
     },
   },
   Profile: {
-    screen: Root,
+    screen: ProfileContainer,
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),

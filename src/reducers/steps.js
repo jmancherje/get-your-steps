@@ -41,6 +41,7 @@ const initialStepsState = fromJS({
   hoursBack: 1,
   stepsSinceHour: 0,
   currentStepCount: 0,
+  stepResetDate: new Date(),
   realtimeSteps: List(),
   historicData: Map(),
 });
@@ -56,7 +57,9 @@ export default (state = initialStepsState, { type, payload }) => {
   case actionTypes.steps.currentStepCount.UPDATE:
     return updateCurrentStepCount(state, payload);
   case actionTypes.steps.currentStepCount.RESET:
-    return state.set('currentStepCount', 0);
+    return state
+      .set('stepResetDate', new Date())
+      .set('currentStepCount', 0);
   case actionTypes.steps.isPedometerAvailable.UPDATE:
     return state.set('isPedometerAvailable', payload);
   case actionTypes.steps.historicData.SET:
