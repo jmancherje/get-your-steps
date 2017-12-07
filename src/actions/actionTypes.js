@@ -3,8 +3,8 @@ export default Object.freeze({
     isPedometerAvailable: {
       UPDATE: 'steps/isPedometerAvailable/UPDATE',
     },
-    hoursBack: {
-      UPDATE: 'steps/hoursBack/UPDATE',
+    minutesBack: {
+      UPDATE: 'steps/minutesBack/UPDATE',
     },
     stepsSinceHour: {
       UPDATE: 'steps/stepsSinceHour/UPDATE',

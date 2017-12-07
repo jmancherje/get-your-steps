@@ -38,7 +38,7 @@ const handleRealtimeStepsUpdate = (state, payload) => {
 const updateCurrentStepCount = (state, stepCount) => state.set('currentStepCount', stepCount);
 
 const initialStepsState = fromJS({
-  hoursBack: 1,
+  minutesBack: 5,
   stepsSinceHour: 0,
   currentStepCount: 0,
   stepResetDate: new Date(),
@@ -48,8 +48,8 @@ const initialStepsState = fromJS({
 
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
-  case actionTypes.steps.hoursBack.UPDATE:
-    return state.set('hoursBack', payload);
+  case actionTypes.steps.minutesBack.UPDATE:
+    return state.set('minutesBack', payload);
   case actionTypes.steps.stepsSinceHour.UPDATE:
     return state.set('stepsSinceHour', payload);
   case actionTypes.steps.realtimeSteps.UPDATE:

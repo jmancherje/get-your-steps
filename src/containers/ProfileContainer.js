@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import {
-  setHoursBack,
+  setMinutesBack,
   setStepsSinceHour,
   updateRealtimeStepData,
   setIsPedometerAvailable,
@@ -10,7 +10,7 @@ import {
 } from '../actions';
 
 import {
-  getHoursBack,
+  getMinutesBack,
   getStepsSinceHour,
   getRealtimeStepData,
   getCurrentStepCount,
@@ -22,7 +22,7 @@ import {
 import Profile from '../components/Profile';
 
 const mapStateToProps = (state) => ({
-  hoursBack: getHoursBack(state),
+  minutesBack: getMinutesBack(state),
   stepsSinceHour: getStepsSinceHour(state),
   realtimeSteps: getRealtimeStepData(state),
   totalSteps: getLastTotalSteps(state),
@@ -32,7 +32,7 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  setHoursBack,
+  setMinutesBack,
   setStepsSinceHour,
   updateRealtimeStepData,
   setIsPedometerAvailable,
