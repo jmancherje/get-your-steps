@@ -49,17 +49,29 @@ export default class Directions extends Component {
     navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
-  state = {
-    isShowingMap: true,
-    isShowingDistance: true,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isShowingMap: this.props.destinations.size > 0 || !this.props.currentLocation.isEmpty(),
+      isShowingDistance: true,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.destinations !== this.props.destinations) {
+      this.toggleMap(true, nextProps);
+    }
+  }
 
   navigateToSave = () => {
     this.props.navigation.navigate('SaveForm');
   };
 
-  toggleMap = () => {
-    this.setState({ isShowingMap: !this.state.isShowingMap });
+  toggleMap = (nextValue = !this.state.isShowingMap, props = this.props) => {
+    if (!props.destinations.size && props.currentLocation.isEmpty()) {
+      return;
+    }
+    this.setState({ isShowingMap: nextValue });
   };
 
   toggleDistance = () => {

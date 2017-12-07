@@ -4,16 +4,14 @@ import {
   Content,
 } from 'native-base';
 
-import StepsContainer from '../containers/StepsContainer';
-import LocationContainer from '../containers/LocationContainer';
+import ProfileContainer from '../containers/ProfileContainer';
 
 export default class Root extends React.Component {
   render() {
     return (
       <Container>
         <Content>
-          <LocationContainer />
-          <StepsContainer />
+          <ProfileContainer />
         </Content>
       </Container>
     );

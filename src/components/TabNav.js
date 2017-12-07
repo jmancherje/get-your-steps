@@ -9,8 +9,6 @@ import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
 
-
-
 const styles = StyleSheet.create({
   icon: {
     fontSize: 18,
@@ -47,10 +45,10 @@ export default TabNavigator({
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },
-  Steps: {
+  Profile: {
     screen: Root,
     navigationOptions: {
-      tabBarLabel: 'Steps',
+      tabBarLabel: 'Profile',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
     },
   },

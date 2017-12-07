@@ -187,7 +187,6 @@ export default class MapComponent extends Component {
     }
     if (!longitude || !latitude) return null;
     const region = {
-      // TODO: calculate the deltas using the viewport data with ...mapRegion as a fallback
       ...mapRegion,
       longitude,
       latitude,
@@ -201,7 +200,7 @@ export default class MapComponent extends Component {
           scrollEnabled={ false }
           // onLayout for iOS onMapReady for android
           onLayout={ this.fitMap }
-          style={ { width: '100%', height: '100%' } }
+          style={ styles.fitMap }
           initialRegion={ region }
         >
           { this.getDestinationWaypoints() }
@@ -215,6 +214,10 @@ export default class MapComponent extends Component {
 const styles = StyleSheet.create({
   device: {
     width: deviceWidth,
+  },
+  fitMap: {
+    width: '100%',
+    height: '100%',
   },
   mapDimensions: {
     width: mapWidth,
