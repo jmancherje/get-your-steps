@@ -59,6 +59,7 @@ export default Object.freeze({
   profile: {
     stepGoal: {
       UPDATE: 'profile/stepGoal/UPDATE',
+      INITIALIZE: 'profile/stepGoal/INITIALIZE',
     },
   },
 });

@@ -27,8 +27,10 @@ export default class SaveRouteForm extends React.Component {
 
   handleSave = () => {
     const { stepGoal } = this.state;
-    this.props.updateStepGoal(parseInt(stepGoal, 10));
-    this.props.navigation.goBack();
+    if (stepGoal) {
+      this.props.updateStepGoal(parseInt(stepGoal, 10));
+      this.props.navigation.goBack();
+    }
   };
 
   render() {
@@ -38,7 +40,12 @@ export default class SaveRouteForm extends React.Component {
           <Form>
             <Item floatingLabel>
               <Label>Daily Step Goal</Label>
-              <Input keyboardType="numeric" onChangeText={ this.handleChange } />
+              <Input
+                autoFocus
+                keyboardType="numeric"
+                onChangeText={ this.handleChange }
+                onSubmitEditing={ this.handleSave }
+              />
             </Item>
           </Form>
           <Button
