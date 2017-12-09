@@ -9,6 +9,9 @@ export default Object.freeze({
     stepsSinceHour: {
       UPDATE: 'steps/stepsSinceHour/UPDATE',
     },
+    stepsToday: {
+      UPDATE: 'steps/stepsToday/UPDATE',
+    },
     realtimeSteps: {
       UPDATE: 'steps/realtimeSteps/UPDATE',
     },
@@ -51,6 +54,11 @@ export default Object.freeze({
     },
     map: {
       UPDATE: 'directions/map/UPDATE',
+    },
+  },
+  profile: {
+    stepGoal: {
+      UPDATE: 'profile/stepGoal/UPDATE',
     },
   },
 });

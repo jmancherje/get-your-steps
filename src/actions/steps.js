@@ -10,6 +10,11 @@ export const setStepsSinceHour = (steps) => ({
   payload: steps,
 });
 
+export const setStepsToday = (steps) => ({
+  type: actionTypes.steps.stepsToday.UPDATE,
+  payload: steps,
+});
+
 export const updateRealtimeStepData = (stepPayload) => ({
   type: actionTypes.steps.realtimeSteps.UPDATE,
   payload: stepPayload,

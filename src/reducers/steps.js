@@ -41,6 +41,7 @@ const initialStepsState = fromJS({
   minutesBack: 5,
   stepsSinceHour: 0,
   currentStepCount: 0,
+  stepsToday: 0,
   stepResetDate: new Date(),
   realtimeSteps: List(),
   historicData: Map(),
@@ -48,6 +49,8 @@ const initialStepsState = fromJS({
 
 export default (state = initialStepsState, { type, payload }) => {
   switch (type) {
+  case actionTypes.steps.stepsToday.UPDATE:
+  return state.set('stepsToday', payload);
   case actionTypes.steps.minutesBack.UPDATE:
     return state.set('minutesBack', payload);
   case actionTypes.steps.stepsSinceHour.UPDATE:

@@ -7,6 +7,7 @@ import {
   setIsPedometerAvailable,
   updateCurrentStepCount,
   resetCurrentStepCount,
+  setStepsToday,
 } from '../actions';
 
 import {
@@ -17,6 +18,8 @@ import {
   getLastStepsPerSecond,
   getLastTotalSteps,
   getStepResetDate,
+  getStepGoal,
+  getStepsToday,
 } from '../selectors';
 
 import Profile from '../components/Profile';
@@ -29,6 +32,8 @@ const mapStateToProps = (state) => ({
   stepsPerSecond: getLastStepsPerSecond(state),
   currentStepCount: getCurrentStepCount(state),
   stepResetDate: getStepResetDate(state),
+  stepGoal: getStepGoal(state),
+  stepsToday: getStepsToday(state),
 });
 
 export default connect(mapStateToProps, {
@@ -38,4 +43,5 @@ export default connect(mapStateToProps, {
   setIsPedometerAvailable,
   updateCurrentStepCount,
   resetCurrentStepCount,
+  setStepsToday,
 })(Profile);

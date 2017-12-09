@@ -33,6 +33,12 @@ export const getStepsSinceHour = createSelector(
   steps => steps.get('stepsSinceHour', 0)
 );
 
+export const getStepsToday = createSelector(
+  [getSteps],
+  steps => steps.get('stepsToday', 0)
+);
+
+
 export const getCurrentStepCount = createSelector(
   [getSteps],
   steps => steps.get('currentStepCount', 0)

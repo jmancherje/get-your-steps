@@ -36,6 +36,9 @@ export default class Profile extends React.Component {
     updateCurrentStepCount: PropTypes.func.isRequired,
     stepResetDate: PropTypes.instanceOf(Date).isRequired,
     resetCurrentStepCount: PropTypes.func.isRequired,
+    stepGoal: PropTypes.number.isRequired,
+    stepsToday: PropTypes.number.isRequired,
+    setStepsToday: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -45,6 +48,7 @@ export default class Profile extends React.Component {
   componentDidMount() {
     this._subscribe();
     this.getLastHoursSteps();
+    this.getStepsToday();
   }
 
   componentWillUnmount() {
@@ -52,15 +56,15 @@ export default class Profile extends React.Component {
   }
 
   _subscribe = () => {
+    const {
+      realtimeSteps,
+      updateRealtimeStepData,
+      updateCurrentStepCount,
+    } = this.props;
     Pedometer.isAvailableAsync().then(
       (success) => {
         this.props.setIsPedometerAvailable(true);
         this._subscription = Pedometer.watchStepCount((result) => {
-          const {
-            realtimeSteps,
-            updateRealtimeStepData,
-            updateCurrentStepCount,
-          } = this.props;
           const {
             totalSteps: lastTotalSteps = 0,
             time: lastTimeStamp,
@@ -78,11 +82,24 @@ export default class Profile extends React.Component {
           updateCurrentStepCount(nextStepData.get('totalSteps'));
           // Update the steps count based on hours back button/slider
           this.getLastHoursSteps();
+          this.getStepsToday();
         });
       },
       (error) => {
         this.props.setIsPedometerAvailable(false);
       }
+    );
+  };
+
+  getStepsToday = () => {
+    const { setStepsToday } = this.props;
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date();
+    Pedometer.getStepCountAsync(start, end).then(
+      (result) => {
+        setStepsToday(result.steps);
+      },
     );
   };
 
@@ -96,7 +113,7 @@ export default class Profile extends React.Component {
     if (minutesBack < 1) return;
     const end = new Date();
     const start = new Date();
-    start.setHours(end.getHours() - minutesBack);
+    start.setMinutes(end.getMinutes() - minutesBack);
     Pedometer.getStepCountAsync(start, end).then(
       (result) => {
         setStepsSinceHour(result.steps);
@@ -127,11 +144,14 @@ export default class Profile extends React.Component {
       stepsPerSecond,
       totalSteps,
       stepResetDate,
+      stepsToday,
+      stepGoal,
     } = this.props;
     const currentTime = new Date();
     currentTime.setMinutes(currentTime.getMinutes() - minutesBack);
     const customValueString = `${stepsSinceHour} Steps since ${moment(currentTime).format('LT')}`;
-
+    const metStepGoal = stepsToday >= stepGoal;
+    const percentageOfGoal = (stepsToday / stepGoal) * 100;
     return (
       <Container>
         <Header>
@@ -139,6 +159,44 @@ export default class Profile extends React.Component {
         </Header>
         <Content>
           <NbList>
+            <ListItem
+              itemDivider
+              style={ styles.listDivider }
+            >
+              <Text
+                style={ styles.listDividerText }
+              >My Daily Step Goal</Text>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text style={ styles.stepGoal }>
+                  { stepGoal }
+                </Text>
+                <Text>
+                  Steps Per Day
+                </Text>
+              </Left>
+              <Right>
+                <Button small>
+                  <Text style={ { fontSize: 12 } }>
+                    Update
+                  </Text>
+                </Button>
+              </Right>
+            </ListItem>
+            <ListItem
+              itemDivider
+              style={ styles.listDivider }
+            >
+              <Text>
+                Daily Progress
+              </Text>
+            </ListItem>
+            <ListItem>
+              <Text>
+                { metStepGoal ? `Step Goal Met! ${stepsToday} Steps Today` : `${percentageOfGoal}% to your goal, ${stepsToday}${stepGoal}` }
+              </Text>
+            </ListItem>
             <ListItem
               itemDivider
               style={ styles.listDivider }
@@ -230,5 +288,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: 'white',
+  },
+  stepGoal: {
+    fontWeight: '600',
   },
 });
