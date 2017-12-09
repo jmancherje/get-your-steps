@@ -4,12 +4,11 @@ import { StyleSheet } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
-import Root from './Root';
+import ProfileContainer from '../containers/ProfileContainer';
 import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
-
-
+import UpdateStepGoalFormContainer from '../containers/UpdateStepGoalFormContainer';
 
 const styles = StyleSheet.create({
   icon: {
@@ -17,11 +16,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = StackNavigator({
+const DirectionsStack = StackNavigator({
   Routes: {
     screen: DirectionsContainer,
     navigationOptions: {
-      title: 'Plan your Routes',
+      title: 'Create A Route',
     },
   },
   SaveForm: {
@@ -32,26 +31,41 @@ const Stack = StackNavigator({
   },
 });
 
+const ProfileStack = StackNavigator({
+  Profile: {
+    screen: ProfileContainer,
+    navigationOptions: {
+      title: 'Profile',
+    },
+  },
+  UpdateStepGoal: {
+    screen: UpdateStepGoalFormContainer,
+    navigationOptions: {
+      title: 'Update your Daily Step Goal',
+    },
+  },
+});
+
 export default TabNavigator({
   SavedRoutes: {
     screen: SavedRoutesContainer,
     navigationOptions: {
       tabBarLabel: 'All Routes',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="list-thumbnails" />),
     },
   },
   PlanRoute: {
-    screen: Stack,
+    screen: DirectionsStack,
     navigationOptions: {
       tabBarLabel: 'New Route',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="map" />),
     },
   },
-  Steps: {
-    screen: Root,
+  Profile: {
+    screen: ProfileStack,
     navigationOptions: {
-      tabBarLabel: 'Steps',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
+      tabBarLabel: 'Profile',
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="home" />),
     },
   },
 }, {

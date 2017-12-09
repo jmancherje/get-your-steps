@@ -20,8 +20,12 @@ export const getLatestLocationData = createSelector(
 
 export const getCurrentLocation = createSelector(
   [getLatestLocationData],
-  latestLocationData => Map({
-    longitude: latestLocationData.getIn(['coords', 'longitude']),
-    latitude: latestLocationData.getIn(['coords', 'latitude']),
-  })
+  latestLocationData => {
+    const longitude = latestLocationData.getIn(['coords', 'longitude']);
+    const latitude = latestLocationData.getIn(['coords', 'latitude']);
+    if (latitude && longitude) {
+      return Map({ longitude, latitude });
+    }
+    return Map();
+  }
 );

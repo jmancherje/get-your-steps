@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { List } from 'immutable';
 import { identity } from 'lodash';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
     deleteRoute: PropTypes.func.isRequired,
+    stepGoal: PropTypes.number.isRequired,
   };
 
   state = {
@@ -53,16 +54,36 @@ export default class SavedRoutes extends React.Component {
   };
 
   render() {
-    const { savedRoutes } = this.props;
+    const { savedRoutes, stepGoal } = this.props;
     const numberOfWalks = this.state.selectedRouteIds.size;
     const totalDistance = this.getTotalDistance();
+    const calculatedSteps = Math.round(STEPS_PER_METER * totalDistance);
     const noSavedRoutesPlaceholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
     const noRoutesSelectedPlaceholderText = "Select routes to see how much you'll walk";
+
+    const percentageOfGoal = Math.round((calculatedSteps / stepGoal) * 100);
     return (
       <Container>
         <Header>
           <Body><Text style={ sharedStyles.header }>Saved Walking Routes</Text></Body>
         </Header>
+        { !savedRoutes.size ? null : (
+          <ListItem itemDivider>
+            <Text style={ sharedStyles.listDivider }>{ !numberOfWalks ? noRoutesSelectedPlaceholderText : `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
+          </ListItem>
+        ) }
+        <Collapsible collapsed={ !numberOfWalks }>
+          <ListItem style={ sharedStyles.listStackCorrection }>
+            <Text>
+              { `${calculatedSteps} Steps for ${metersToMiles(totalDistance).toFixed(2)} miles` }
+            </Text>
+          </ListItem>
+          <ListItem style={ [sharedStyles.listStackCorrection, styles.headerListItems] }>
+            <Text>
+              { calculatedSteps >= stepGoal ? `This meets your daily step goal of ${stepGoal}` : `This is ${percentageOfGoal}% of your ${stepGoal} step goal`}
+            </Text>
+          </ListItem>
+        </Collapsible>
         <Content>
           <NbList>
             { !savedRoutes.size ? noSavedRoutesPlaceholder : (
@@ -79,18 +100,6 @@ export default class SavedRoutes extends React.Component {
                 </View>
               ))
             ) }
-            { !savedRoutes.size ? null : (
-              <ListItem itemDivider>
-                <Text style={ sharedStyles.listDivider }>{ !numberOfWalks ? noRoutesSelectedPlaceholderText : `Total Steps for ${numberOfWalks} Walk${numberOfWalks > 1 ? 's' : ''}` }</Text>
-              </ListItem>
-            ) }
-            <Collapsible collapsed={ !numberOfWalks }>
-              <ListItem style={ sharedStyles.listStackCorrection }>
-                <Text>
-                  { `${Math.round(STEPS_PER_METER * totalDistance)} Steps for ${metersToMiles(totalDistance).toFixed(2)} miles` }
-                </Text>
-              </ListItem>
-            </Collapsible>
           </NbList>
         </Content>
       </Container>
@@ -98,3 +107,9 @@ export default class SavedRoutes extends React.Component {
   }
 }
 
+const styles = StyleSheet.create({
+  headerListItems: {
+    borderBottomWidth: 3,
+    borderColor: '#e2e2e2',
+  },
+});

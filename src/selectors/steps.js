@@ -23,9 +23,9 @@ export const getLastTotalSteps = createSelector(
   stepData => stepData.getIn([stepData.size - 1, 'totalSteps'], 0)
 );
 
-export const getHoursBack = createSelector(
+export const getMinutesBack = createSelector(
   [getSteps],
-  steps => steps.get('hoursBack')
+  steps => steps.get('minutesBack')
 );
 
 export const getStepsSinceHour = createSelector(
@@ -33,7 +33,18 @@ export const getStepsSinceHour = createSelector(
   steps => steps.get('stepsSinceHour', 0)
 );
 
+export const getStepsToday = createSelector(
+  [getSteps],
+  steps => steps.get('stepsToday', 0)
+);
+
+
 export const getCurrentStepCount = createSelector(
   [getSteps],
   steps => steps.get('currentStepCount', 0)
+);
+
+export const getStepResetDate = createSelector(
+  [getSteps],
+  steps => steps.get('stepResetDate'),
 );

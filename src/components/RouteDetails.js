@@ -61,8 +61,16 @@ export default class RouteDetails extends React.Component {
     const { distance } = getDetailsArrayFromRoute(route);
     return (
       <View>
+        <MapComponent
+          scrollEnabled={ false }
+          heightDivisor={ 5 }
+          isHidden={ !this.state.active }
+          destinations={ savedRoute.get('destinations', Map()) }
+          route={ route }
+          shortMap
+        />
         <ListItem
-          style={ sharedStyles.listStackCorrection }
+          style={ [sharedStyles.listStackCorrection, { borderTopWidth: 1, borderColor: '#e2e2e2' }] }
           onPress={ this.handlePress }
         >
           <Grid>
@@ -85,18 +93,6 @@ export default class RouteDetails extends React.Component {
           </Grid>
         </ListItem>
         <Collapsible collapsed={ !this.state.active }>
-          { savedRoute.get('details') ? (
-            <ListItem style={ sharedStyles.listStackCorrection }>
-              { <Text>{ savedRoute.get('details') }</Text> }
-            </ListItem>
-          ) : null }
-          <MapComponent
-            scrollEnabled={ false }
-            heightDivisor={ 5 }
-            isHidden={ !this.state.active }
-            destinations={ savedRoute.get('destinations', Map()) }
-            route={ route }
-          />
           <Button danger full onPress={ this.handleDeletePress }><Text>Delete Route</Text></Button>
         </Collapsible>
       </View>

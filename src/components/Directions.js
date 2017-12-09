@@ -49,17 +49,54 @@ export default class Directions extends Component {
     navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
-  state = {
-    isShowingMap: true,
-    isShowingDistance: true,
+  constructor(props) {
+    super(props);
+    this.state = {
+      isShowingMap: this.props.destinations.size > 0 || !this.props.currentLocation.isEmpty(),
+      isShowingDistance: true,
+      mapSnapshot: null,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.destinations !== this.props.destinations) {
+      this.toggleMap(true, nextProps);
+    }
+  }
+
+  inputRef = null;
+  setInputRef = (ref) => {
+    if (ref) {
+      this.inputRef = ref;
+    }
+  };
+
+  mapRef = null;
+  setInnerMapRef = (ref) => {
+    if (ref) {
+      this.mapRef = ref;
+    }
+  };
+
+  focusInput = () => {
+    this.inputRef && this.inputRef.triggerFocus();
   };
 
   navigateToSave = () => {
     this.props.navigation.navigate('SaveForm');
   };
 
-  toggleMap = () => {
-    this.setState({ isShowingMap: !this.state.isShowingMap });
+  toggleMap = (nextValue = !this.state.isShowingMap, props = this.props) => {
+    if (!props.destinations.size && props.currentLocation.isEmpty()) {
+      return;
+    }
+    this.setState({ isShowingMap: nextValue });
+  };
+
+  // This is to prevent passing in the event as nextValue
+  // When pressing directly
+  handleMapPress = () => {
+    this.toggleMap();
   };
 
   toggleDistance = () => {
@@ -76,7 +113,6 @@ export default class Directions extends Component {
       numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
-    // const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
     return (
@@ -111,6 +147,8 @@ export default class Directions extends Component {
                 ))
               ) : null }
               <LocationSearch
+                setInputRef={ this.setInputRef }
+                numberOfDestinations={ numberOfDestinations }
                 handleSelectLocation={ this.props.updateDestinations }
                 leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
                 hasCurrentLocation // Currently hard coding to true so we can use the button below
@@ -141,7 +179,7 @@ export default class Directions extends Component {
             <ListItem
               itemDivider
               style={ sharedStyles.listStackCorrection }
-              onPress={ this.toggleMap }
+              onPress={ this.handleMapPress }
             >
               <Left>
                 <Text>Map</Text>
@@ -152,6 +190,7 @@ export default class Directions extends Component {
             </ListItem>
             <Collapsible collapsed={ !this.state.isShowingMap }>
               <MapComponent
+                setInnerMapRef={ this.setInnerMapRef }
                 isHidden={ !this.state.isShowingMap }
                 destinations={ this.props.destinations }
                 updateActiveIndex={ this.props.updateActiveIndex }
@@ -166,13 +205,12 @@ export default class Directions extends Component {
           <FooterTab>
             <Button
               full
-              disabled={ numberOfDestinations < 2 }
-              danger={ numberOfDestinations < 2 }
+              info={ numberOfDestinations < 2 }
               success={ numberOfDestinations >= 2 }
-              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : null }
+              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : this.focusInput }
             >
               <Text style={ styles.saveButton }>
-                { numberOfDestinations < 2 ? 'Add Destinations to your Route to Save' : 'Save Route' }
+                { numberOfDestinations < 2 ? 'Get Started' : 'Save Route' }
               </Text>
             </Button>
           </FooterTab>

@@ -1,12 +1,17 @@
 import actionTypes from './actionTypes';
 
-export const setHoursBack = (hours) => ({
-  type: actionTypes.steps.hoursBack.UPDATE,
-  payload: hours,
+export const setMinutesBack = (minutes) => ({
+  type: actionTypes.steps.minutesBack.UPDATE,
+  payload: minutes,
 });
 
 export const setStepsSinceHour = (steps) => ({
   type: actionTypes.steps.stepsSinceHour.UPDATE,
+  payload: steps,
+});
+
+export const setStepsToday = (steps) => ({
+  type: actionTypes.steps.stepsToday.UPDATE,
   payload: steps,
 });
 

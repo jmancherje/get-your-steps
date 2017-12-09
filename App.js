@@ -15,18 +15,23 @@ const store = createStore(Reducer, composeWithDevTools(
 ));
 
 // Get saved routes from AsyncStorage:
-AsyncStorage.getItem('savedRoutes')
-  .then((results, err) => {
-    if (err) {
-      throw err;
-    }
-    if (results) {
-      store.dispatch({
-        type: actionTypes.directions.INITIALIZE,
-        payload: results,
-      });
-    }
-  });
+AsyncStorage.multiGet(['savedRoutes', 'stepGoal'], (errors, results) => {
+  if (errors) {
+    throw errors[0];
+  }
+  if (results[0][1]) {
+    store.dispatch({
+      type: actionTypes.directions.INITIALIZE,
+      payload: results[0][1],
+    });
+  }
+  if (results[1][1]) {
+    store.dispatch({
+      type: actionTypes.profile.stepGoal.INITIALIZE,
+      payload: results[1][1],
+    });
+  }
+});
 
 // eslint-disable-next-line react/no-multi-comp
 export default class App extends React.Component {

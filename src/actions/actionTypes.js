@@ -3,11 +3,14 @@ export default Object.freeze({
     isPedometerAvailable: {
       UPDATE: 'steps/isPedometerAvailable/UPDATE',
     },
-    hoursBack: {
-      UPDATE: 'steps/hoursBack/UPDATE',
+    minutesBack: {
+      UPDATE: 'steps/minutesBack/UPDATE',
     },
     stepsSinceHour: {
       UPDATE: 'steps/stepsSinceHour/UPDATE',
+    },
+    stepsToday: {
+      UPDATE: 'steps/stepsToday/UPDATE',
     },
     realtimeSteps: {
       UPDATE: 'steps/realtimeSteps/UPDATE',
@@ -51,6 +54,12 @@ export default Object.freeze({
     },
     map: {
       UPDATE: 'directions/map/UPDATE',
+    },
+  },
+  profile: {
+    stepGoal: {
+      UPDATE: 'profile/stepGoal/UPDATE',
+      INITIALIZE: 'profile/stepGoal/INITIALIZE',
     },
   },
 });

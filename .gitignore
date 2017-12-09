@@ -3,3 +3,8 @@ node_modules/
 npm-debug.*
 package-lock.json
 keys.js
+.vscode/launch.json
+.vscode/settings.json
+.vscode/.react/crna-entry.bundle
+.vscode/.react/debuggerWorker.js
+.vscode/.react/crna-entry.map
