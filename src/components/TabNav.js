@@ -51,21 +51,21 @@ export default TabNavigator({
     screen: SavedRoutesContainer,
     navigationOptions: {
       tabBarLabel: 'All Routes',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="list-thumbnails" />),
     },
   },
   PlanRoute: {
     screen: DirectionsStack,
     navigationOptions: {
       tabBarLabel: 'New Route',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="map" />),
     },
   },
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),
+      tabBarIcon: () => (<Foundation style={ styles.icon } name="home" />),
     },
   },
 }, {

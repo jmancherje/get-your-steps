@@ -19,7 +19,8 @@ export const updateSearchedRouteOptions = (routesList) => ({
 });
 
 export const resetDirections = (navigation) => (dispatch, getState) => {
-  if (navigation) {
+  // Prevent tryign to use synthetic event as a function
+  if (typeof navigation === 'function') {
     navigation.navigate('SavedRoutes');
   }
   dispatch({ type: actionTypes.directions.RESET });
