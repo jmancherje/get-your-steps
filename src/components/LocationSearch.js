@@ -32,24 +32,33 @@ export default class LocationSearch extends React.Component {
     addCurrentLocationToDestinations: PropTypes.func.isRequired,
     hasCurrentLocation: PropTypes.bool.isRequired,
     leftButtonText: PropTypes.string.isRequired,
-    index: PropTypes.number, // eslint-disable-line
+    setInputRef: PropTypes.func.isRequired,
+    numberOfDestinations: PropTypes.number,
+  };
+
+  static defaultProps = {
+    numberOfDestinations: 0,
   };
 
   ref = null;
 
   setRef = (ref) => {
     this.ref = ref;
+    if (this.props.setInputRef) {
+      this.props.setInputRef(ref);
+    }
   };
 
   handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
     this.props.handleSelectLocation({
       data,
       details,
-      index: this.props.index,
     });
 
     this.ref && this.ref.setAddressText('');
-    this.ref && this.ref.triggerFocus();
+    if (this.props.numberOfDestinations === 1) {
+      this.ref && this.ref.triggerFocus();
+    }
   };
 
   renderDescription = row => row.description;

@@ -11,7 +11,6 @@ import {
 } from '../actions';
 
 import {
-  getMinutesBack,
   getStepsSinceHour,
   getRealtimeStepData,
   getCurrentStepCount,
@@ -25,7 +24,6 @@ import {
 import Profile from '../components/Profile';
 
 const mapStateToProps = (state) => ({
-  minutesBack: getMinutesBack(state),
   stepsSinceHour: getStepsSinceHour(state),
   realtimeSteps: getRealtimeStepData(state),
   totalSteps: getLastTotalSteps(state),

@@ -8,6 +8,7 @@ import ProfileContainer from '../containers/ProfileContainer';
 import DirectionsContainer from '../containers/DirectionsContainer';
 import SavedRoutesContainer from '../containers/SavedRoutesContainer';
 import SaveRouteFormContainer from '../containers/SaveRouteFormContainer';
+import UpdateStepGoalFormContainer from '../containers/UpdateStepGoalFormContainer';
 
 const styles = StyleSheet.create({
   icon: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = StackNavigator({
+const DirectionsStack = StackNavigator({
   Routes: {
     screen: DirectionsContainer,
     navigationOptions: {
@@ -30,6 +31,21 @@ const Stack = StackNavigator({
   },
 });
 
+const ProfileStack = StackNavigator({
+  Profile: {
+    screen: ProfileContainer,
+    navigationOptions: {
+      title: 'Profile',
+    },
+  },
+  UpdateStepGoal: {
+    screen: UpdateStepGoalFormContainer,
+    navigationOptions: {
+      title: 'Update your Daily Step Goal',
+    },
+  },
+});
+
 export default TabNavigator({
   SavedRoutes: {
     screen: SavedRoutesContainer,
@@ -39,14 +55,14 @@ export default TabNavigator({
     },
   },
   PlanRoute: {
-    screen: Stack,
+    screen: DirectionsStack,
     navigationOptions: {
       tabBarLabel: 'New Route',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="marker" />),
     },
   },
   Profile: {
-    screen: ProfileContainer,
+    screen: ProfileStack,
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: () => (<Foundation style={ styles.icon } name="foot" />),

@@ -14,7 +14,6 @@ import {
   Right,
   Button,
   Body,
-  Header,
   Container,
   Content,
 } from 'native-base';
@@ -26,7 +25,6 @@ export default class Profile extends React.Component {
   static propTypes = {
     stepsPerSecond: PropTypes.number.isRequired,
     totalSteps: PropTypes.number.isRequired,
-    minutesBack: PropTypes.number.isRequired,
     stepsSinceHour: PropTypes.number.isRequired,
     realtimeSteps: PropTypes.instanceOf(List).isRequired,
     setIsPedometerAvailable: PropTypes.func.isRequired,
@@ -39,10 +37,15 @@ export default class Profile extends React.Component {
     stepGoal: PropTypes.number.isRequired,
     stepsToday: PropTypes.number.isRequired,
     setStepsToday: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
   static defaultProps = {
     realtimeSteps: List(),
+  };
+
+  state = {
+    minutesBack: 60,
   };
 
   componentDidMount() {
@@ -108,7 +111,7 @@ export default class Profile extends React.Component {
     this._subscription = null;
   };
 
-  getLastHoursSteps = (minutesBack = this.props.minutesBack) => {
+  getLastHoursSteps = (minutesBack = this.state.minutesBack) => {
     const { setStepsSinceHour } = this.props;
     if (minutesBack < 1) return;
     const end = new Date();
@@ -129,7 +132,7 @@ export default class Profile extends React.Component {
   };
 
   handleSlidingComplete = (minutesBack) => {
-    this.getLastHoursSteps(this.props.minutesBack);
+    this.getLastHoursSteps(this.state.minutesBack);
   };
 
   handlePressButton = (minutesBack) => {
@@ -137,9 +140,14 @@ export default class Profile extends React.Component {
     this.getLastHoursSteps(minutesBack);
   };
 
+  updateMinutesBack = (val) => this.setState({ minutesBack: val });
+
+  navigateToSave = () => {
+    this.props.navigation.navigate('UpdateStepGoal');
+  };
+
   render() {
     const {
-      minutesBack,
       stepsSinceHour,
       stepsPerSecond,
       totalSteps,
@@ -148,15 +156,12 @@ export default class Profile extends React.Component {
       stepGoal,
     } = this.props;
     const currentTime = new Date();
-    currentTime.setMinutes(currentTime.getMinutes() - minutesBack);
+    currentTime.setMinutes(currentTime.getMinutes() - this.state.minutesBack);
     const customValueString = `${stepsSinceHour} Steps since ${moment(currentTime).format('LT')}`;
     const metStepGoal = stepsToday >= stepGoal;
-    const percentageOfGoal = (stepsToday / stepGoal) * 100;
+    const percentageOfGoal = Math.round((stepsToday / stepGoal) * 100);
     return (
       <Container>
-        <Header>
-          <Body><Text style={ sharedStyles.header }>Profile</Text></Body>
-        </Header>
         <Content>
           <NbList>
             <ListItem
@@ -167,7 +172,7 @@ export default class Profile extends React.Component {
                 style={ styles.listDividerText }
               >My Daily Step Goal</Text>
             </ListItem>
-            <ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
               <Left>
                 <Text style={ styles.stepGoal }>
                   { stepGoal }
@@ -177,7 +182,7 @@ export default class Profile extends React.Component {
                 </Text>
               </Left>
               <Right>
-                <Button small>
+                <Button small onPress={ this.navigateToSave }>
                   <Text style={ { fontSize: 12 } }>
                     Update
                   </Text>
@@ -192,9 +197,9 @@ export default class Profile extends React.Component {
                 Daily Progress
               </Text>
             </ListItem>
-            <ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
               <Text>
-                { metStepGoal ? `Step Goal Met! ${stepsToday} Steps Today` : `${percentageOfGoal}% to your goal, ${stepsToday}${stepGoal}` }
+                { metStepGoal ? `Step Goal Met! ${stepsToday} Steps Today` : `${percentageOfGoal}% to your goal, ${stepsToday} Steps / ${stepGoal} Total` }
               </Text>
             </ListItem>
             <ListItem
@@ -203,9 +208,9 @@ export default class Profile extends React.Component {
             >
               <Text
                 style={ styles.listDividerText }
-              >Step Frequency</Text>
+              >Live Step Frequency (Walk to see value update)</Text>
             </ListItem>
-            <ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
               <Left>
                 <Text>
                   { stepsPerSecond.toFixed(2) } Steps/sec
@@ -225,19 +230,18 @@ export default class Profile extends React.Component {
                 style={ styles.listDividerText }
               >Steps Since Time</Text>
             </ListItem>
-            <ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
               <Text>
                 { customValueString }
               </Text>
             </ListItem>
-            <ListItem style={ styles.sliderList }>
+            <ListItem style={ [styles.sliderList, sharedStyles.listStackCorrection] }>
               <Slider
                 onSlidingComplete={ this.handleSlidingComplete }
-                onValueChange={ this.handleValueChange }
+                onValueChange={ this.updateMinutesBack }
                 step={ 20 }
                 minimumValue={ 0 }
                 maximumValue={ 1440 }
-                value={ this.props.minutesBack }
                 style={ styles.slider }
               />
             </ListItem>
@@ -249,7 +253,7 @@ export default class Profile extends React.Component {
                 style={ styles.listDividerText }
               >Steps Since Last Reset</Text>
             </ListItem>
-            <ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
               <Left>
                 <Text>
                   Total Steps { totalSteps } since { moment(stepResetDate).format('LT') }

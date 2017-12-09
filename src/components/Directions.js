@@ -63,6 +63,17 @@ export default class Directions extends Component {
     }
   }
 
+  inputRef = null;
+  setInputRef = (ref) => {
+    if (ref) {
+      this.inputRef = ref;
+    }
+  };
+
+  focusInput = () => {
+    this.inputRef && this.inputRef.triggerFocus();
+  };
+
   navigateToSave = () => {
     this.props.navigation.navigate('SaveForm');
   };
@@ -129,6 +140,8 @@ export default class Directions extends Component {
                 ))
               ) : null }
               <LocationSearch
+                setInputRef={ this.setInputRef }
+                numberOfDestinations={ numberOfDestinations }
                 handleSelectLocation={ this.props.updateDestinations }
                 leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
                 hasCurrentLocation // Currently hard coding to true so we can use the button below
@@ -184,10 +197,9 @@ export default class Directions extends Component {
           <FooterTab>
             <Button
               full
-              disabled={ numberOfDestinations < 2 }
-              danger={ numberOfDestinations < 2 }
+              warning={ numberOfDestinations < 2 }
               success={ numberOfDestinations >= 2 }
-              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : null }
+              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : this.focusInput }
             >
               <Text style={ styles.saveButton }>
                 { numberOfDestinations < 2 ? 'Add Destinations to your Route to Save' : 'Save Route' }
