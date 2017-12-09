@@ -46,13 +46,17 @@ export default class MapComponent extends Component {
     searchedRouteOptions: PropTypes.instanceOf(List),
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map),
+    setInnerMapRef: PropTypes.func,
+    shortMap: PropTypes.bool,
   };
   static defaultProps = {
     route: Map(),
     activeRouteIndex: 0,
     searchedRouteOptions: List(),
     updateActiveIndex: noop,
+    setInnerMapRef: noop,
     currentLocation: Map(),
+    shortMap: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -68,6 +72,7 @@ export default class MapComponent extends Component {
 
   setMapRef = (ref) => {
     this.map = ref;
+    this.props.setInnerMapRef(ref);
   };
 
   fitMap = () => {
@@ -173,6 +178,7 @@ export default class MapComponent extends Component {
 
   render() {
     const {
+      shortMap,
       destinations,
       currentLocation,
     } = this.props;
@@ -193,7 +199,7 @@ export default class MapComponent extends Component {
     };
     return (
       <View
-        style={ styles.mapDimensions }
+        style={ shortMap ? styles.shortMap : styles.mapDimensions }
       >
         <MapView
           ref={ this.setMapRef }
@@ -222,6 +228,10 @@ const styles = StyleSheet.create({
   mapDimensions: {
     width: mapWidth,
     height: mapHeight,
+  },
+  shortMap: {
+    width: mapWidth,
+    height: Math.round(deviceHeight / 6),
   },
   mapMarker: {
     height: 10,

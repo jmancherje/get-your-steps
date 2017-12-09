@@ -54,6 +54,7 @@ export default class Directions extends Component {
     this.state = {
       isShowingMap: this.props.destinations.size > 0 || !this.props.currentLocation.isEmpty(),
       isShowingDistance: true,
+      mapSnapshot: null,
     };
   }
 
@@ -67,6 +68,13 @@ export default class Directions extends Component {
   setInputRef = (ref) => {
     if (ref) {
       this.inputRef = ref;
+    }
+  };
+
+  mapRef = null;
+  setInnerMapRef = (ref) => {
+    if (ref) {
+      this.mapRef = ref;
     }
   };
 
@@ -105,7 +113,6 @@ export default class Directions extends Component {
       numberOfDestinations,
     } = this.props;
     if (!searchedRouteOptions) return null;
-    // const hasCurrentLocation = destinations.some(dest => dest.get('name') === 'Current Location');
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
     return (
@@ -183,6 +190,7 @@ export default class Directions extends Component {
             </ListItem>
             <Collapsible collapsed={ !this.state.isShowingMap }>
               <MapComponent
+                setInnerMapRef={ this.setInnerMapRef }
                 isHidden={ !this.state.isShowingMap }
                 destinations={ this.props.destinations }
                 updateActiveIndex={ this.props.updateActiveIndex }
@@ -197,12 +205,12 @@ export default class Directions extends Component {
           <FooterTab>
             <Button
               full
-              warning={ numberOfDestinations < 2 }
+              info={ numberOfDestinations < 2 }
               success={ numberOfDestinations >= 2 }
               onPress={ numberOfDestinations >= 2 ? this.navigateToSave : this.focusInput }
             >
               <Text style={ styles.saveButton }>
-                { numberOfDestinations < 2 ? 'Add Destinations to your Route to Save' : 'Save Route' }
+                { numberOfDestinations < 2 ? 'Get Started' : 'Save Route' }
               </Text>
             </Button>
           </FooterTab>
