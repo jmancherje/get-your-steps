@@ -19,7 +19,6 @@ import {
   getStepResetDate,
   getStepGoal,
   getStepsToday,
-  getIsPedometerAvailable,
 } from '../selectors';
 
 import Profile from '../components/Profile';
@@ -33,7 +32,6 @@ const mapStateToProps = (state) => ({
   stepResetDate: getStepResetDate(state),
   stepGoal: getStepGoal(state),
   stepsToday: getStepsToday(state),
-  isPedometerAvailable: getIsPedometerAvailable(state),
 });
 
 export default connect(mapStateToProps, {

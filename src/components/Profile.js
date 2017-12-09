@@ -38,7 +38,6 @@ export default class Profile extends React.Component {
     stepsToday: PropTypes.number.isRequired,
     setStepsToday: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
-    isPedometerAvailable: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {

@@ -7,7 +7,6 @@ export default class Polyline extends Component {
     index: PropTypes.number.isRequired,
     activeIndex: PropTypes.number.isRequired,
     onPress: PropTypes.func.isRequired,
-    // TODO make this more strict
     steps: PropTypes.array.isRequired, // eslint-disable-line
   };
 
@@ -22,7 +21,7 @@ export default class Polyline extends Component {
         onPress={ this.handlePress }
         coordinates={ steps }
         lineDashPattern={ index === activeIndex ? null : [10] }
-        strokeWidth={ index === activeIndex ? 5 : 3 }
+        strokeWidth={ index === activeIndex ? 3 : 2 }
         strokeColor={ index === activeIndex ? '#3b9323' : '#e27ca5' }
       />
     );
