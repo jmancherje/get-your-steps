@@ -38,6 +38,7 @@ export default class Profile extends React.Component {
     stepsToday: PropTypes.number.isRequired,
     setStepsToday: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
+    isPedometerAvailable: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -66,6 +67,7 @@ export default class Profile extends React.Component {
     } = this.props;
     Pedometer.isAvailableAsync().then(
       (success) => {
+        console.log('success?')
         this.props.setIsPedometerAvailable(true);
         this._subscription = Pedometer.watchStepCount((result) => {
           const {
@@ -89,6 +91,7 @@ export default class Profile extends React.Component {
         });
       },
       (error) => {
+        console.log('error?', error)
         this.props.setIsPedometerAvailable(false);
       }
     );
@@ -103,6 +106,9 @@ export default class Profile extends React.Component {
       (result) => {
         setStepsToday(result.steps);
       },
+      error => {
+        console.log('error fetching steps', error);
+      }
     );
   };
 
