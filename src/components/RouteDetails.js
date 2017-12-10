@@ -29,14 +29,6 @@ export default class RouteDetails extends React.Component {
     deleteRoute: PropTypes.func.isRequired,
   };
 
-  state = {
-    active: false,
-  };
-
-  handlePress = () => {
-    this.setState({ active: !this.state.active });
-  };
-
   handleCheckBoxPress = () => {
     this.props.toggleSelection(this.props.savedRoute.get('_wId'));
   };
@@ -73,7 +65,6 @@ export default class RouteDetails extends React.Component {
         />
         <ListItem
           style={ [sharedStyles.listStackCorrection, styles.listDetails] }
-          onPress={ this.handlePress }
         >
           <SwipeRow
             style={ styles.swipeRow }
