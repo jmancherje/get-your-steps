@@ -271,7 +271,7 @@ export default class Profile extends React.Component {
                 Daily Progress
               </Text>
             </ListItem>
-            <ListItem style={ sharedStyles.listStackCorrection }>
+            <ListItem style={ [sharedStyles.listStackCorrection, styles.padLeft] }>
               <Text>
                 { metStepGoal ? `Step Goal Met! ${stepsToday} Steps Today` : `${percentageOfGoal}% to your goal, ${stepsToday} Steps / ${stepGoal} Total` }
               </Text>
@@ -304,7 +304,7 @@ export default class Profile extends React.Component {
                 style={ styles.listDividerText }
               >Steps Since Time</Text>
             </ListItem>
-            <ListItem style={ sharedStyles.listStackCorrection }>
+            <ListItem style={ [sharedStyles.listStackCorrection, styles.padLeft] }>
               <Text>
                 { customValueString }
               </Text>
@@ -369,5 +369,8 @@ const styles = StyleSheet.create({
   },
   stepGoal: {
     fontWeight: '600',
+  },
+  padLeft: {
+    paddingLeft: 18,
   },
 });
