@@ -158,7 +158,9 @@ export default class Directions extends Component {
     const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
     return (
       <Container>
-        <Content>
+        <Content
+          keyboardShouldPersistTaps="always"
+        >
           <NbList>
             <Collapsible collapsed={ !this.state.showSaveForm }>
               <ListItem itemDivider>
