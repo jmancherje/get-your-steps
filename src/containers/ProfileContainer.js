@@ -8,6 +8,7 @@ import {
   updateCurrentStepCount,
   resetCurrentStepCount,
   setStepsToday,
+  updateStepGoal,
 } from '../actions';
 
 import {
@@ -42,4 +43,5 @@ export default connect(mapStateToProps, {
   updateCurrentStepCount,
   resetCurrentStepCount,
   setStepsToday,
+  updateStepGoal,
 })(Profile);

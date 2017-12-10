@@ -2,6 +2,7 @@ import React from 'react';
 import { Pedometer } from 'expo';
 import { List, Map } from 'immutable';
 import PropTypes from 'prop-types';
+import Collapsible from 'react-native-collapsible';
 import {
   Slider,
   StyleSheet,
@@ -16,6 +17,10 @@ import {
   Body,
   Container,
   Content,
+  Form,
+  Item,
+  Input,
+  Label,
 } from 'native-base';
 import moment from 'moment';
 
@@ -38,6 +43,7 @@ export default class Profile extends React.Component {
     stepsToday: PropTypes.number.isRequired,
     setStepsToday: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
+    updateStepGoal: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -46,6 +52,8 @@ export default class Profile extends React.Component {
 
   state = {
     minutesBack: 60,
+    showSaveForm: false,
+    stepGoal: null,
   };
 
   componentDidMount() {
@@ -66,7 +74,6 @@ export default class Profile extends React.Component {
     } = this.props;
     Pedometer.isAvailableAsync().then(
       (success) => {
-        console.log('success?')
         this.props.setIsPedometerAvailable(true);
         this._subscription = Pedometer.watchStepCount((result) => {
           const {
@@ -90,7 +97,7 @@ export default class Profile extends React.Component {
         });
       },
       (error) => {
-        console.log('error?', error)
+        console.log('error?', error);
         this.props.setIsPedometerAvailable(false);
       }
     );
@@ -147,8 +154,56 @@ export default class Profile extends React.Component {
 
   updateMinutesBack = (val) => this.setState({ minutesBack: val });
 
-  navigateToSave = () => {
-    this.props.navigation.navigate('UpdateStepGoal');
+  // TODO: add back separate form once navigation fully integrated
+  // navigateToSave = () => {
+  //   this.props.navigation.navigate('UpdateStepGoal');
+  // };
+
+  handleChange = (stepGoal) => {
+    this.setState({ stepGoal });
+  };
+
+  showSaveForm = () => {
+    this.setState({ showSaveForm: true });
+    if (this.inputRef) {
+      this.inputRef._root.focus();
+    }
+  };
+
+  hideSaveForm = () => {
+    this.setState({ showSaveForm: false });
+  }
+
+  handleSave = () => {
+    const { stepGoal } = this.state;
+    if (stepGoal) {
+      this.props.updateStepGoal(parseInt(stepGoal, 10));
+      this.setState({ showSaveForm: false });
+    }
+  };
+
+  inputRef = null;
+  setInputRef = (ref) => {
+    this.inputRef = ref;
+  }
+
+  getSaveButton = () => {
+    if (!this.state.showSaveForm) {
+      return (
+        <Button small onPress={ this.showSaveForm }>
+          <Text style={ { fontSize: 12 } }>
+            Update
+          </Text>
+        </Button>
+      );
+    }
+    return (
+      <Button small danger onPress={ this.hideSaveForm }>
+        <Text style={ { fontSize: 12 } }>
+          Cancel
+        </Text>
+      </Button>
+    );
   };
 
   render() {
@@ -187,13 +242,27 @@ export default class Profile extends React.Component {
                 </Text>
               </Left>
               <Right>
-                <Button small onPress={ this.navigateToSave }>
-                  <Text style={ { fontSize: 12 } }>
-                    Update
-                  </Text>
-                </Button>
+                { this.getSaveButton() }
               </Right>
             </ListItem>
+            <Collapsible
+              collapsed={ !this.state.showSaveForm }
+            >
+              <Form>
+                <Item>
+                  <Label>Daily Step Goal</Label>
+                  <Input
+                    ref={ this.setInputRef }
+                    keyboardType="numeric"
+                    onChangeText={ this.handleChange }
+                    onSubmitEditing={ this.handleSave }
+                  />
+                </Item>
+              </Form>
+              <Button full success disabled={ !this.state.stepGoal } onPress={ this.handleSave }>
+                <Text>Save Step Goal</Text>
+              </Button>
+            </Collapsible>
             <ListItem
               itemDivider
               style={ styles.listDivider }
