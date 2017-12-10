@@ -16,6 +16,7 @@ import {
   addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
   resetDirections,
+  saveRoute,
 } from '../actions';
 
 import Directions from '../components/Directions';
@@ -36,4 +37,5 @@ export default connect(mapStateToProps, {
   addCurrentLocationToDestinations,
   updateSearchedRouteOptions,
   resetDirections,
+  saveRoute,
 })(Directions);

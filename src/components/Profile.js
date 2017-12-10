@@ -154,18 +154,13 @@ export default class Profile extends React.Component {
 
   updateMinutesBack = (val) => this.setState({ minutesBack: val });
 
-  // TODO: add back separate form once navigation fully integrated
-  // navigateToSave = () => {
-  //   this.props.navigation.navigate('UpdateStepGoal');
-  // };
-
   handleChange = (stepGoal) => {
     this.setState({ stepGoal });
   };
 
   showSaveForm = () => {
     this.setState({ showSaveForm: true });
-    if (this.inputRef) {
+    if (this.inputRef && this.inputRef._root) {
       this.inputRef._root.focus();
     }
   };
@@ -179,6 +174,9 @@ export default class Profile extends React.Component {
     if (stepGoal) {
       this.props.updateStepGoal(parseInt(stepGoal, 10));
       this.setState({ showSaveForm: false });
+      if (this.inputRef && this.inputRef._root) {
+        this.inputRef._root.clear();
+      }
     }
   };
 

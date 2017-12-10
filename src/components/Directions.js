@@ -17,6 +17,10 @@ import {
   FooterTab,
   Container,
   Content,
+  Form,
+  Item,
+  Label,
+  Input,
 } from 'native-base';
 import Collapsible from 'react-native-collapsible';
 
@@ -46,6 +50,7 @@ export default class Directions extends Component {
     currentLocation: PropTypes.instanceOf(Map).isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
     resetDirections: PropTypes.func.isRequired,
+    saveRoute: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
@@ -55,6 +60,8 @@ export default class Directions extends Component {
       isShowingMap: this.props.destinations.size > 0 || !this.props.currentLocation.isEmpty(),
       isShowingDistance: true,
       mapSnapshot: null,
+      name: null,
+      showSaveForm: false,
     };
   }
 
@@ -63,6 +70,25 @@ export default class Directions extends Component {
       this.toggleMap(true, nextProps);
     }
   }
+
+  showSaveForm = () => {
+    this.setState({ showSaveForm: true });
+    if (this.saveRef && this.saveRef._root) {
+      this.saveRef._root.focus();
+    }
+  };
+
+  hideSaveForm = () => {
+    this.setState({ showSaveForm: false });
+  };
+
+  saveRef = null;
+  setSaveRef = (ref) => {
+    console.log('setting ref', ref);
+    if (ref) {
+      this.saveRef = ref;
+    }
+  };
 
   inputRef = null;
   setInputRef = (ref) => {
@@ -76,6 +102,10 @@ export default class Directions extends Component {
     if (ref) {
       this.mapRef = ref;
     }
+  };
+
+  handleNameChange = (name) => {
+    this.setState({ name });
   };
 
   focusInput = () => {
@@ -103,6 +133,17 @@ export default class Directions extends Component {
     this.setState({ isShowingDistance: !this.state.isShowingDistance });
   };
 
+  handleSave = () => {
+    const { name } = this.state;
+    this.props.saveRoute({ name });
+    this.props.resetDirections();
+    this.setState({ showSaveForm: false });
+    this.props.navigation.navigate('SavedRoutes');
+    if (this.saveRef && this.saveRef._root) {
+      this.saveRef._root.clear();
+    }
+  };
+
   render() {
     const {
       activeRouteIndex,
@@ -119,6 +160,37 @@ export default class Directions extends Component {
       <Container>
         <Content>
           <NbList>
+            <Collapsible collapsed={ !this.state.showSaveForm }>
+              <ListItem itemDivider>
+                <Left>
+                  <Text>Save Route</Text>
+                </Left>
+                <Right>
+                  <Button small danger onPress={ this.hideSaveForm }>
+                    <Text>Cancel</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+              <Form>
+                <Item>
+                  <Label>Route Name</Label>
+                  <Input
+                    ref={ this.setSaveRef }
+                    onChangeText={ this.handleNameChange }
+                    onSubmitEditing={ this.handleSave }
+                    returnKeyType="done"
+                  />
+                </Item>
+              </Form>
+              <Button
+                full
+                info
+                disabled={ !this.state.name }
+                onPress={ this.handleSave }
+              >
+                <Text>Confirm</Text>
+              </Button>
+            </Collapsible>
             <ListItem itemDivider>
               <Left>
                 <Text>Walking Route</Text>
@@ -207,7 +279,7 @@ export default class Directions extends Component {
               full
               info={ numberOfDestinations < 2 }
               success={ numberOfDestinations >= 2 }
-              onPress={ numberOfDestinations >= 2 ? this.navigateToSave : this.focusInput }
+              onPress={ numberOfDestinations >= 2 ? this.showSaveForm : this.focusInput }
             >
               <Text style={ styles.saveButton }>
                 { numberOfDestinations < 2 ? 'Get Started' : 'Save Route' }

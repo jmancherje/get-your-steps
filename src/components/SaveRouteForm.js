@@ -37,12 +37,8 @@ export default class SaveRouteForm extends React.Component {
     const { name } = this.state;
     this.props.saveRoute({ name });
     this.props.resetDirections(this.props.navigation);
-    // this.props.navigation.goBack();
     this.props.navigation.dispatch(resetAction);
-    // this.props.navigation.navigate('SavedRoutes');
   };
-
-  onSubmitEditing
 
   render() {
     return (
