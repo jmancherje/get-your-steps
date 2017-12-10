@@ -220,7 +220,9 @@ export default class Profile extends React.Component {
     const percentageOfGoal = Math.round((stepsToday / stepGoal) * 100);
     return (
       <Container>
-        <Content>
+        <Content
+          keyboardShouldPersistTaps="always"
+        >
           <NbList>
             <ListItem
               itemDivider
