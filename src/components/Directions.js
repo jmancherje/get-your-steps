@@ -84,7 +84,6 @@ export default class Directions extends Component {
 
   saveRef = null;
   setSaveRef = (ref) => {
-    console.log('setting ref', ref);
     if (ref) {
       this.saveRef = ref;
     }

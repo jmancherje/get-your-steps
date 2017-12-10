@@ -57,7 +57,9 @@ export default class LocationSearch extends React.Component {
 
     this.ref && this.ref.setAddressText('');
     if (this.props.numberOfDestinations <= 1) {
-      this.ref && this.ref.triggerFocus();
+      setTimeout(() => {
+        this.ref && this.ref.triggerFocus();
+      }, 300);
     }
   };
 
