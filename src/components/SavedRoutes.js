@@ -32,13 +32,12 @@ export default class SavedRoutes extends React.Component {
     selectedRouteIds: List(),
   };
 
-  toggleSelection = (id) => {
-    const { selectedRouteIds } = this.state;
-    if (selectedRouteIds.includes(id)) {
-      this.setState({ selectedRouteIds: selectedRouteIds.filterNot(routeId => routeId === id) });
-      return;
-    }
-    this.setState({ selectedRouteIds: selectedRouteIds.push(id) });
+  addSelection = (id) => {
+    this.setState({ selectedRouteIds: this.state.selectedRouteIds.push(id) });
+  };
+
+  removeSelection = (id) => {
+    this.setState({ selectedRouteIds: this.state.selectedRouteIds.filterNot(selectedId => selectedId === id) });
   };
 
   getTotalDistance = () => {
@@ -88,14 +87,13 @@ export default class SavedRoutes extends React.Component {
           <NbList>
             { !savedRoutes.size ? noSavedRoutesPlaceholder : (
               savedRoutes.map((route, index) => (
-                <View
-                  key={ route.get('_wId') }
-                >
+                <View key={ route.get('_wId') }>
                   <RouteDetails
                     savedRoute={ route }
-                    isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
-                    toggleSelection={ this.toggleSelection }
                     deleteRoute={ this.props.deleteRoute }
+                    addSelection={ this.addSelection }
+                    removeSelection={ this.removeSelection }
+                    selectedCount={ this.state.selectedRouteIds.count(id => id === route.get('_wId')) }
                   />
                 </View>
               ))

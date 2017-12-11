@@ -2,17 +2,20 @@ import React from 'react';
 import { Map } from 'immutable';
 import { View, StyleSheet, Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import Collapsible from 'react-native-collapsible';
 import {
   ListItem,
   Text,
   Grid,
   Col,
   Row,
-  CheckBox,
   Button,
   SwipeRow,
+  Icon,
+  Body,
+  Right,
 } from 'native-base';
-import { Foundation } from '@expo/vector-icons';
+import { Foundation, FontAwesome } from '@expo/vector-icons';
 
 import MapComponent from './MapComponent';
 import sharedStyles from './styles/sharedStyles';
@@ -24,13 +27,18 @@ const STEPS_PER_METER = 0.713;
 export default class RouteDetails extends React.Component {
   static propTypes = {
     savedRoute: PropTypes.instanceOf(Map).isRequired,
-    isSelected: PropTypes.bool.isRequired,
-    toggleSelection: PropTypes.func.isRequired,
     deleteRoute: PropTypes.func.isRequired,
+    selectedCount: PropTypes.number.isRequired,
+    removeSelection: PropTypes.func.isRequired,
+    addSelection: PropTypes.func.isRequired,
   };
 
-  handleCheckBoxPress = () => {
-    this.props.toggleSelection(this.props.savedRoute.get('_wId'));
+  addSelection = () => {
+    this.props.addSelection(this.props.savedRoute.get('_wId'));
+  };
+
+  removeSelection = () => {
+    this.props.removeSelection(this.props.savedRoute.get('_wId'));
   };
 
   deleteRoute = () => {
@@ -50,7 +58,7 @@ export default class RouteDetails extends React.Component {
   };
 
   render() {
-    const { savedRoute, isSelected } = this.props;
+    const { savedRoute, selectedCount } = this.props;
     const route = savedRoute.get('route');
     const { distance } = getDetailsArrayFromRoute(route);
     return (
@@ -73,10 +81,13 @@ export default class RouteDetails extends React.Component {
             body={
               <Grid>
                 <Col size={ 1 } style={ [sharedStyles.justifyCenter, styles.checkbox] } onPress={ this.handleCheckBoxPress }>
-                  <CheckBox
+                  {/* <CheckBox
                     checked={ isSelected }
                     onPress={ this.handleCheckBoxPress }
-                  />
+                  /> */}
+                  <Button onPress={ this.addSelection } transparent style={ { width: 40, justifyContent: 'center' } }>
+                    <FontAwesome name="plus-circle" style={ { fontSize: 35, color: '#62B1F6' } } />
+                  </Button>
                 </Col>
                 <Col size={ 6 }>
                   <Row><Text style={ styles.routeName }>{ savedRoute.get('name') }</Text></Row>
@@ -89,11 +100,17 @@ export default class RouteDetails extends React.Component {
             }
             right={
               <Button danger onPress={ this.handleDeletePress }>
-                <Foundation style={ styles.deleteIcon } name="trash" />
+                <Icon style={ styles.deleteIcon } name="trash" />
               </Button>
             }
           />
         </ListItem>
+        <Collapsible collapsed={ selectedCount === 0 }>
+          <ListItem style={ { height: 30 } }>
+            <Body><Text style={ { fontSize: 14 } }>{`Added route ${selectedCount} time${selectedCount > 1 ? 's' : ''}`}</Text></Body>
+            <Right><Button danger small transparent onPress={ this.removeSelection }><Text style={ { paddingRight: 0, fontSize: 13 } }>Remove</Text></Button></Right>
+          </ListItem>
+        </Collapsible>
       </View>
     );
   }
@@ -128,7 +145,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
   deleteIcon: {
-    fontSize: 20,
+    fontSize: 35,
   },
   listIcon: {
     fontSize: 15,
