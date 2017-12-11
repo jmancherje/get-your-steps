@@ -19,13 +19,12 @@ import sharedStyles from './styles/sharedStyles';
 import { metersToMiles } from '../helpers/conversions';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
-const STEPS_PER_METER = 0.713;
-
 export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
     deleteRoute: PropTypes.func.isRequired,
     stepGoal: PropTypes.number.isRequired,
+    stepsPerMeter: PropTypes.number.isRequired,
   };
 
   state = {
@@ -53,10 +52,10 @@ export default class SavedRoutes extends React.Component {
   };
 
   render() {
-    const { savedRoutes, stepGoal } = this.props;
+    const { savedRoutes, stepGoal, stepsPerMeter } = this.props;
     const numberOfWalks = this.state.selectedRouteIds.size;
     const totalDistance = this.getTotalDistance();
-    const calculatedSteps = Math.round(STEPS_PER_METER * totalDistance);
+    const calculatedSteps = Math.round(totalDistance / stepsPerMeter);
     const noSavedRoutesPlaceholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
     const noRoutesSelectedPlaceholderText = "Select routes to see how much you'll walk";
 
@@ -94,6 +93,7 @@ export default class SavedRoutes extends React.Component {
                     addSelection={ this.addSelection }
                     removeSelection={ this.removeSelection }
                     selectedCount={ this.state.selectedRouteIds.count(id => id === route.get('_wId')) }
+                    stepsPerMeter={ stepsPerMeter }
                   />
                 </View>
               ))

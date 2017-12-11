@@ -22,8 +22,6 @@ import sharedStyles from './styles/sharedStyles';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 import { metersToMiles } from '../helpers/conversions';
 
-const STEPS_PER_METER = 0.713;
-
 export default class RouteDetails extends React.Component {
   static propTypes = {
     savedRoute: PropTypes.instanceOf(Map).isRequired,
@@ -31,6 +29,7 @@ export default class RouteDetails extends React.Component {
     selectedCount: PropTypes.number.isRequired,
     removeSelection: PropTypes.func.isRequired,
     addSelection: PropTypes.func.isRequired,
+    stepsPerMeter: PropTypes.number.isRequired,
   };
 
   addSelection = () => {
@@ -58,7 +57,7 @@ export default class RouteDetails extends React.Component {
   };
 
   render() {
-    const { savedRoute, selectedCount } = this.props;
+    const { savedRoute, selectedCount, stepsPerMeter } = this.props;
     const route = savedRoute.get('route');
     const { distance } = getDetailsArrayFromRoute(route);
     return (
@@ -91,7 +90,7 @@ export default class RouteDetails extends React.Component {
                 </Col>
                 <Col size={ 6 }>
                   <Row><Text style={ styles.routeName }>{ savedRoute.get('name') }</Text></Row>
-                  <Row><Text style={ styles.routeDistance }>{ `${Math.round(STEPS_PER_METER * (distance))} Steps / ${metersToMiles(distance).toFixed(2)} miles` }</Text></Row>
+                  <Row><Text style={ styles.routeDistance }>{ `${Math.round(distance / stepsPerMeter)} Steps / ${metersToMiles(distance).toFixed(2)} miles` }</Text></Row>
                 </Col>
                 <Col size={ 2 } style={ styles.iconCol }>
                   <Foundation name="list" style={ styles.listIcon } />
