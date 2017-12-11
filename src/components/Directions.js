@@ -67,7 +67,9 @@ export default class Directions extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.destinations !== this.props.destinations) {
-      this.toggleMap(true, nextProps);
+      setTimeout(() => {
+        this.toggleMap(true, nextProps);
+      }, 300)
     }
   }
 
@@ -116,9 +118,9 @@ export default class Directions extends Component {
   };
 
   toggleMap = (nextValue = !this.state.isShowingMap, props = this.props) => {
-    if (!props.destinations.size && props.currentLocation.isEmpty()) {
-      return;
-    }
+    // if (!props.destinations.size && props.currentLocation.isEmpty()) {
+    //   return;
+    // }
     this.setState({ isShowingMap: nextValue });
   };
 
@@ -134,13 +136,13 @@ export default class Directions extends Component {
 
   handleSave = () => {
     const { name } = this.state;
-    this.props.saveRoute({ name });
-    this.props.resetDirections();
-    this.setState({ showSaveForm: false });
-    this.props.navigation.navigate('SavedRoutes');
     if (this.saveRef && this.saveRef._root) {
       this.saveRef._root.clear();
     }
+    this.props.saveRoute({ name });
+    this.props.resetDirections();
+    this.setState({ showSaveForm: false, name: null });
+    this.props.navigation.navigate('SavedRoutes');
   };
 
   render() {
@@ -261,10 +263,9 @@ export default class Directions extends Component {
                 <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
               </Right>
             </ListItem>
-            <Collapsible collapsed={ !this.state.isShowingMap }>
+            <Collapsible collapsed={ false }>
               <MapComponent
                 setInnerMapRef={ this.setInnerMapRef }
-                isHidden={ !this.state.isShowingMap }
                 destinations={ this.props.destinations }
                 updateActiveIndex={ this.props.updateActiveIndex }
                 searchedRouteOptions={ this.props.searchedRouteOptions }
