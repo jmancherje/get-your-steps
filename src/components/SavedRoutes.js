@@ -19,26 +19,24 @@ import sharedStyles from './styles/sharedStyles';
 import { metersToMiles } from '../helpers/conversions';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
-const STEPS_PER_METER = 0.713;
-
 export default class SavedRoutes extends React.Component {
   static propTypes = {
     savedRoutes: PropTypes.instanceOf(List).isRequired,
     deleteRoute: PropTypes.func.isRequired,
     stepGoal: PropTypes.number.isRequired,
+    stepsPerMeter: PropTypes.number.isRequired,
   };
 
   state = {
     selectedRouteIds: List(),
   };
 
-  toggleSelection = (id) => {
-    const { selectedRouteIds } = this.state;
-    if (selectedRouteIds.includes(id)) {
-      this.setState({ selectedRouteIds: selectedRouteIds.filterNot(routeId => routeId === id) });
-      return;
-    }
-    this.setState({ selectedRouteIds: selectedRouteIds.push(id) });
+  addSelection = (id) => {
+    this.setState({ selectedRouteIds: this.state.selectedRouteIds.push(id) });
+  };
+
+  removeSelection = (id) => {
+    this.setState({ selectedRouteIds: this.state.selectedRouteIds.filterNot(selectedId => selectedId === id) });
   };
 
   getTotalDistance = () => {
@@ -54,10 +52,10 @@ export default class SavedRoutes extends React.Component {
   };
 
   render() {
-    const { savedRoutes, stepGoal } = this.props;
+    const { savedRoutes, stepGoal, stepsPerMeter } = this.props;
     const numberOfWalks = this.state.selectedRouteIds.size;
     const totalDistance = this.getTotalDistance();
-    const calculatedSteps = Math.round(STEPS_PER_METER * totalDistance);
+    const calculatedSteps = Math.round(totalDistance / stepsPerMeter);
     const noSavedRoutesPlaceholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
     const noRoutesSelectedPlaceholderText = "Select routes to see how much you'll walk";
 
@@ -88,14 +86,14 @@ export default class SavedRoutes extends React.Component {
           <NbList>
             { !savedRoutes.size ? noSavedRoutesPlaceholder : (
               savedRoutes.map((route, index) => (
-                <View
-                  key={ route.get('_wId') }
-                >
+                <View key={ route.get('_wId') }>
                   <RouteDetails
                     savedRoute={ route }
-                    isSelected={ this.state.selectedRouteIds.includes(route.get('_wId')) }
-                    toggleSelection={ this.toggleSelection }
                     deleteRoute={ this.props.deleteRoute }
+                    addSelection={ this.addSelection }
+                    removeSelection={ this.removeSelection }
+                    selectedCount={ this.state.selectedRouteIds.count(id => id === route.get('_wId')) }
+                    stepsPerMeter={ stepsPerMeter }
                   />
                 </View>
               ))

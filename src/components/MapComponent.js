@@ -204,6 +204,8 @@ export default class MapComponent extends Component {
         <MapView
           ref={ this.setMapRef }
           scrollEnabled={ false }
+          zoomEnabled={ false }
+          rotateEnabled={ false }
           // onLayout for iOS onMapReady for android
           onLayout={ this.fitMap }
           style={ styles.fitMap }

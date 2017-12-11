@@ -6,6 +6,7 @@ import {
   getNumberOfDestinations,
   getActiveRouteIndex,
   getDestinations,
+  getStepsPerMeter,
 } from '../selectors';
 
 import {
@@ -27,6 +28,7 @@ const mapStateToProps = (state) => ({
   currentLocation: getCurrentLocation(state),
   activeRouteIndex: getActiveRouteIndex(state),
   destinations: getDestinations(state),
+  stepsPerMeter: getStepsPerMeter(state),
 });
 
 export default connect(mapStateToProps, {

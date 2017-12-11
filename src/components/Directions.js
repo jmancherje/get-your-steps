@@ -31,10 +31,6 @@ import { metersToMiles } from '../helpers/conversions';
 import sharedStyles from './styles/sharedStyles';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
 
-// Based on average 5'8" person
-// TODO: customize this for all users
-const STEPS_PER_METER = 0.713;
-
 export default class Directions extends Component {
   static navigationOptions = {
     title: 'Create a New Route',
@@ -52,6 +48,7 @@ export default class Directions extends Component {
     resetDirections: PropTypes.func.isRequired,
     saveRoute: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
+    stepsPerMeter: PropTypes.number.isRequired,
   };
 
   constructor(props) {
@@ -150,6 +147,7 @@ export default class Directions extends Component {
       clearDestinationIndex,
       resetDirections,
       numberOfDestinations,
+      stepsPerMeter,
     } = this.props;
     if (!searchedRouteOptions) return null;
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
@@ -242,7 +240,7 @@ export default class Directions extends Component {
             <Collapsible collapsed={ !this.state.isShowingDistance }>
               <ListItem style={ sharedStyles.listStackCorrection }>
                 { totalDistance ? (
-                  <Text>{ `${Math.round(totalDistance / STEPS_PER_METER)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
+                  <Text>{ `${Math.round(totalDistance / stepsPerMeter)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
                 ) : (
                   <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
                 ) }
