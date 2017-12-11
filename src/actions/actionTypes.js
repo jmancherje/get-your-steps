@@ -61,5 +61,9 @@ export default Object.freeze({
       UPDATE: 'profile/stepGoal/UPDATE',
       INITIALIZE: 'profile/stepGoal/INITIALIZE',
     },
+    height: {
+      UPDATE: 'profile/height/UPDATE',
+      INITIALIZE: 'profile/height/INITIALIZE',
+    },
   },
 });

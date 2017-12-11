@@ -9,6 +9,7 @@ import {
   resetCurrentStepCount,
   setStepsToday,
   updateStepGoal,
+  updateHeight,
 } from '../actions';
 
 import {
@@ -20,6 +21,7 @@ import {
   getStepResetDate,
   getStepGoal,
   getStepsToday,
+  getHeight,
 } from '../selectors';
 
 import Profile from '../components/Profile';
@@ -32,6 +34,7 @@ const mapStateToProps = (state) => ({
   currentStepCount: getCurrentStepCount(state),
   stepResetDate: getStepResetDate(state),
   stepGoal: getStepGoal(state),
+  height: getHeight(state),
   stepsToday: getStepsToday(state),
 });
 
@@ -44,4 +47,5 @@ export default connect(mapStateToProps, {
   resetCurrentStepCount,
   setStepsToday,
   updateStepGoal,
+  updateHeight,
 })(Profile);

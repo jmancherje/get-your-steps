@@ -14,3 +14,16 @@ export const updateStepGoal = (steps) => async (dispatch, getState) => {
     console.log(err);
   }
 };
+
+export const updateHeight = (inches) => async (dispatch, getState) => {
+  try {
+    await AsyncStorage.setItem('height', JSON.stringify(inches));
+
+    dispatch({
+      type: actionTypes.profile.height.UPDATE,
+      payload: inches,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

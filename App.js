@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'remote-redux-devtools';
+import { get } from 'lodash';
 
 import Reducer from './src/reducers';
 import TabNav from './src/components/TabNav';
@@ -15,20 +16,29 @@ const store = createStore(Reducer, composeWithDevTools(
 ));
 
 // Get saved routes from AsyncStorage:
-AsyncStorage.multiGet(['savedRoutes', 'stepGoal'], (errors, results) => {
+AsyncStorage.multiGet(['savedRoutes', 'stepGoal', 'height'], (errors, results) => {
   if (errors) {
     throw errors[0];
   }
-  if (results[0][1]) {
+  const directions = get(results, [0, 1]);
+  const stepGoal = get(results, [1, 1]);
+  const height = get(results, [2, 1]);
+  if (directions) {
     store.dispatch({
       type: actionTypes.directions.INITIALIZE,
-      payload: results[0][1],
+      payload: directions,
     });
   }
-  if (results[1][1]) {
+  if (stepGoal) {
     store.dispatch({
       type: actionTypes.profile.stepGoal.INITIALIZE,
-      payload: results[1][1],
+      payload: stepGoal,
+    });
+  }
+  if (height) {
+    store.dispatch({
+      type: actionTypes.profile.height.INITIALIZE,
+      payload: height,
     });
   }
 });

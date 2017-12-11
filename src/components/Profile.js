@@ -21,8 +21,10 @@ import {
   Item,
   Input,
   Label,
+  Picker,
 } from 'native-base';
 import moment from 'moment';
+import { range } from 'lodash';
 
 import sharedStyles from './styles/sharedStyles';
 
@@ -44,6 +46,8 @@ export default class Profile extends React.Component {
     setStepsToday: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
     updateStepGoal: PropTypes.func.isRequired,
+    updateHeight: PropTypes.func.isRequired,
+    height: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -185,11 +189,15 @@ export default class Profile extends React.Component {
     this.inputRef = ref;
   }
 
-  getSaveButton = () => {
+  updateHeight = (inches) => {
+    this.props.updateHeight(inches);
+  };
+
+  getUpdateStepGoalButton = () => {
     if (!this.state.showSaveForm) {
       return (
         <Button small onPress={ this.showSaveForm }>
-          <Text style={ { fontSize: 12 } }>
+          <Text style={ styles.updateBtn }>
             Update
           </Text>
         </Button>
@@ -197,7 +205,7 @@ export default class Profile extends React.Component {
     }
     return (
       <Button small danger onPress={ this.hideSaveForm }>
-        <Text style={ { fontSize: 12 } }>
+        <Text style={ styles.updateBtn }>
           Cancel
         </Text>
       </Button>
@@ -212,6 +220,7 @@ export default class Profile extends React.Component {
       stepResetDate,
       stepsToday,
       stepGoal,
+      height,
     } = this.props;
     const currentTime = new Date();
     currentTime.setMinutes(currentTime.getMinutes() - this.state.minutesBack);
@@ -242,7 +251,7 @@ export default class Profile extends React.Component {
                 </Text>
               </Left>
               <Right>
-                { this.getSaveButton() }
+                { this.getUpdateStepGoalButton() }
               </Right>
             </ListItem>
             <Collapsible
@@ -267,14 +276,43 @@ export default class Profile extends React.Component {
               itemDivider
               style={ styles.listDivider }
             >
-              <Text>
-                Daily Progress
-              </Text>
+              <Text>Daily Progress</Text>
             </ListItem>
             <ListItem style={ [sharedStyles.listStackCorrection, styles.padLeft] }>
               <Text>
                 { metStepGoal ? `Step Goal Met! ${stepsToday} Steps Today` : `${percentageOfGoal}% to your goal, ${stepsToday} Steps / ${stepGoal} Total` }
               </Text>
+            </ListItem>
+            <ListItem
+              itemDivider
+              style={ styles.listDivider }
+            >
+              <Text
+                style={ styles.listDividerText }
+              >Your Height (Used to estimate steps for a route)</Text>
+            </ListItem>
+            <ListItem style={ [sharedStyles.listStackCorrection, styles.pickerListItem] }>
+              <Form>
+                <Picker
+                  selectedValue={ height }
+                  iosHeader="Select Height"
+                  mode="dropdown"
+                  textStyle={ { color: '#007AFF' } }
+                  onValueChange={ this.updateHeight }
+                >
+                  { range(48, 84).map(rawInchValue => {
+                    const feet = Math.floor(rawInchValue / 12);
+                    const inches = rawInchValue % 12;
+                    let label = `${feet} foot ${inches} inches`;
+                    if (!inches) {
+                      label = `${feet} feet`;
+                    }
+                    return (
+                      <Item label={ label } value={ rawInchValue } key={ rawInchValue } />
+                    );
+                  }) }
+                </Picker>
+              </Form>
             </ListItem>
             <ListItem
               itemDivider
@@ -372,5 +410,12 @@ const styles = StyleSheet.create({
   },
   padLeft: {
     paddingLeft: 18,
+  },
+  updateBtn: {
+    fontSize: 12,
+  },
+  pickerListItem: {
+    height: 47,
+    paddingLeft: 0,
   },
 });

@@ -7,3 +7,8 @@ export const getStepGoal = createSelector(
   [getProfile],
   profile => profile.get('stepGoal', 3000),
 );
+
+export const getHeight = createSelector(
+  [getProfile],
+  profile => profile.get('height', 3000),
+);
