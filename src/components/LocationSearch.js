@@ -49,20 +49,23 @@ export default class LocationSearch extends React.Component {
     }
   };
 
-  handlePress = (data, details = null) => { // 'details' is provided when fetchDetails = true
+  handlePress = (data, details = null) => {
     this.props.handleSelectLocation({
       data,
       details,
     });
 
-    setTimeout(() => {
-      if (this.ref) {
-        this.ref.setAddressText('');
-        if (this.props.numberOfDestinations <= 1) {
-          this.ref.triggerFocus();
-        }
+    // Deal with async setState in google places component
+    setTimeout(this.resetInput, 100);
+  };
+
+  resetInput = () => {
+    if (this.ref) {
+      this.ref.setAddressText('');
+      if (this.props.numberOfDestinations <= 1) {
+        this.ref.triggerFocus();
       }
-    }, 300);
+    }
   };
 
   renderDescription = row => row.description;

@@ -109,7 +109,7 @@ export default class MapComponent extends Component {
     return routes.map((routeOption, idx) => {
       const { steps, distance } = getDetailsArrayFromRoute(routeOption);
       return (<Polyline
-        key={ routeOption.getIn(['overview_polyline', 'points'], distance) }
+        key={ `${routeOption.getIn(['overview_polyline', 'points'], distance)}_${idx}` } // eslint-disable-line
         steps={ steps }
         index={ idx }
         activeIndex={ activeRouteIndex }
@@ -141,7 +141,7 @@ export default class MapComponent extends Component {
       if (index === 0) {
         pins.push(
           <MapView.Marker
-            key={ destination.get('dataPlaceId', destination.get('name')) }
+            key={ destination.get('_dId', destination.get('name')) }
             coordinate={ destination.get('coordinates', Map()).toJS() }
           >
             <View
@@ -152,7 +152,7 @@ export default class MapComponent extends Component {
       } else if (index === destinations.size - 1) {
         pins.push(
           <MapView.Marker
-            key={ destination.get('dataPlaceId', destination.get('name')) }
+            key={ destination.get('_dId', destination.get('name')) }
             coordinate={ destination.get('coordinates', Map()).toJS() }
           >
             <View
@@ -163,7 +163,7 @@ export default class MapComponent extends Component {
       } else {
         pins.push(
           <MapView.Marker
-            key={ destination.get('dataPlaceId', destination.get('name')) }
+            key={ destination.get('_dId', destination.get('name')) }
             coordinate={ destination.get('coordinates', Map()).toJS() }
           >
             <View

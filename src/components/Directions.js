@@ -69,7 +69,7 @@ export default class Directions extends Component {
     if (nextProps.destinations !== this.props.destinations) {
       setTimeout(() => {
         this.toggleMap(true, nextProps);
-      }, 300)
+      }, 100);
     }
   }
 
@@ -118,9 +118,6 @@ export default class Directions extends Component {
   };
 
   toggleMap = (nextValue = !this.state.isShowingMap, props = this.props) => {
-    // if (!props.destinations.size && props.currentLocation.isEmpty()) {
-    //   return;
-    // }
     this.setState({ isShowingMap: nextValue });
   };
 
@@ -214,7 +211,7 @@ export default class Directions extends Component {
               { destinations.size ? (
                 destinations.map((destination, index) => (
                   <WaypointListItem
-                    key={ destination.get('dataPlaceId') || `key_${index}` }
+                    key={ destination.get('_dId') || `key_${index}` }
                     clearDestinationIndex={ clearDestinationIndex }
                     destination={ destination }
                     index={ index }
@@ -263,7 +260,7 @@ export default class Directions extends Component {
                 <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
               </Right>
             </ListItem>
-            <Collapsible collapsed={ false }>
+            <Collapsible collapsed={ !this.state.isShowingMap }>
               <MapComponent
                 setInnerMapRef={ this.setInnerMapRef }
                 destinations={ this.props.destinations }
