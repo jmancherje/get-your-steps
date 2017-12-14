@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
+import { Asset, AppLoading } from 'expo';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'remote-redux-devtools';
@@ -45,7 +46,32 @@ AsyncStorage.multiGet(['savedRoutes', 'stepGoal', 'height'], (errors, results) =
 
 // eslint-disable-next-line react/no-multi-comp
 export default class App extends React.Component {
+  state = { isReady: false };
+  setIsReady = () => { this.setState({ isReady: true }); }
+
+  // TODO: move AsyncStorage getter in here
+  async _cacheResourcesAsync() {
+    const images = [
+      require('./assets/splash.png'), // eslint-disable-line
+    ];
+
+    const cacheImages = images.map((image) => {
+      return Asset.fromModule(image).downloadAsync();
+    });
+    return Promise.all(cacheImages);
+  }
+
   render() {
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={ this._cacheResourcesAsync }
+          onFinish={ this.setIsReady }
+          onError={ console.warn }
+        />
+      );
+    }
+
     return (
       <Provider store={ store }>
         <TabNav />
