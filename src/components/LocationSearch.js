@@ -54,18 +54,6 @@ export default class LocationSearch extends React.Component {
       data,
       details,
     });
-
-    // Deal with async setState in google places component
-    setTimeout(this.resetInput, 100);
-  };
-
-  resetInput = () => {
-    if (this.ref) {
-      this.ref.setAddressText('');
-      if (this.props.numberOfDestinations <= 1) {
-        this.ref.triggerFocus();
-      }
-    }
   };
 
   renderDescription = row => row.description;
@@ -84,6 +72,7 @@ export default class LocationSearch extends React.Component {
   render() {
     return (
       <GooglePlacesAutocomplete
+        shouldClearAndFocus={ this.props.numberOfDestinations < 1 }
         ref={ this.setRef }
         placeholder="Search"
         minLength={ 2 } // minimum length of text to search
