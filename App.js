@@ -52,7 +52,7 @@ export default class App extends React.Component {
   // TODO: move AsyncStorage getter in here
   async _cacheResourcesAsync() {
     const images = [
-      require('./assets/splash.png'), // eslint-disable-line
+      require('./assets/airysplash.png'), // eslint-disable-line
     ];
 
     const cacheImages = images.map((image) => {
