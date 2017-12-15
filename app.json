@@ -5,7 +5,6 @@
     "icon": "./assets/app-icon.png",
     "slug": "steps",
     "sdkVersion": "21.0.0",
-    "platforms": ["ios"],
     "orientation": "portrait",
     "splash": {
       "image": "./assets/splash.png",
