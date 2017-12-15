@@ -54,20 +54,11 @@ export default class Directions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isShowingMap: this.props.destinations.size > 0 || !this.props.currentLocation.isEmpty(),
       isShowingDistance: true,
       mapSnapshot: null,
       name: null,
       showSaveForm: false,
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.destinations !== this.props.destinations) {
-      setTimeout(() => {
-        this.toggleMap(true, nextProps);
-      }, 100);
-    }
   }
 
   showSaveForm = () => {
@@ -112,16 +103,6 @@ export default class Directions extends Component {
 
   navigateToSave = () => {
     this.props.navigation.navigate('SaveForm');
-  };
-
-  toggleMap = (nextValue = !this.state.isShowingMap, props = this.props) => {
-    this.setState({ isShowingMap: nextValue });
-  };
-
-  // This is to prevent passing in the event as nextValue
-  // When pressing directly
-  handleMapPress = () => {
-    this.toggleMap();
   };
 
   toggleDistance = () => {
@@ -249,16 +230,10 @@ export default class Directions extends Component {
             <ListItem
               itemDivider
               style={ sharedStyles.listStackCorrection }
-              onPress={ this.handleMapPress }
             >
-              <Left>
-                <Text>Map</Text>
-              </Left>
-              <Right>
-                <Text style={ styles.expandButton }>{ this.state.isShowingMap ? 'v' : '>' }</Text>
-              </Right>
+              <Body><Text>Map</Text></Body>
             </ListItem>
-            <Collapsible collapsed={ !this.state.isShowingMap }>
+            <Collapsible collapsed={ !this.props.destinations.size }>
               <MapComponent
                 setInnerMapRef={ this.setInnerMapRef }
                 destinations={ this.props.destinations }
