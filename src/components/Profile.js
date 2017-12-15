@@ -196,16 +196,16 @@ export default class Profile extends React.Component {
   getUpdateStepGoalButton = () => {
     if (!this.state.showSaveForm) {
       return (
-        <Button small onPress={ this.showSaveForm }>
-          <Text style={ styles.updateBtn }>
+        <Button small onPress={ this.showSaveForm } style={ styles.updateBtn }>
+          <Text style={ styles.updateBtnText }>
             Update
           </Text>
         </Button>
       );
     }
     return (
-      <Button small danger onPress={ this.hideSaveForm }>
-        <Text style={ styles.updateBtn }>
+      <Button small danger onPress={ this.hideSaveForm } style={ styles.updateBtn }>
+        <Text style={ styles.updateBtnText }>
           Cancel
         </Text>
       </Button>
@@ -411,8 +411,15 @@ const styles = StyleSheet.create({
   padLeft: {
     paddingLeft: 18,
   },
-  updateBtn: {
+  updateBtnText: {
     fontSize: 12,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  updateBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 60,
   },
   pickerListItem: {
     height: 47,

@@ -181,7 +181,7 @@ export default class Directions extends Component {
               ) : (
                 <Right>
                   <Button small transparent danger onPress={ resetDirections }>
-                    <Text>Reset</Text>
+                    <Text style={ styles.resetBtn }>Reset</Text>
                   </Button>
                 </Right>
               ) }
@@ -245,7 +245,7 @@ export default class Directions extends Component {
             </Collapsible>
           </NbList>
         </Content>
-        <Footer>
+        <Footer style={ styles.footer }>
           <FooterTab>
             <Button
               full
@@ -275,5 +275,12 @@ const styles = StyleSheet.create({
   saveButton: {
     color: 'white',
     fontSize: 17,
+  },
+  resetBtn: {
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  footer: {
+    maxHeight: 55,
   },
 });
