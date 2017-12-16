@@ -44,7 +44,7 @@ export default class WaypointListItem extends Component {
                 danger
                 onPress={ this.clearDirection }
               >
-                <Text>Remove</Text>
+                <Text style={ styles.removeBtn }>Remove</Text>
               </Button>
             </Col>
           </Grid>
@@ -58,6 +58,10 @@ const styles = StyleSheet.create({
   listItem: {
     height: 30,
     marginRight: 0,
+    paddingRight: 0,
+  },
+  removeBtn: {
+    paddingLeft: 0,
     paddingRight: 0,
   },
 });
