@@ -1,7 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
-import { Asset, AppLoading } from 'expo';
+import { Asset, AppLoading, Font } from 'expo';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'remote-redux-devtools';
@@ -51,14 +51,15 @@ export default class App extends React.Component {
 
   // TODO: move AsyncStorage getter in here
   async _cacheResourcesAsync() {
-    const images = [
-      require('./assets/airysplash.png'), // eslint-disable-line
-    ];
-
-    const cacheImages = images.map((image) => {
-      return Asset.fromModule(image).downloadAsync();
+    const imgSrc = require('./assets/splashsolid.png'); // eslint-disable-line
+    const image = Asset.fromModule(imgSrc).downloadAsync();
+    const fonts = Font.loadAsync({
+      Roboto_medium: require("./assets/fonts/Roboto-Medium.ttf"), // eslint-disable-line
     });
-    return Promise.all(cacheImages);
+    return Promise.all([
+      image,
+      fonts, // eslint-disable-line
+    ]);
   }
 
   render() {
