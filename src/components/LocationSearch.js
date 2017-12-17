@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet } from 'react-native';
-import {
-  Text,
-  Icon,
-  Button,
-} from 'native-base';
+import { StyleSheet } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
@@ -29,9 +24,6 @@ const inputStyles = {
 export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
-    addCurrentLocationToDestinations: PropTypes.func.isRequired,
-    hasCurrentLocation: PropTypes.bool.isRequired,
-    leftButtonText: PropTypes.string.isRequired,
     setInputRef: PropTypes.func.isRequired,
     numberOfDestinations: PropTypes.number,
   };
@@ -58,23 +50,12 @@ export default class LocationSearch extends React.Component {
 
   renderDescription = row => row.description;
 
-  renderLeftButton = () => <View style={ styles.leftButton }><Text>{ this.props.leftButtonText }</Text></View>;
-
-  renderRightButton = () => (
-    <Button
-      small
-      transparent
-      onPress={ this.props.addCurrentLocationToDestinations }
-      style={ styles.currentLocationBtn }
-    ><Icon name="locate" /></Button>
-  );
-
   render() {
     return (
       <GooglePlacesAutocomplete
         shouldClearAndFocus={ this.props.numberOfDestinations < 1 }
         ref={ this.setRef }
-        placeholder="Search"
+        placeholder="Address"
         minLength={ 2 } // minimum length of text to search
         autoFocus={ false }
         /* returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype */
@@ -104,8 +85,6 @@ export default class LocationSearch extends React.Component {
         filterReverseGeocodingByTypes={ ['locality', 'administrative_area_level_3'] } // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
         // predefinedPlaces={ [homePlace, workPlace] }
         debounce={ 200 } // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-        renderLeftButton={ this.renderLeftButton }
-        renderRightButton={ !this.props.hasCurrentLocation ? this.renderRightButton : null }
       />
     );
   }

@@ -12,6 +12,7 @@ import {
   Content,
   Header,
   Body,
+  Button,
 } from 'native-base';
 
 import RouteDetails from './RouteDetails';
@@ -25,6 +26,7 @@ export default class SavedRoutes extends React.Component {
     deleteRoute: PropTypes.func.isRequired,
     stepGoal: PropTypes.number.isRequired,
     stepsPerMeter: PropTypes.number.isRequired,
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
 
   state = {
@@ -37,6 +39,10 @@ export default class SavedRoutes extends React.Component {
 
   removeSelection = (id) => {
     this.setState({ selectedRouteIds: this.state.selectedRouteIds.filterNot(selectedId => selectedId === id) });
+  };
+
+  navigateToCreateRoute = () => {
+    this.props.navigation.navigate('PlanRoute');
   };
 
   getTotalDistance = () => {
@@ -56,7 +62,18 @@ export default class SavedRoutes extends React.Component {
     const numberOfWalks = this.state.selectedRouteIds.size;
     const totalDistance = this.getTotalDistance();
     const calculatedSteps = Math.round(totalDistance / stepsPerMeter);
-    const noSavedRoutesPlaceholder = <ListItem style={ sharedStyles.listStackCorrection }><Text>You have no saved routes</Text></ListItem>;
+    const noSavedRoutesPlaceholder = (
+      <View>
+        <ListItem style={ sharedStyles.listStackCorrection }>
+          <Text>You have no saved routes</Text>
+        </ListItem>
+        <ListItem style={ sharedStyles.listStackCorrection }>
+          <Button small transparent onPress={ this.navigateToCreateRoute }>
+            <Text style={ styles.createRouteBtn }>Create your first route</Text>
+          </Button>
+        </ListItem>
+      </View>
+    );
     const noRoutesSelectedPlaceholderText = "Select routes to see how much you'll walk";
 
     const percentageOfGoal = Math.round((calculatedSteps / stepGoal) * 100);
@@ -109,5 +126,9 @@ const styles = StyleSheet.create({
   headerListItems: {
     borderBottomWidth: 3,
     borderColor: '#e2e2e2',
+  },
+  createRouteBtn: {
+    paddingLeft: 0,
+    fontSize: 16,
   },
 });

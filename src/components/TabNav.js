@@ -71,6 +71,7 @@ export default TabNavigator({
 }, {
   animationEnabled: true,
   initialRouteName: 'PlanRoute',
+  swipeEnabled: true,
   tabBarOptions: {
     labelStyle: {
       fontSize: 16,

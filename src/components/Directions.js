@@ -27,6 +27,7 @@ import Collapsible from 'react-native-collapsible';
 import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
 import MapComponent from './MapComponent';
+import AddDestination from './AddDestination';
 import { metersToMiles } from '../helpers/conversions';
 import sharedStyles from './styles/sharedStyles';
 import getDetailsArrayFromRoute from '../helpers/getDetailsFromRoute';
@@ -41,7 +42,6 @@ export default class Directions extends Component {
     activeRouteIndex: PropTypes.number.isRequired,
     searchedRouteOptions: PropTypes.instanceOf(List).isRequired,
     updateDestinations: PropTypes.func.isRequired,
-    addCurrentLocationToDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map).isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
@@ -133,6 +133,16 @@ export default class Directions extends Component {
     if (!searchedRouteOptions) return null;
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
+    if (destinations.size <= 1) {
+      return (
+        <AddDestination
+          startingPoint={ destinations.size === 0 }
+          setInputRef={ this.setInputRef }
+          numberOfDestinations={ numberOfDestinations }
+          handleSelectLocation={ this.props.updateDestinations }
+        />
+      );
+    }
     return (
       <Container>
         <Content
@@ -174,17 +184,11 @@ export default class Directions extends Component {
               <Left>
                 <Text>Walking Route</Text>
               </Left>
-              { !numberOfDestinations ? (
-                <Body>
-                  <Text>Add a starting point</Text>
-                </Body>
-              ) : (
-                <Right>
-                  <Button small transparent danger onPress={ resetDirections }>
-                    <Text style={ styles.resetBtn }>Reset</Text>
-                  </Button>
-                </Right>
-              ) }
+              <Right>
+                <Button small transparent danger onPress={ resetDirections }>
+                  <Text style={ styles.resetBtn }>Reset</Text>
+                </Button>
+              </Right>
             </ListItem>
             <View>
               { destinations.size ? (
@@ -201,9 +205,6 @@ export default class Directions extends Component {
                 setInputRef={ this.setInputRef }
                 numberOfDestinations={ numberOfDestinations }
                 handleSelectLocation={ this.props.updateDestinations }
-                leftButtonText={ destinations.size ? 'Add Destination' : 'Starting Point' }
-                hasCurrentLocation // Currently hard coding to true so we can use the button below
-                addCurrentLocationToDestinations={ this.props.addCurrentLocationToDestinations }
               />
             </View>
             <ListItem
@@ -249,12 +250,10 @@ export default class Directions extends Component {
           <FooterTab>
             <Button
               full
-              info={ numberOfDestinations < 2 }
-              success={ numberOfDestinations >= 2 }
-              onPress={ numberOfDestinations >= 2 ? this.showSaveForm : this.focusInput }
+              onPress={ this.showSaveForm }
             >
               <Text style={ styles.saveButton }>
-                { numberOfDestinations < 2 ? 'Get Started' : 'Save Route' }
+                Save Route
               </Text>
             </Button>
           </FooterTab>
