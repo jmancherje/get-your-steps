@@ -53,11 +53,13 @@ export default class App extends React.Component {
   setIsReady = () => { this.setState({ isReady: true }); }
 
   async _cacheResourcesAsync() {
-    const imgSrc = require('./assets/splashsolid.png'); // eslint-disable-line
-    const fontSrc = require("./assets/fonts/Roboto-Medium.ttf"); // eslint-disable-line
+    const splash = require('./assets/splashsolid.png');
+    const background = require('./assets/backgroundIcon.png');
+    const fontSrc = require('./assets/fonts/Roboto-Medium.ttf');
     return Promise.all([
       fetchDeviceData(),
-      Asset.fromModule(imgSrc).downloadAsync(),
+      Asset.fromModule(splash).downloadAsync(),
+      Asset.fromModule(background).downloadAsync(),
       Font.loadAsync({ Roboto_medium: fontSrc }),
     ]);
   }
