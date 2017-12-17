@@ -17,31 +17,34 @@ const store = createStore(Reducer, composeWithDevTools(
 ));
 
 // Get saved routes from AsyncStorage:
-AsyncStorage.multiGet(['savedRoutes', 'stepGoal', 'height'], (errors, results) => {
-  if (errors) {
-    throw errors[0];
-  }
-  const directions = get(results, [0, 1]);
-  const stepGoal = get(results, [1, 1]);
-  const height = get(results, [2, 1]);
-  if (directions) {
-    store.dispatch({
-      type: actionTypes.directions.INITIALIZE,
-      payload: directions,
-    });
-  }
-  if (stepGoal) {
-    store.dispatch({
-      type: actionTypes.profile.stepGoal.INITIALIZE,
-      payload: stepGoal,
-    });
-  }
-  if (height) {
-    store.dispatch({
-      type: actionTypes.profile.height.INITIALIZE,
-      payload: height,
-    });
-  }
+const fetchDeviceData = () => new Promise((resolve, reject) => {
+  AsyncStorage.multiGet(['savedRoutes', 'stepGoal', 'height'], (errors, results) => {
+    if (errors) {
+      reject(errors[0]);
+    }
+    const directions = get(results, [0, 1]);
+    const stepGoal = get(results, [1, 1]);
+    const height = get(results, [2, 1]);
+    if (directions) {
+      store.dispatch({
+        type: actionTypes.directions.INITIALIZE,
+        payload: directions,
+      });
+    }
+    if (stepGoal) {
+      store.dispatch({
+        type: actionTypes.profile.stepGoal.INITIALIZE,
+        payload: stepGoal,
+      });
+    }
+    if (height) {
+      store.dispatch({
+        type: actionTypes.profile.height.INITIALIZE,
+        payload: height,
+      });
+    }
+    resolve();
+  });
 });
 
 // eslint-disable-next-line react/no-multi-comp
@@ -49,16 +52,13 @@ export default class App extends React.Component {
   state = { isReady: false };
   setIsReady = () => { this.setState({ isReady: true }); }
 
-  // TODO: move AsyncStorage getter in here
   async _cacheResourcesAsync() {
     const imgSrc = require('./assets/splashsolid.png'); // eslint-disable-line
-    const image = Asset.fromModule(imgSrc).downloadAsync();
-    const fonts = Font.loadAsync({
-      Roboto_medium: require("./assets/fonts/Roboto-Medium.ttf"), // eslint-disable-line
-    });
+    const fontSrc = require("./assets/fonts/Roboto-Medium.ttf"); // eslint-disable-line
     return Promise.all([
-      image,
-      fonts, // eslint-disable-line
+      fetchDeviceData(),
+      Asset.fromModule(imgSrc).downloadAsync(),
+      Font.loadAsync({ Roboto_medium: fontSrc }),
     ]);
   }
 
