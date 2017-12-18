@@ -74,7 +74,7 @@ export default class RouteDetails extends React.Component {
             needsPadding
           />
         </CardItem>
-        <CardItem style={{ paddingLeft: 0, marginLeft: 0, paddingBottom: 0, paddingTop: 0 }}>
+        <CardItem style={{ paddingLeft: 0, marginLeft: 0, paddingRight: 0, paddingBottom: 0, paddingTop: 0 }}>
           <ListItem
             style={ [sharedStyles.listStackCorrection, styles.listDetails] }
           >
