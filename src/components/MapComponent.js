@@ -62,7 +62,8 @@ export default class MapComponent extends Component {
   componentDidUpdate(prevProps) {
     if (
       (prevProps.searchedRouteOptions !== this.props.searchedRouteOptions) ||
-      (prevProps.activeRouteIndex !== this.props.activeRouteIndex)
+      (prevProps.activeRouteIndex !== this.props.activeRouteIndex) ||
+      (prevProps.destinations.size !== this.props.destinations.size)
     ) {
       this.fitMap();
     }

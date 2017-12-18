@@ -64,10 +64,20 @@ export const updateDestinations = (payload) => (dispatch, getState) => {
     });
 };
 
-export const clearDestinationIndex = (index) => ({
-  type: actionTypes.directions.destinations.CLEAR_INDEX,
-  payload: index,
-});
+export const clearDestinationIndex = (index) => (dispatch, getState) => {
+  dispatch({
+    type: actionTypes.directions.destinations.CLEAR_INDEX,
+    payload: index,
+  });
+
+  const destinations = getDestinations(getState());
+  if (destinations.size >= 2) {
+    fetchDirections(destinations)
+      .then(response => {
+        dispatch(updateSearchedRouteOptions(response));
+      });
+  }
+};
 
 export const addCurrentLocationToDestinations = () => (dispatch, getState) => {
   const currentLocation = getCurrentLocation(getState());

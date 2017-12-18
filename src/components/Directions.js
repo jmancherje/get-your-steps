@@ -54,12 +54,23 @@ export default class Directions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isShowingDistance: true,
-      mapSnapshot: null,
       name: null,
       showSaveForm: false,
+      addExtraDestinations: false,
     };
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.addExtraDestinations && nextProps.destinations.size !== this.props.destinations.size) {
+      this.setState({
+        addExtraDestinations: false,
+      });
+    }
+  }
+
+  addExtraDestinations = () => {
+    this.setState({ addExtraDestinations: true });
+  };
 
   showSaveForm = () => {
     this.setState({ showSaveForm: true });
@@ -105,10 +116,6 @@ export default class Directions extends Component {
     this.props.navigation.navigate('SaveForm');
   };
 
-  toggleDistance = () => {
-    this.setState({ isShowingDistance: !this.state.isShowingDistance });
-  };
-
   handleSave = () => {
     const { name } = this.state;
     if (this.saveRef && this.saveRef._root) {
@@ -133,7 +140,7 @@ export default class Directions extends Component {
     if (!searchedRouteOptions) return null;
     const activeRoute = searchedRouteOptions.get(activeRouteIndex, Map());
     const { distance: totalDistance } = getDetailsArrayFromRoute(activeRoute);
-    if (destinations.size <= 1) {
+    if (destinations.size <= 1 || this.state.addExtraDestinations) {
       return (
         <AddDestination
           startingPoint={ destinations.size === 0 }
@@ -173,12 +180,39 @@ export default class Directions extends Component {
               </Form>
               <Button
                 full
-                info
+                primary
                 disabled={ !this.state.name }
                 onPress={ this.handleSave }
               >
                 <Text>Confirm</Text>
               </Button>
+            </Collapsible>
+            <ListItem
+              itemDivider
+              style={ sharedStyles.listStackCorrection }
+            >
+              <Body>
+                <Text>Distance and Estimated Steps</Text>
+              </Body>
+            </ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
+              <Text>{ `${Math.round(totalDistance / stepsPerMeter)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
+            </ListItem>
+            <ListItem
+              itemDivider
+              style={ sharedStyles.listStackCorrection }
+            >
+              <Text style={ styles.padMap }>Map</Text><Text style={ styles.smallFont }> (tap to choose best route)</Text>
+            </ListItem>
+            <Collapsible collapsed={ !this.props.destinations.size }>
+              <MapComponent
+                setInnerMapRef={ this.setInnerMapRef }
+                destinations={ this.props.destinations }
+                updateActiveIndex={ this.props.updateActiveIndex }
+                searchedRouteOptions={ this.props.searchedRouteOptions }
+                activeRouteIndex={ this.props.activeRouteIndex }
+                currentLocation={ this.props.currentLocation }
+              />
             </Collapsible>
             <ListItem itemDivider>
               <Left>
@@ -201,55 +235,21 @@ export default class Directions extends Component {
                   />
                 ))
               ) : null }
-              <LocationSearch
-                setInputRef={ this.setInputRef }
-                numberOfDestinations={ numberOfDestinations }
-                handleSelectLocation={ this.props.updateDestinations }
-              />
-            </View>
-            <ListItem
-              itemDivider
-              style={ sharedStyles.listStackCorrection }
-              onPress={ this.toggleDistance }
-            >
-              <Left>
-                <Text>Distance and Estimated Steps</Text>
-              </Left>
-              <Right>
-                <Text style={ styles.expandButton }>{ this.state.isShowingDistance ? 'v' : '>' }</Text>
-              </Right>
-            </ListItem>
-            <Collapsible collapsed={ !this.state.isShowingDistance }>
-              <ListItem style={ sharedStyles.listStackCorrection }>
-                { totalDistance ? (
-                  <Text>{ `${Math.round(totalDistance / stepsPerMeter)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
-                ) : (
-                  <Text style={ styles.smallText }>Add destinations to get your route and estimated steps</Text>
-                ) }
+              <ListItem style={ [sharedStyles.listStackCorrection, { height: 35 }] }>
+                <Body>
+                  <Button transparent small onPress={ this.addExtraDestinations }>
+                    <Text>Add another destination</Text>
+                  </Button>
+                </Body>
               </ListItem>
-            </Collapsible>
-            <ListItem
-              itemDivider
-              style={ sharedStyles.listStackCorrection }
-            >
-              <Body><Text>Map</Text></Body>
-            </ListItem>
-            <Collapsible collapsed={ !this.props.destinations.size }>
-              <MapComponent
-                setInnerMapRef={ this.setInnerMapRef }
-                destinations={ this.props.destinations }
-                updateActiveIndex={ this.props.updateActiveIndex }
-                searchedRouteOptions={ this.props.searchedRouteOptions }
-                activeRouteIndex={ this.props.activeRouteIndex }
-                currentLocation={ this.props.currentLocation }
-              />
-            </Collapsible>
+            </View>
           </NbList>
         </Content>
         <Footer style={ styles.footer }>
           <FooterTab>
             <Button
               full
+              primary
               onPress={ this.showSaveForm }
             >
               <Text style={ styles.saveButton }>
@@ -264,9 +264,8 @@ export default class Directions extends Component {
 }
 
 const styles = StyleSheet.create({
-  smallText: {
+  smallFont: {
     fontSize: 13,
-    color: '#8c8c8c',
   },
   expandButton: {
     fontSize: 16,
@@ -278,8 +277,12 @@ const styles = StyleSheet.create({
   resetBtn: {
     paddingLeft: 0,
     paddingRight: 0,
+    alignItems: 'flex-end',
   },
   footer: {
     maxHeight: 55,
+  },
+  padMap: {
+    paddingLeft: 10,
   },
 });
