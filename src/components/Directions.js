@@ -89,13 +89,6 @@ export default class Directions extends Component {
     }
   };
 
-  inputRef = null;
-  setInputRef = (ref) => {
-    if (ref) {
-      this.inputRef = ref;
-    }
-  };
-
   mapRef = null;
   setInnerMapRef = (ref) => {
     if (ref) {
@@ -142,9 +135,6 @@ export default class Directions extends Component {
     if (destinations.size <= 1 || this.state.addExtraDestinations) {
       return (
         <AddDestination
-          startingPoint={ destinations.size === 0 }
-          destinations={ destinations }
-          setInputRef={ this.setInputRef }
           numberOfDestinations={ numberOfDestinations }
           handleSelectLocation={ this.props.updateDestinations }
         />

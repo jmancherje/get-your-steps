@@ -20,15 +20,8 @@ import sharedStyles from './styles/sharedStyles';
 
 export default class AddDestination extends React.Component {
   static propTypes = {
-    startingPoint: PropTypes.bool,
     handleSelectLocation: PropTypes.func.isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
-    destinations: PropTypes.instanceOf(List),
-  };
-
-  static defaultProps = {
-    startingPoint: false,
-    destinations: List(),
   };
 
   setRef = (ref) => { this.inputRef = ref; };
@@ -39,9 +32,14 @@ export default class AddDestination extends React.Component {
 
   render() {
     const {
-      destinations,
       numberOfDestinations,
     } = this.props;
+    let buttonText = 'Tap here to add a starting location';
+    if (numberOfDestinations === 1) {
+      buttonText = 'Tap here to add a destination';
+    } else if (numberOfDestinations > 1) {
+      buttonText = 'Tap here to add another destination';
+    }
     return (
       <Container>
         <View style={ styles.view }>
@@ -50,10 +48,10 @@ export default class AddDestination extends React.Component {
             style={ styles.image }
             resizeMode="cover"
           >
-            { numberOfDestinations === 1 && (
-              <ListItem style={ sharedStyles.listStackCorrection } key={ destinations.getIn([0, '_dId']) }>
+            { numberOfDestinations >= 1 && (
+              <ListItem style={ sharedStyles.listStackCorrection }>
                 <Body>
-                  <Text>Starting from {destinations.getIn([0, 'description'])}</Text>
+                  <Text>Add {numberOfDestinations > 1 ? 'Another ' : ''}Destination</Text>
                 </Body>
               </ListItem>
             ) }
@@ -63,7 +61,7 @@ export default class AddDestination extends React.Component {
               handleSelectLocation={ this.props.handleSelectLocation }
             />
             <Button full onPress={ this.handlePress }>
-              <Text>{this.props.startingPoint ? 'Tap here to get started' : 'Tap here to add destination'}</Text>
+              <Text>{buttonText}</Text>
             </Button>
           </Image>
         </View>
