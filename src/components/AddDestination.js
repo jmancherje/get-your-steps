@@ -19,13 +19,17 @@ export default class AddDestination extends React.Component {
     handleSelectLocation: PropTypes.func.isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
   };
+
   static defaultProps = {
     startingPoint: false,
   };
+
   setRef = (ref) => { this.inputRef = ref; };
+
   handlePress = () => {
     this.inputRef && this.inputRef.triggerFocus();
   };
+
   render() {
     return (
       <Container>

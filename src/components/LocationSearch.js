@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_PLACES_KEY } from '../../keys';
@@ -25,7 +24,6 @@ export default class LocationSearch extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
     setInputRef: PropTypes.func.isRequired,
-    numberOfDestinations: PropTypes.number,
   };
 
   static defaultProps = {
@@ -53,7 +51,6 @@ export default class LocationSearch extends React.Component {
   render() {
     return (
       <GooglePlacesAutocomplete
-        shouldClearAndFocus={ this.props.numberOfDestinations < 1 }
         ref={ this.setRef }
         placeholder="Address"
         minLength={ 2 } // minimum length of text to search
@@ -89,9 +86,3 @@ export default class LocationSearch extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  leftButton: { paddingLeft: 10, justifyContent: 'center' },
-  rightButton: { paddingRight: 10, justifyContent: 'center' },
-  currentLocationBtn: { justifyContent: 'center', height: '100%' },
-});
