@@ -196,7 +196,7 @@ export default class Profile extends React.Component {
   getUpdateStepGoalButton = () => {
     if (!this.state.showSaveForm) {
       return (
-        <Button small onPress={ this.showSaveForm } style={ styles.updateBtn }>
+        <Button small transparent onPress={ this.showSaveForm } style={ styles.updateBtn }>
           <Text style={ styles.updateBtnText }>
             Update
           </Text>
@@ -204,7 +204,7 @@ export default class Profile extends React.Component {
       );
     }
     return (
-      <Button small danger onPress={ this.hideSaveForm } style={ styles.updateBtn }>
+      <Button small danger transparent onPress={ this.hideSaveForm } style={ styles.updateBtn }>
         <Text style={ styles.updateBtnText }>
           Cancel
         </Text>
@@ -320,26 +320,6 @@ export default class Profile extends React.Component {
             >
               <Text
                 style={ styles.listDividerText }
-              >Live Step Frequency (Walk to see value update)</Text>
-            </ListItem>
-            <ListItem style={ sharedStyles.listStackCorrection }>
-              <Left>
-                <Text>
-                  { stepsPerSecond.toFixed(2) } Steps/sec
-                </Text>
-              </Left>
-              <Body>
-                <Text>
-                  { (stepsPerSecond * 60).toFixed(2) } Steps/min
-                </Text>
-              </Body>
-            </ListItem>
-            <ListItem
-              itemDivider
-              style={ styles.listDivider }
-            >
-              <Text
-                style={ styles.listDividerText }
               >Steps Since Time</Text>
             </ListItem>
             <ListItem style={ [sharedStyles.listStackCorrection, styles.padLeft] }>
@@ -356,6 +336,26 @@ export default class Profile extends React.Component {
                 maximumValue={ 1440 }
                 style={ styles.slider }
               />
+            </ListItem>
+            <ListItem
+              itemDivider
+              style={ styles.listDivider }
+            >
+              <Text
+                style={ styles.listDividerText }
+              >Live Step Frequency (Walk to see value update)</Text>
+            </ListItem>
+            <ListItem style={ sharedStyles.listStackCorrection }>
+              <Left>
+                <Text>
+                  { stepsPerSecond.toFixed(2) } Steps/sec
+                </Text>
+              </Left>
+              <Body>
+                <Text>
+                  { (stepsPerSecond * 60).toFixed(2) } Steps/min
+                </Text>
+              </Body>
             </ListItem>
             <ListItem
               itemDivider

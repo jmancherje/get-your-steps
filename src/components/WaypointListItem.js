@@ -8,8 +8,7 @@ import {
   ListItem,
   Body,
   Button,
-  Grid,
-  Col,
+  Right,
   Text,
 } from 'native-base';
 import sharedStyles from './styles/sharedStyles';
@@ -33,22 +32,18 @@ export default class WaypointListItem extends Component {
     return (
       <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
         <Body>
-          <Grid>
-            <Col size={ 6 } style={ sharedStyles.justifyCenter }>
-              <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
-            </Col>
-            <Col size={ 2 } style={ sharedStyles.justifyCenter }>
-              <Button
-                small
-                transparent
-                danger
-                onPress={ this.clearDirection }
-              >
-                <Text style={ styles.removeBtn }>Remove</Text>
-              </Button>
-            </Col>
-          </Grid>
+          <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
         </Body>
+        <Right>
+          <Button
+            small
+            transparent
+            danger
+            onPress={ this.clearDirection }
+          >
+            <Text style={ styles.removeBtn }>Remove</Text>
+          </Button>
+        </Right>
       </ListItem>
     );
   }
@@ -56,12 +51,12 @@ export default class WaypointListItem extends Component {
 
 const styles = StyleSheet.create({
   listItem: {
-    height: 30,
     marginRight: 0,
     paddingRight: 0,
   },
   removeBtn: {
     paddingLeft: 0,
-    paddingRight: 0,
+    paddingRight: 10,
+    alignItems: 'flex-end',
   },
 });

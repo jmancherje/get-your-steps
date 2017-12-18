@@ -74,8 +74,9 @@ export default TabNavigator({
   swipeEnabled: true,
   tabBarOptions: {
     labelStyle: {
-      fontSize: 16,
+      fontSize: 14,
+      fontFamily: 'Roboto_medium',
     },
-    activeBackgroundColor: '#CEE1F8',
+
   },
 });
