@@ -24,7 +24,6 @@ import {
 } from 'native-base';
 import Collapsible from 'react-native-collapsible';
 
-import LocationSearch from './LocationSearch';
 import WaypointListItem from './WaypointListItem';
 import MapComponent from './MapComponent';
 import AddDestination from './AddDestination';
@@ -144,6 +143,7 @@ export default class Directions extends Component {
       return (
         <AddDestination
           startingPoint={ destinations.size === 0 }
+          destinations={ destinations }
           setInputRef={ this.setInputRef }
           numberOfDestinations={ numberOfDestinations }
           handleSelectLocation={ this.props.updateDestinations }

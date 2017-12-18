@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { List } from 'immutable';
 import {
   View,
   Image,
@@ -9,19 +10,25 @@ import {
   Container,
   Button,
   Text,
+  Body,
+  ListItem,
 } from 'native-base';
 
 import LocationSearch from './LocationSearch';
+
+import sharedStyles from './styles/sharedStyles';
 
 export default class AddDestination extends React.Component {
   static propTypes = {
     startingPoint: PropTypes.bool,
     handleSelectLocation: PropTypes.func.isRequired,
     numberOfDestinations: PropTypes.number.isRequired,
+    destinations: PropTypes.instanceOf(List),
   };
 
   static defaultProps = {
     startingPoint: false,
+    destinations: List(),
   };
 
   setRef = (ref) => { this.inputRef = ref; };
@@ -31,6 +38,10 @@ export default class AddDestination extends React.Component {
   };
 
   render() {
+    const {
+      destinations,
+      numberOfDestinations,
+    } = this.props;
     return (
       <Container>
         <View style={ styles.view }>
@@ -39,6 +50,13 @@ export default class AddDestination extends React.Component {
             style={ styles.image }
             resizeMode="cover"
           >
+            { numberOfDestinations === 1 && (
+              <ListItem style={ sharedStyles.listStackCorrection } key={ destinations.getIn([0, '_dId']) }>
+                <Body>
+                  <Text>Starting from {destinations.getIn([0, 'description'])}</Text>
+                </Body>
+              </ListItem>
+            ) }
             <LocationSearch
               setInputRef={ this.setRef }
               numberOfDestinations={ this.props.numberOfDestinations }
