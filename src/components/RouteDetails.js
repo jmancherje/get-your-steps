@@ -14,6 +14,8 @@ import {
   Icon,
   Body,
   Right,
+  Card,
+  CardItem,
 } from 'native-base';
 import { Foundation, FontAwesome } from '@expo/vector-icons';
 
@@ -61,52 +63,56 @@ export default class RouteDetails extends React.Component {
     const route = savedRoute.get('route');
     const { distance } = getDetailsArrayFromRoute(route);
     return (
-      <View>
-        <MapComponent
-          scrollEnabled={ false }
-          heightDivisor={ 5 }
-          isHidden={ false }
-          destinations={ savedRoute.get('destinations', Map()) }
-          route={ route }
-          shortMap
-        />
-        <Collapsible collapsed={ selectedCount === 0 }>
-          <ListItem style={ { height: 30, marginLeft: 0, paddingLeft: 10, backgroundColor: '#ddffdf' } }>
-            <Body><Text style={ { fontSize: 14 } }>{`Route added ${selectedCount} time${selectedCount > 1 ? 's' : ''}`}</Text></Body>
-            <Right><Button danger small transparent onPress={ this.removeSelection }><Text style={ { paddingRight: 0, fontSize: 13 } }>Remove</Text></Button></Right>
-          </ListItem>
-        </Collapsible>
-        <ListItem
-          style={ [sharedStyles.listStackCorrection, styles.listDetails] }
-        >
-          <SwipeRow
-            style={ styles.swipeRow }
-            disableRightSwipe
-            rightOpenValue={ -75 }
-            body={
-              <Grid>
-                <Col size={ 1 } style={ [sharedStyles.justifyCenter, styles.checkbox] } onPress={ this.handleCheckBoxPress }>
-                  <Button onPress={ this.addSelection } transparent style={ { width: 40, justifyContent: 'center' } }>
-                    <FontAwesome name="plus-circle" style={ { fontSize: 35, color: '#62B1F6' } } />
-                  </Button>
-                </Col>
-                <Col size={ 6 }>
-                  <Row><Text style={ styles.routeName }>{ savedRoute.get('name') }</Text></Row>
-                  <Row><Text style={ styles.routeDistance }>{ `${Math.round(distance / stepsPerMeter)} Steps / ${metersToMiles(distance).toFixed(2)} miles` }</Text></Row>
-                </Col>
-                <Col size={ 2 } style={ styles.iconCol }>
-                  <Foundation name="list" style={ styles.listIcon } />
-                </Col>
-              </Grid>
-            }
-            right={
-              <Button danger onPress={ this.handleDeletePress }>
-                <Icon style={ styles.deleteIcon } name="trash" />
-              </Button>
-            }
+      <Card style={{ paddingLeft: 0 }}>
+        <CardItem header style={{ paddingLeft: 7, paddingTop: 7, paddingBottom: 0 }}>
+          <MapComponent
+            scrollEnabled={ false }
+            heightDivisor={ 5 }
+            isHidden={ false }
+            destinations={ savedRoute.get('destinations', Map()) }
+            route={ route }
+            needsPadding
           />
-        </ListItem>
-      </View>
+        </CardItem>
+        <CardItem style={{ paddingLeft: 0, marginLeft: 0, paddingBottom: 0, paddingTop: 0 }}>
+          <ListItem
+            style={ [sharedStyles.listStackCorrection, styles.listDetails] }
+          >
+            <SwipeRow
+              style={ styles.swipeRow }
+              disableRightSwipe
+              rightOpenValue={ -75 }
+              body={
+                <Grid>
+                  <Col size={ 1 } style={ [sharedStyles.justifyCenter, styles.checkbox] } onPress={ this.handleCheckBoxPress }>
+                    <Button onPress={ this.addSelection } transparent style={ { width: 40, justifyContent: 'center' } }>
+                      <FontAwesome name="plus-circle" style={ { fontSize: 35, color: '#187efc' } } />
+                    </Button>
+                  </Col>
+                  <Col size={ 6 }>
+                    <Row><Text style={ styles.routeName }>{ savedRoute.get('name') }</Text></Row>
+                    <Row><Text style={ styles.routeDistance }>{ `${Math.round(distance / stepsPerMeter)} Steps / ${metersToMiles(distance).toFixed(2)} miles` }</Text></Row>
+                  </Col>
+                  <Col size={ 2 } style={ styles.iconCol }>
+                    <Foundation name="list" style={ styles.listIcon } />
+                  </Col>
+                </Grid>
+              }
+              right={
+                <Button danger onPress={ this.handleDeletePress }>
+                  <Icon style={ styles.deleteIcon } name="trash" />
+                </Button>
+              }
+            />
+          </ListItem>
+        </CardItem>
+        <Collapsible collapsed={ selectedCount === 0 }>
+          <CardItem style={{ paddingLeft: 10, paddingRight: 20, paddingBottom: 0, paddingTop: 0, backgroundColor: '#b2d4ff' }}>
+            <Body style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }}><Text style={ { fontSize: 14 } }>{`Route added ${selectedCount} time${selectedCount > 1 ? 's' : ''}`}</Text></Body>
+            <Right><Button danger small transparent onPress={ this.removeSelection }><Text style={ { paddingRight: 0, fontSize: 13 } }>Remove</Text></Button></Right>
+          </CardItem>
+        </Collapsible>
+      </Card>
     );
   }
 }
@@ -130,6 +136,7 @@ const styles = StyleSheet.create({
   swipeRow: {
     height: '100%',
     width: '100%',
+    paddingLeft: 0,
   },
   listDetails: {
     borderBottomWidth: 1,
@@ -151,6 +158,9 @@ const styles = StyleSheet.create({
   },
   routeDistance: {
     fontSize: 14,
+  },
+  mapPadding: {
+    padding: 10,
   },
   iconCol: {
     justifyContent: 'center',

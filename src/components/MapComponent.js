@@ -34,9 +34,20 @@ const aspectRatio = mapWidth / mapHeight;
 const LATITUDE_DELTA = 0.0012299763249572493;
 const LONGITUDE_DELTA = LATITUDE_DELTA * aspectRatio;
 
+const mapWidthPadding = deviceWidth - 20;
+const mapHeightPadding = Math.round(deviceHeight / 4);
+const aspectRatioPadding = mapWidthPadding / mapHeightPadding;
+const LATITUDE_DELTA_P = 0.0012299763249572493;
+const LONGITUDE_DELTA_P = LATITUDE_DELTA_P * aspectRatioPadding;
+
 const mapRegion = {
   latitudeDelta: LATITUDE_DELTA,
   longitudeDelta: LONGITUDE_DELTA,
+};
+
+const mapRegionPadding = {
+  latitudeDelta: LATITUDE_DELTA_P,
+  longitudeDelta: LONGITUDE_DELTA_P,
 };
 export default class MapComponent extends Component {
   static propTypes = {
@@ -47,7 +58,7 @@ export default class MapComponent extends Component {
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map),
     setInnerMapRef: PropTypes.func,
-    shortMap: PropTypes.bool,
+    needsPadding: PropTypes.bool,
   };
   static defaultProps = {
     route: Map(),
@@ -56,7 +67,7 @@ export default class MapComponent extends Component {
     updateActiveIndex: noop,
     setInnerMapRef: noop,
     currentLocation: Map(),
-    shortMap: false,
+    needsPadding: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -179,7 +190,7 @@ export default class MapComponent extends Component {
 
   render() {
     const {
-      shortMap,
+      needsPadding,
       destinations,
       currentLocation,
     } = this.props;
@@ -194,13 +205,13 @@ export default class MapComponent extends Component {
     }
     if (!longitude || !latitude) return null;
     const region = {
-      ...mapRegion,
+      ...(!needsPadding ? mapRegion : mapRegionPadding),
       longitude,
       latitude,
     };
     return (
       <View
-        style={ shortMap ? styles.shortMap : styles.mapDimensions }
+        style={ needsPadding ? styles.mapDimensionsPadding : styles.mapDimensions }
       >
         <MapView
           ref={ this.setMapRef }
@@ -232,9 +243,9 @@ const styles = StyleSheet.create({
     width: mapWidth,
     height: mapHeight,
   },
-  shortMap: {
-    width: mapWidth,
-    height: Math.round(deviceHeight / 6),
+  mapDimensionsPadding: {
+    height: mapHeightPadding,
+    width: mapWidthPadding,
   },
   mapMarker: {
     height: 10,

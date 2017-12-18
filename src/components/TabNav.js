@@ -71,7 +71,7 @@ export default TabNavigator({
 }, {
   animationEnabled: true,
   initialRouteName: 'PlanRoute',
-  swipeEnabled: true,
+  // swipeEnabled: true, // TODO: figure out how to enable this without breaking swipe to delete route :(
   tabBarOptions: {
     labelStyle: {
       fontSize: 14,
