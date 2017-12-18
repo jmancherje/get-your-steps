@@ -268,7 +268,7 @@ export default class Profile extends React.Component {
                   />
                 </Item>
               </Form>
-              <Button full success disabled={ !this.state.stepGoal } onPress={ this.handleSave }>
+              <Button full primary disabled={ !this.state.stepGoal } onPress={ this.handleSave }>
                 <Text>Save Step Goal</Text>
               </Button>
             </Collapsible>
