@@ -18,6 +18,11 @@ export default class WaypointListItem extends Component {
     index: PropTypes.number.isRequired,
     destination: PropTypes.instanceOf(Map).isRequired,
     clearDestinationIndex: PropTypes.func.isRequired,
+    showDetails: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    showDetails: false,
   };
 
   clearDirection = () => {
@@ -28,11 +33,16 @@ export default class WaypointListItem extends Component {
     const {
       index,
       destination,
+      showDetails,
     } = this.props;
+    let text = destination.get('name');
+    if (showDetails) {
+      text = destination.get('description', destination.get('name'));
+    }
     return (
       <ListItem style={ [sharedStyles.listStackCorrection, styles.listItem] }>
         <Body>
-          <Text>{ `${index + 1}: ${destination.get('name')}` }</Text>
+          <Text>{ `${index + 1}: ${text}` }</Text>
         </Body>
         <Right>
           <Button

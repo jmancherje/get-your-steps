@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import {
   getCurrentLocation,
   getSearchedRouteOptions,
-  getNumberOfDestinations,
   getActiveRouteIndex,
   getDestinations,
   getStepsPerMeter,
@@ -23,7 +22,6 @@ import {
 import Directions from '../components/Directions';
 
 const mapStateToProps = (state) => ({
-  numberOfDestinations: getNumberOfDestinations(state),
   searchedRouteOptions: getSearchedRouteOptions(state),
   currentLocation: getCurrentLocation(state),
   activeRouteIndex: getActiveRouteIndex(state),

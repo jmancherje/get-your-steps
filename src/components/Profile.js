@@ -22,6 +22,7 @@ import {
   Input,
   Label,
   Picker,
+  Header,
 } from 'native-base';
 import moment from 'moment';
 import { range } from 'lodash';
@@ -229,6 +230,9 @@ export default class Profile extends React.Component {
     const percentageOfGoal = Math.round((stepsToday / stepGoal) * 100);
     return (
       <Container>
+        <Header>
+          <Body><Text style={ sharedStyles.header }>Profile</Text></Body>
+        </Header>
         <Content
           keyboardShouldPersistTaps="always"
         >
