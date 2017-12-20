@@ -5,23 +5,29 @@ import {
   View,
   Image,
   StyleSheet,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import {
   Container,
   Button,
   Text,
   Body,
-  ListItem,
+  Header,
 } from 'native-base';
 
 import LocationSearch from './LocationSearch';
+import WaypointListItem from './WaypointListItem';
 
 import sharedStyles from './styles/sharedStyles';
+
+const { height: deviceHeight } = Dimensions.get('window');
 
 export default class AddDestination extends React.Component {
   static propTypes = {
     handleSelectLocation: PropTypes.func.isRequired,
-    numberOfDestinations: PropTypes.number.isRequired,
+    destinations: PropTypes.instanceOf(List).isRequired,
+    clearDestinationIndex: PropTypes.func.isRequired,
   };
 
   setRef = (ref) => { this.inputRef = ref; };
@@ -32,8 +38,11 @@ export default class AddDestination extends React.Component {
 
   render() {
     const {
-      numberOfDestinations,
+      destinations,
+      handleSelectLocation,
+      clearDestinationIndex,
     } = this.props;
+    const numberOfDestinations = destinations.size;
     let buttonText = 'Tap here to add a starting location';
     if (numberOfDestinations === 1) {
       buttonText = 'Tap here to add a destination';
@@ -42,23 +51,34 @@ export default class AddDestination extends React.Component {
     }
     return (
       <Container>
+        <Header>
+          <Body><Text style={ sharedStyles.header }>Create A Route</Text></Body>
+        </Header>
         <View style={ styles.view }>
           <Image
             source={ require('../../assets/backgroundIcon.png') }
             style={ styles.image }
             resizeMode="cover"
           >
-            { numberOfDestinations >= 1 && (
-              <ListItem style={ sharedStyles.listStackCorrection }>
-                <Body>
-                  <Text>Add {numberOfDestinations > 1 ? 'Another ' : ''}Destination</Text>
-                </Body>
-              </ListItem>
-            ) }
+            { destinations.size ? (
+              <View style={ styles.scrollViewHeight }>
+                <ScrollView>
+                  { destinations.map((destination, index) => (
+                    <WaypointListItem
+                      showDetails
+                      key={ destination.get('_dId') || `key_${index}` }
+                      clearDestinationIndex={ clearDestinationIndex }
+                      destination={ destination }
+                      index={ index }
+                    />
+                  )) }
+                </ScrollView>
+              </View>
+            ) : null }
             <LocationSearch
               setInputRef={ this.setRef }
-              numberOfDestinations={ this.props.numberOfDestinations }
-              handleSelectLocation={ this.props.handleSelectLocation }
+              numberOfDestinations={ numberOfDestinations }
+              handleSelectLocation={ handleSelectLocation }
             />
             <Button full onPress={ this.handlePress }>
               <Text>{buttonText}</Text>
@@ -79,5 +99,8 @@ const styles = StyleSheet.create({
   },
   view: {
     flex: 1,
+  },
+  scrollViewHeight: {
+    maxHeight: (deviceHeight / 4),
   },
 });

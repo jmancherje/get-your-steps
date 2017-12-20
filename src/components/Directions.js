@@ -21,6 +21,7 @@ import {
   Item,
   Label,
   Input,
+  Header,
 } from 'native-base';
 import Collapsible from 'react-native-collapsible';
 
@@ -43,7 +44,6 @@ export default class Directions extends Component {
     updateDestinations: PropTypes.func.isRequired,
     destinations: PropTypes.instanceOf(List).isRequired,
     currentLocation: PropTypes.instanceOf(Map).isRequired,
-    numberOfDestinations: PropTypes.number.isRequired,
     resetDirections: PropTypes.func.isRequired,
     saveRoute: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
@@ -126,7 +126,6 @@ export default class Directions extends Component {
       destinations,
       clearDestinationIndex,
       resetDirections,
-      numberOfDestinations,
       stepsPerMeter,
     } = this.props;
     if (!searchedRouteOptions) return null;
@@ -135,13 +134,18 @@ export default class Directions extends Component {
     if (destinations.size <= 1 || this.state.addExtraDestinations) {
       return (
         <AddDestination
-          numberOfDestinations={ numberOfDestinations }
           handleSelectLocation={ this.props.updateDestinations }
+          destinations={ destinations }
+          resetDirections={ resetDirections }
+          clearDestinationIndex={ clearDestinationIndex }
         />
       );
     }
     return (
       <Container>
+        <Header>
+          <Body><Text style={ sharedStyles.header }>Create A Route</Text></Body>
+        </Header>
         <Content
           keyboardShouldPersistTaps="always"
         >
@@ -153,7 +157,7 @@ export default class Directions extends Component {
                 </Left>
                 <Right>
                   <Button small danger onPress={ this.hideSaveForm }>
-                    <Text>Cancel</Text>
+                    <Text style={ styles.noHorizontalPad }>Cancel</Text>
                   </Button>
                 </Right>
               </ListItem>
@@ -186,7 +190,7 @@ export default class Directions extends Component {
               </Body>
             </ListItem>
             <ListItem style={ sharedStyles.listStackCorrection }>
-              <Text>{ `${Math.round(totalDistance / stepsPerMeter)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
+              <Text style={ styles.padMap }>{ `${Math.round(totalDistance / stepsPerMeter)} steps (for ${metersToMiles(totalDistance).toFixed(2)} miles)` }</Text>
             </ListItem>
             <ListItem
               itemDivider
@@ -210,7 +214,7 @@ export default class Directions extends Component {
               </Left>
               <Right>
                 <Button small transparent danger onPress={ resetDirections }>
-                  <Text style={ styles.resetBtn }>Reset</Text>
+                  <Text style={ [styles.noHorizontalPad, styles.resetBtn] }>Reset</Text>
                 </Button>
               </Right>
             </ListItem>
@@ -265,9 +269,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   resetBtn: {
+    alignItems: 'flex-end',
+  },
+  noHorizontalPad: {
     paddingLeft: 0,
     paddingRight: 0,
-    alignItems: 'flex-end',
   },
   footer: {
     maxHeight: 55,
